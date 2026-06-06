@@ -1,0 +1,174 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
+---
+
+<Layout title="Goals — Global Wealth Portfolio">
+  <section class="container-page pt-3xl pb-2xl">
+    <PageHeader
+      title="Goals"
+      description="Set retirement, home, or education targets with deadlines. Project what your monthly SIP could grow into."
+      primaryAction={{ label: "+ Add goal", id: "add-goal" }}
+      filters={[
+        {
+          id: "type",
+          label: "Type",
+          options: [
+            { value: "all", label: "All Goals" },
+            { value: "Retirement", label: "Retirement" },
+            { value: "House", label: "House" },
+            { value: "Education", label: "Education" },
+            { value: "Emergency Fund", label: "Emergency Fund" },
+            { value: "Wealth Building", label: "Wealth Building" },
+            { value: "Other", label: "Other" },
+          ],
+        },
+      ]}
+    />
+
+    <!-- Summary -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-md mb-2xl">
+      <div class="card">
+        <p class="text-caption-mono text-body mb-xs">Total goals</p>
+        <p class="text-display-sm" data-stat="total">0</p>
+      </div>
+      <div class="card">
+        <p class="text-caption-mono text-body mb-xs">On track</p>
+        <p class="text-display-sm text-gain" data-stat="ontrack">0</p>
+      </div>
+      <div class="card">
+        <p class="text-caption-mono text-body mb-xs">Target value</p>
+        <p class="text-display-sm" data-stat="target">₹0</p>
+      </div>
+      <div class="card">
+        <p class="text-caption-mono text-body mb-xs">Saved so far</p>
+        <p class="text-display-sm" data-stat="saved">₹0</p>
+      </div>
+    </div>
+
+    <!-- Projection card -->
+    <div class="card-soft p-0 overflow-hidden mb-2xl">
+      <div class="p-lg hairline-b">
+        <h2 class="text-display-sm">Inflation-Adjusted Retirement Projections</h2>
+        <p class="text-caption text-mute mt-xs">Projections are estimates based on assumed CAGR scenarios.</p>
+      </div>
+      <form id="projection-form" class="p-lg grid grid-cols-1 md:grid-cols-4 gap-md">
+        <div>
+          <label class="label" for="proj-age">Current Age</label>
+          <input class="input" type="number" id="proj-age" min="0" max="100" value="30" />
+        </div>
+        <div>
+          <label class="label" for="proj-retire">Retirement Age</label>
+          <input class="input" type="number" id="proj-retire" min="0" max="100" value="60" />
+        </div>
+        <div>
+          <label class="label" for="proj-sip">Monthly SIP (<span data-currency-sym>₹</span>)</label>
+          <input class="input" type="number" id="proj-sip" min="0" step="any" value="10000" />
+        </div>
+        <div>
+          <label class="label" for="proj-inflation">Inflation Rate (%)</label>
+          <input class="input" type="number" id="proj-inflation" min="0" max="20" step="any" value="6" />
+        </div>
+      </form>
+      <div class="px-lg pb-lg grid grid-cols-1 md:grid-cols-3 gap-md">
+        <div class="card-soft">
+          <p class="text-caption-mono text-body">Conservative (8% CAGR)</p>
+          <p class="text-display-sm mt-xs" data-proj="low">₹0</p>
+        </div>
+        <div class="card-soft">
+          <p class="text-caption-mono text-body">Expected (12% CAGR)</p>
+          <p class="text-display-sm mt-xs" data-proj="mid">₹0</p>
+        </div>
+        <div class="card-soft">
+          <p class="text-caption-mono text-body">Optimistic (15% CAGR)</p>
+          <p class="text-display-sm mt-xs" data-proj="high">₹0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Goals table -->
+    <div class="card p-0 overflow-hidden">
+      <div class="overflow-x-auto scroll-thin">
+        <table class="w-full text-body-sm">
+          <thead>
+            <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
+              <th class="font-medium py-sm px-md">Goal</th>
+              <th class="font-medium py-sm px-md">Type</th>
+              <th class="font-medium py-sm px-md text-right">Target</th>
+              <th class="font-medium py-sm px-md">Deadline</th>
+              <th class="font-medium py-sm px-md text-right">Current</th>
+              <th class="font-medium py-sm px-md w-48">Progress</th>
+              <th class="font-medium py-sm px-md text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="goals-tbody">
+            <tr>
+              <td colspan="7" class="text-center py-5xl">Loading…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <dialog id="goal-modal" class="rounded-lg p-0 max-w-lg w-full shadow-level-5 backdrop:bg-black/30">
+    <form id="goal-form" method="dialog" class="p-lg">
+      <div class="flex items-center justify-between mb-md">
+        <h2 class="text-display-sm" id="goal-modal-title">Add Goal</h2>
+        <button type="button" data-close-modal class="btn-icon" aria-label="Close">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <input type="hidden" id="goal-id" name="id" />
+      <div class="space-y-md">
+        <div>
+          <label class="label" for="goal-name">Goal Name *</label>
+          <input class="input" type="text" id="goal-name" name="name" required />
+        </div>
+        <div class="grid grid-cols-2 gap-sm">
+          <div>
+            <label class="label" for="goal-type">Type *</label>
+            <select class="select" id="goal-type" name="type" required>
+              <option value="Retirement">Retirement</option>
+              <option value="House">House</option>
+              <option value="Education">Education</option>
+              <option value="Emergency Fund">Emergency Fund</option>
+              <option value="Wealth Building">Wealth Building</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="goal-custom">Custom Label</label>
+            <input class="input" type="text" id="goal-custom" name="customLabel" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-sm">
+          <div>
+            <label class="label" for="goal-target">Target Amount *</label>
+            <input class="input" type="number" id="goal-target" name="target" min="0" step="any" required />
+          </div>
+          <div>
+            <label class="label" for="goal-current">Current</label>
+            <input class="input" type="number" id="goal-current" name="current" min="0" step="any" value="0" />
+          </div>
+        </div>
+        <div>
+          <label class="label" for="goal-deadline">Target Deadline</label>
+          <input class="input" type="date" id="goal-deadline" name="deadline" />
+        </div>
+        <div>
+          <label class="label" for="goal-notes">Notes</label>
+          <input class="input" type="text" id="goal-notes" name="notes" />
+        </div>
+      </div>
+      <div class="flex justify-end gap-sm mt-lg">
+        <button type="button" data-close-modal class="btn-secondary">Cancel</button>
+        <button type="submit" class="btn-primary">Save goal</button>
+      </div>
+    </form>
+  </dialog>
+</Layout>
+
+<script>
+  import "../scripts/goals.ts";
+</script>

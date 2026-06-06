@@ -1,0 +1,155 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { currencies } from "../lib/currency";
+import { languages } from "../lib/i18n";
+
+const currencyList = Object.entries(currencies).map(([code, meta]) => ({
+  code,
+  ...meta,
+}));
+const languageList = Object.entries(languages).map(([code, meta]) => ({
+  code,
+  ...meta,
+}));
+---
+
+<Layout title="Settings — Global Wealth Portfolio">
+  <section class="container-page pt-3xl pb-2xl">
+    <div class="mb-2xl max-w-3xl">
+      <p class="text-caption-mono text-gold mb-xs">Settings</p>
+      <h1 class="text-display-lg">Preferences</h1>
+      <p class="text-body-md text-body mt-sm leading-relaxed">
+        Pick a currency, language, and theme. Set your monthly income to
+        power the savings-rate calculation. Everything is stored locally.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-md">
+      <!-- Currency -->
+      <div class="card">
+        <h2 class="text-display-sm mb-sm">Currency</h2>
+        <p class="text-body-sm text-body mb-md">Choose your reporting currency. Auto-detected from your browser on first visit.</p>
+        <label class="label" for="set-currency">Display currency</label>
+        <select class="select" id="set-currency">
+          {currencyList.map((c) => (
+            <option value={c.code}>{c.symbol} {c.name} ({c.country})</option>
+          ))}
+        </select>
+        <p class="text-caption text-mute mt-sm">All amounts are formatted with the locale of the selected currency.</p>
+      </div>
+
+      <!-- Language -->
+      <div class="card">
+        <h2 class="text-display-sm mb-sm">Language</h2>
+        <p class="text-body-sm text-body mb-md">Switch the interface language.</p>
+        <label class="label" for="set-language">Interface language</label>
+        <select class="select" id="set-language">
+          {languageList.map((l) => (
+            <option value={l.code}>{l.flag} {l.native} ({l.name})</option>
+          ))}
+        </select>
+        <p class="text-caption text-mute mt-sm">Right-to-left languages (Arabic) flip the layout automatically.</p>
+      </div>
+
+      <!-- Theme -->
+      <div class="card">
+        <h2 class="text-display-sm mb-sm">Theme</h2>
+        <p class="text-body-sm text-body mb-md">Choose how the dashboard looks.</p>
+        <div class="grid grid-cols-3 gap-sm">
+          <button class="theme-btn" data-theme="light" type="button">
+            <span class="theme-swatch theme-swatch-light"></span>
+            <span class="text-body-sm-strong">Light</span>
+          </button>
+          <button class="theme-btn" data-theme="dark" type="button">
+            <span class="theme-swatch theme-swatch-dark"></span>
+            <span class="text-body-sm-strong">Dark</span>
+          </button>
+          <button class="theme-btn" data-theme="system" type="button">
+            <span class="theme-swatch theme-swatch-system"></span>
+            <span class="text-body-sm-strong">System</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Income -->
+      <div class="card">
+        <h2 class="text-display-sm mb-sm">Income & base date</h2>
+        <p class="text-body-sm text-body mb-md">Used for savings rate and benchmark comparison.</p>
+        <div class="space-y-md">
+          <div>
+            <label class="label" for="set-income">Monthly take-home income</label>
+            <input class="input" type="number" id="set-income" min="0" step="any" />
+          </div>
+          <div>
+            <label class="label" for="set-base-date">Portfolio base date</label>
+            <input class="input" type="date" id="set-base-date" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications (placeholder) -->
+      <div class="card">
+        <h2 class="text-display-sm mb-sm">Notifications</h2>
+        <p class="text-body-sm text-body mb-md">Bill reminders and goal milestones (coming soon — all in-browser).</p>
+        <label class="flex items-center gap-sm cursor-pointer">
+          <input type="checkbox" id="set-notifications" class="w-4 h-4 accent-current" />
+          <span class="text-body-md">Enable in-app notifications</span>
+        </label>
+      </div>
+
+      <!-- Data management -->
+      <div class="card">
+        <h2 class="text-display-sm mb-sm">Data management</h2>
+        <p class="text-body-sm text-body mb-md">Your data lives in this browser. Export regularly to back it up.</p>
+        <div class="flex flex-wrap gap-sm mb-md">
+          <a href="/import" class="btn-secondary">Import / Export</a>
+          <button id="reset-data" type="button" class="btn-secondary text-loss">Reset all data</button>
+        </div>
+        <p class="text-caption text-mute">Resetting clears all investments, expenses, goals, EMIs, and the audit log from this device.</p>
+      </div>
+    </div>
+
+    <p class="text-caption text-mute text-center mt-4xl">All settings auto-save.</p>
+  </section>
+</Layout>
+
+<style>
+  .theme-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--color-canvas);
+    box-shadow: var(--shadow-level-1);
+    border: 0;
+    cursor: pointer;
+    transition: box-shadow 150ms ease;
+  }
+  .theme-btn:hover { box-shadow: var(--shadow-level-2); }
+  .theme-btn[aria-selected="true"] {
+    box-shadow:
+      var(--shadow-level-1),
+      0 0 0 2px var(--color-ink);
+  }
+  .theme-swatch {
+    width: 100%;
+    height: 48px;
+    border-radius: 6px;
+    border: 1px solid var(--color-hairline);
+  }
+  .theme-swatch-light {
+    background: linear-gradient(135deg, #fafafa 50%, #ffffff 50%);
+  }
+  .theme-swatch-dark {
+    background: linear-gradient(135deg, #171717 50%, #0a0a0a 50%);
+  }
+  .theme-swatch-system {
+    background: linear-gradient(135deg, #fafafa 50%, #171717 50%);
+  }
+</style>
+
+<script>
+  import "../scripts/settings.ts";
+</script>

@@ -1,0 +1,174 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-hairline bg-canvas mt-5xl">
+  <!-- Top: brand statement as a proper paragraph (aligned with PageHeader above) -->
+  <div class="container-page py-5xl">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4xl items-start">
+      <!-- Brand block -->
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-2 mb-md">
+          <span class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-ink text-gold font-bold text-base relative overflow-hidden" aria-hidden="true">
+            <span class="relative z-10">G</span>
+            <span class="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent opacity-50"></span>
+          </span>
+          <span class="text-display-sm text-ink tracking-tight">
+            Global Wealth <span class="text-gradient-gold">Portfolio</span>
+          </span>
+        </div>
+        <p class="text-body-md text-body leading-relaxed max-w-3xl">
+          Global Wealth Portfolio is a private, browser-based wealth dashboard
+          for tracking investments, expenses, loans, and goals across 30+
+          currencies &mdash; with bank-statement scanning that runs entirely
+          on your device.
+        </p>
+        <div class="mt-md flex items-center gap-md flex-wrap">
+          <span class="inline-flex items-center gap-1.5 text-caption text-mute">
+            <span class="w-1.5 h-1.5 rounded-full bg-gain" aria-hidden="true"></span>
+            All systems operational
+          </span>
+          <span class="text-caption text-mute">·</span>
+          <span class="text-caption text-mute">Version 1.0</span>
+          <span class="text-caption text-mute">·</span>
+          <span class="text-caption text-mute">Local-first</span>
+          <span class="text-caption text-mute">·</span>
+          <span class="text-caption text-mute">Open source (MIT)</span>
+        </div>
+      </div>
+
+      <!-- Newsletter / Contact -->
+      <div class="card-soft">
+        <p class="text-caption-mono text-body mb-sm">Stay in the loop</p>
+        <h3 class="text-display-sm text-ink mb-xs">Product updates, no spam.</h3>
+        <p class="text-body-sm text-body mb-md leading-relaxed">Major releases and important fixes only &mdash; never marketing.</p>
+        <form class="flex gap-sm" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Subscribed ✓';">
+          <input
+            type="email"
+            required
+            placeholder="you@email.com"
+            class="input"
+            style="height: 40px;"
+            aria-label="Email address"
+          />
+          <button type="submit" class="btn-primary">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Link columns -->
+  <div class="border-t border-hairline">
+    <div class="container-page py-4xl">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3xl">
+        <div>
+          <h3 class="text-caption-mono text-body mb-md">Product</h3>
+          <ul class="flex flex-col gap-xs">
+            <li><a href="/dashboard" class="text-body-sm text-body hover:text-ink transition-colors">Dashboard</a></li>
+            <li><a href="/investments" class="text-body-sm text-body hover:text-ink transition-colors">Investments</a></li>
+            <li><a href="/expenses" class="text-body-sm text-body hover:text-ink transition-colors">Expenses</a></li>
+            <li><a href="/goals" class="text-body-sm text-body hover:text-ink transition-colors">Goals</a></li>
+            <li><a href="/import" class="text-body-sm text-body hover:text-ink transition-colors">Import data</a></li>
+            <li><a href="/benchmarks" class="text-body-sm text-body hover:text-ink transition-colors">Benchmarks</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-caption-mono text-body mb-md">Resources</h3>
+          <ul class="flex flex-col gap-xs">
+            <li><a href="/emi" class="text-body-sm text-body hover:text-ink transition-colors">EMI Tracker</a></li>
+            <li><a href="/audit" class="text-body-sm text-body hover:text-ink transition-colors">Audit Trail</a></li>
+            <li><a href="/settings" class="text-body-sm text-body hover:text-ink transition-colors">Settings</a></li>
+            <li><a href="/privacy" class="text-body-sm text-body hover:text-ink transition-colors">Privacy</a></li>
+            <li><a href="/terms" class="text-body-sm text-body hover:text-ink transition-colors">Terms</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-caption-mono text-body mb-md">Connect</h3>
+          <ul class="flex flex-col gap-xs">
+            <li>
+              <a
+                href="https://github.com/globalwealthfolio"
+                class="text-body-sm text-body hover:text-ink transition-colors inline-flex items-center gap-1.5"
+                rel="noopener"
+                target="_blank"
+              >
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.92.58.1.79-.25.79-.55 0-.27-.01-1-.02-1.95-3.2.69-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.34.95.1-.74.4-1.24.72-1.53-2.55-.29-5.24-1.27-5.24-5.66 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18.91-.25 1.89-.38 2.86-.38.97 0 1.95.13 2.86.38 2.18-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.8 1.18 1.82 1.18 3.07 0 4.4-2.69 5.36-5.25 5.65.41.35.78 1.05.78 2.12 0 1.53-.01 2.77-.01 3.14 0 .3.21.66.8.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/>
+                </svg>
+                GitHub
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://twitter.com/globalwealthfolio"
+                class="text-body-sm text-body hover:text-ink transition-colors inline-flex items-center gap-1.5"
+                rel="noopener"
+                target="_blank"
+              >
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M18.244 2H21.5l-7.5 8.575L23 22h-6.844l-5.36-7.01L4.6 22H1.343l8.02-9.17L1 2h7.02l4.85 6.42L18.244 2zm-2.4 18h1.89L7.25 4H5.21l10.634 16z"/>
+                </svg>
+                Twitter / X
+              </a>
+            </li>
+            <li>
+              <a
+                href="mailto:hello@globalwealthfolio.com"
+                class="text-body-sm text-body hover:text-ink transition-colors"
+              >
+                hello@globalwealthfolio.com
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-caption-mono text-body mb-md">Trust</h3>
+          <ul class="flex flex-col gap-xs">
+            <li class="text-body-sm text-body flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-gain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+              100% on-device storage
+            </li>
+            <li class="text-body-sm text-body flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-gain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              No tracking, no cookies
+            </li>
+            <li class="text-body-sm text-body flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-gain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              Open source (MIT)
+            </li>
+            <li class="text-body-sm text-body flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-gain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+              Light &amp; dark themes
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="border-t border-hairline">
+    <div class="container-page py-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-md">
+      <p class="text-caption text-mute">
+        &copy; {year} Global Wealth Portfolio. All data stored locally on your device.
+      </p>
+      <p class="text-caption text-mute inline-flex items-center gap-1.5">
+        Made with care for global investors.
+        <span class="text-gradient-gold" aria-hidden="true">◆</span>
+      </p>
+    </div>
+  </div>
+</footer>

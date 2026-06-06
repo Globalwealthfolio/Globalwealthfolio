@@ -1,0 +1,59 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Benchmarks — Global Wealth Portfolio">
+  <section class="container-page pt-3xl pb-2xl">
+    <div class="mb-2xl max-w-3xl">
+      <p class="text-caption-mono text-gold mb-xs">Benchmarks</p>
+      <h1 class="text-display-lg">Compare your portfolio to the market.</h1>
+      <p class="text-body-md text-body mt-sm leading-relaxed">
+        Reference returns for major indices across India, the US, global
+        equities, gold, and crypto. Figures are illustrative &mdash; verify
+        with your local exchange before relying on them.
+      </p>
+    </div>
+
+    <!-- Your portfolio vs benchmarks -->
+    <div class="card-elevated mb-2xl">
+      <div class="flex items-center justify-between mb-md">
+        <h2 class="text-display-sm">Your portfolio vs benchmarks</h2>
+        <p class="text-caption text-mute">Calculated from your investments, base date <span data-base-date>—</span></p>
+      </div>
+      <div class="card-soft p-0 overflow-hidden">
+        <table class="w-full text-body-sm">
+          <thead>
+            <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
+              <th class="font-medium py-sm px-md">Series</th>
+              <th class="font-medium py-sm px-md text-right">1M</th>
+              <th class="font-medium py-sm px-md text-right">6M</th>
+              <th class="font-medium py-sm px-md text-right">1Y</th>
+              <th class="font-medium py-sm px-md text-right">3Y CAGR</th>
+              <th class="font-medium py-sm px-md text-right">5Y CAGR</th>
+            </tr>
+          </thead>
+          <tbody id="bench-tbody">
+            <tr>
+              <td colspan="6" class="text-center py-5xl text-body">Loading…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-caption text-mute mt-md">
+        ⚠️ Benchmark data shown is illustrative and approximate. Please verify from NSE/BSE/MCX for actual figures.
+      </p>
+    </div>
+
+    <!-- Performance vs benchmarks chart -->
+    <div class="card-elevated">
+      <h2 class="text-display-sm mb-md">Performance comparison</h2>
+      <div class="h-72">
+        <canvas id="benchChart"></canvas>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import "../scripts/benchmarks.ts";
+</script>

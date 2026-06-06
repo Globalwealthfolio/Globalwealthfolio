@@ -1,0 +1,107 @@
+---
+import "../styles/global.css";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  noFooter?: boolean;
+  noNav?: boolean;
+  fullBleed?: boolean;
+}
+
+const {
+  title = "Global Wealth Portfolio — Track investments, expenses & net worth",
+  description = "A free, private, multi-currency investment & expense portfolio dashboard. Import Excel sheets, scan bank statements, and track goals in 10+ languages.",
+  noFooter = false,
+  noNav = false,
+  fullBleed = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://globalwealthfolio.com" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content="Global Wealth Portfolio" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://globalwealthfolio.com" />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Preconnect to Google Fonts for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Block FOUC: apply theme + class before paint -->
+    <script is:inline>
+      (function () {
+        try {
+          const k = "gwp:data:v1";
+          const raw = localStorage.getItem(k);
+          let theme = "system";
+          if (raw) {
+            const d = JSON.parse(raw);
+            theme = d?.preferences?.theme ?? "system";
+          }
+          const sysDark =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches;
+          const dark = theme === "dark" || (theme === "system" && sysDark);
+          if (dark) document.documentElement.classList.add("dark");
+          document.documentElement.dataset.theme = dark ? "dark" : "light";
+          const lang = raw
+            ? JSON.parse(raw)?.preferences?.language ?? "en"
+            : (navigator.language || "en").split("-")[0];
+          document.documentElement.lang = lang;
+        } catch (_) {
+          // noop
+        }
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen bg-canvas-soft text-ink antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 btn-secondary"
+    >
+      Skip to content
+    </a>
+    {!noNav && <Nav />}
+    <main id="main" class={fullBleed ? "" : ""}>
+      <slot />
+    </main>
+    {!noFooter && <Footer />}
+
+    <!-- App store: must run after DOM is ready -->
+    <script>
+      import "../scripts/app-store.ts";
+    </script>
+  </body>
+</html>

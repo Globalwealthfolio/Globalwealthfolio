@@ -1,0 +1,47 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Privacy — Global Wealth Portfolio" description="Your data stays on your device. We don't collect anything.">
+  <section class="container-page pt-3xl pb-2xl max-w-3xl">
+    <p class="text-caption-mono text-body mb-xs">Privacy</p>
+    <h1 class="text-display-lg mb-lg">Your data stays on your device.</h1>
+    <p class="text-body-md text-body mb-md">
+      Global Wealth Portfolio is built on a simple principle: <strong>your financial data is yours</strong>.
+      The entire app runs in your browser. We don't have servers storing your
+      investments, expenses, or goals. We don't use analytics that can identify you.
+    </p>
+    <h2 class="text-display-md mt-2xl mb-md">What we don't collect</h2>
+    <ul class="list-disc pl-lg space-y-xs text-body-md text-body mb-md">
+      <li>Your investment holdings</li>
+      <li>Your expense records</li>
+      <li>Your financial goals</li>
+      <li>Your EMI / loan information</li>
+      <li>Your uploaded bank statements (they never leave your device — OCR runs locally)</li>
+      <li>Your name, email, or any personal identifier</li>
+    </ul>
+    <h2 class="text-display-md mt-2xl mb-md">How your data is stored</h2>
+    <p class="text-body-md text-body mb-md">
+      All your portfolio data is stored in your browser's <code>localStorage</code>.
+      It never leaves your device. If you clear your browser data, your portfolio
+      will be lost — please use the JSON export feature regularly to back up.
+    </p>
+    <h2 class="text-display-md mt-2xl mb-md">Bank statement OCR</h2>
+    <p class="text-body-md text-body mb-md">
+      When you upload a bank statement image, the OCR (text recognition) runs
+      entirely in your browser using Tesseract.js. The image is never uploaded
+      to any server. After the OCR finishes, you can delete the image from your
+      device — the parsed text and transactions are stored only in your browser.
+    </p>
+    <h2 class="text-display-md mt-2xl mb-md">Third-party services</h2>
+    <p class="text-body-md text-body mb-md">
+      The app loads fonts from Google Fonts and uses no other third-party
+      tracking, advertising, or analytics services. The only network requests
+      are to load the app itself.
+    </p>
+    <h2 class="text-display-md mt-2xl mb-md">Contact</h2>
+    <p class="text-body-md text-body">
+      Questions? Email <a href="mailto:privacy@globalwealthfolio.com" class="text-link hover:underline">privacy@globalwealthfolio.com</a>.
+    </p>
+  </section>
+</Layout>

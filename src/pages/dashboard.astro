@@ -1,0 +1,211 @@
+---
+import Layout from "../layouts/Layout.astro";
+import StatCard from "../components/StatCard.astro";
+import EmptyState from "../components/EmptyState.astro";
+import Button from "../components/Button.astro";
+---
+
+<Layout title="Dashboard — Global Wealth Portfolio">
+  <section class="container-page pt-3xl pb-2xl">
+    <!-- First-run empty state banner -->
+    <div id="first-run-banner" class="hidden card-elevated bg-gradient-finance border border-gold/30 p-lg mb-2xl">
+      <div class="flex flex-col md:flex-row items-start md:items-center gap-md">
+        <div class="flex-1">
+          <p class="text-caption-mono text-gold mb-xs">Welcome</p>
+          <h2 class="text-display-sm mb-xs">No data yet. Want to see how it looks?</h2>
+          <p class="text-body-sm text-body leading-relaxed">Load a sample Indian portfolio to explore the dashboard with realistic investments, expenses, EMIs, and goals, or import your own data from a spreadsheet, JSON file, or bank statement image.</p>
+        </div>
+        <div class="flex gap-sm">
+          <button id="seed-sample" class="btn-primary" type="button">Load sample data</button>
+          <a href="/import" class="btn-secondary">Import your own</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-md mb-2xl">
+      <div class="flex-1 min-w-0 max-w-3xl">
+        <p class="text-caption-mono text-gold mb-xs">Overview</p>
+        <h1 class="text-display-lg">Dashboard</h1>
+        <p class="text-body-md text-body mt-sm leading-relaxed" data-greeting>Welcome back. A single view of how your money is doing today &mdash; total value, goal progress, active EMIs, and monthly cash flow.</p>
+      </div>
+      <div class="flex gap-sm flex-wrap shrink-0">
+        <Button href="/import" variant="secondary" size="sm">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          Import
+        </Button>
+        <Button id="quick-add-investment" variant="primary" size="sm">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Add investment
+        </Button>
+      </div>
+    </div>
+
+    <!-- Stat grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-md mb-2xl">
+      <StatCard label="Total Portfolio" value="₹0" icon="coin" accent="gold" data-stat="total" />
+      <StatCard label="Unrealised Gain" value="₹0" icon="trend" data-stat="gain" />
+      <StatCard label="Net Worth" value="₹0" icon="shield" data-stat="networth" />
+      <StatCard label="Active Goals" value="0 / 0" icon="target" data-stat="goals" />
+    </div>
+
+    <!-- Main grid: chart + side cards -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-md mb-2xl">
+      <!-- Portfolio chart -->
+      <div class="card lg:col-span-2">
+        <div class="flex items-center justify-between mb-md">
+          <h2 class="text-display-sm">Portfolio Growth</h2>
+          <div class="flex gap-1">
+            <button class="btn-ghost" data-range="1M" type="button">1M</button>
+            <button class="btn-ghost" data-range="6M" type="button">6M</button>
+            <button class="btn-ghost bg-canvas-soft-2 text-ink" data-range="1Y" type="button">1Y</button>
+            <button class="btn-ghost" data-range="All" type="button">All</button>
+          </div>
+        </div>
+        <div class="h-64 relative" id="portfolio-chart">
+          <canvas id="growthChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Allocation -->
+      <div class="card">
+        <h2 class="text-display-sm mb-md">Asset Allocation</h2>
+        <div class="flex items-center justify-center my-lg">
+          <div class="relative w-44 h-44">
+            <canvas id="allocationChart"></canvas>
+            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <p class="text-caption-mono text-body">Total</p>
+              <p class="text-display-sm" data-stat="alloc-total">₹0</p>
+            </div>
+          </div>
+        </div>
+        <div class="space-y-xs" id="allocation-legend">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Mid grid: Top holdings + goals -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-md mb-2xl">
+      <div class="card">
+        <div class="flex items-center justify-between mb-md">
+          <h2 class="text-display-sm">Top Holdings</h2>
+          <a href="/investments" class="text-body-sm text-link hover:underline">View all →</a>
+        </div>
+        <div id="top-holdings">
+          <EmptyState
+            title="No investments yet"
+            description="Add your first investment to see your holdings here."
+            actionLabel="Add investment"
+            actionHref="#"
+          />
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="flex items-center justify-between mb-md">
+          <h2 class="text-display-sm">Goal Progress</h2>
+          <a href="/goals" class="text-body-sm text-link hover:underline">View all →</a>
+        </div>
+        <div id="goal-progress" class="space-y-md">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom: EMI + Expenses -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+      <div class="card">
+        <div class="flex items-center justify-between mb-md">
+          <h2 class="text-display-sm">Active EMIs</h2>
+          <a href="/emi" class="text-body-sm text-link hover:underline">Manage →</a>
+        </div>
+        <div id="emi-summary" class="space-y-sm">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+      <div class="card">
+        <div class="flex items-center justify-between mb-md">
+          <h2 class="text-display-sm">Monthly Cash Flow</h2>
+          <a href="/expenses" class="text-body-sm text-link hover:underline">Manage →</a>
+        </div>
+        <div id="cashflow" class="h-44">
+          <canvas id="cashflowChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick add investment modal -->
+  <dialog id="quick-add-modal" class="rounded-lg p-0 max-w-md w-full shadow-level-5 backdrop:bg-black/30">
+    <form id="quick-add-form" method="dialog" class="p-lg">
+      <div class="flex items-center justify-between mb-md">
+        <h2 class="text-display-sm">Add investment</h2>
+        <button type="button" data-close-modal class="btn-icon" aria-label="Close">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="space-y-md">
+        <div>
+          <label class="label" for="qa-name">Asset name *</label>
+          <input class="input" type="text" id="qa-name" name="name" required placeholder="e.g. Reliance Industries" />
+        </div>
+        <div class="grid grid-cols-2 gap-sm">
+          <div>
+            <label class="label" for="qa-type">Type *</label>
+            <select class="select" id="qa-type" name="type" required>
+              <option value="Equity">Equity</option>
+              <option value="Debt">Debt</option>
+              <option value="Gold">Gold</option>
+              <option value="Real Estate">Real Estate</option>
+              <option value="Crypto">Crypto</option>
+              <option value="International">International</option>
+              <option value="ETF">ETF</option>
+              <option value="Cash">Cash</option>
+              <option value="PPF">PPF</option>
+              <option value="EPF">EPF</option>
+              <option value="Fixed Deposit">Fixed Deposit</option>
+              <option value="Bonds">Bonds</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="qa-date">Date</label>
+            <input class="input" type="date" id="qa-date" name="date" required />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-sm">
+          <div>
+            <label class="label" for="qa-amount">Invested *</label>
+            <input class="input" type="number" id="qa-amount" name="amount" min="0" step="any" required />
+          </div>
+          <div>
+            <label class="label" for="qa-current">Current value</label>
+            <input class="input" type="number" id="qa-current" name="currentValue" min="0" step="any" placeholder="0" />
+          </div>
+        </div>
+        <div>
+          <label class="label" for="qa-risk">Risk: <span id="qa-risk-val">5</span></label>
+          <input class="w-full" type="range" id="qa-risk" name="risk" min="1" max="10" value="5" />
+        </div>
+        <div>
+          <label class="label" for="qa-notes">Notes</label>
+          <input class="input" type="text" id="qa-notes" name="notes" placeholder="Optional" />
+        </div>
+      </div>
+      <div class="flex justify-end gap-sm mt-lg">
+        <button type="button" data-close-modal class="btn-secondary">Cancel</button>
+        <button type="submit" class="btn-primary">Save investment</button>
+      </div>
+    </form>
+  </dialog>
+</Layout>
+
+<script>
+  import "../scripts/dashboard.ts";
+</script>

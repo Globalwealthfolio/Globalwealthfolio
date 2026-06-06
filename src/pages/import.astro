@@ -1,0 +1,268 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Import — Global Wealth Portfolio">
+  <section class="container-page pt-3xl pb-2xl">
+    <div class="mb-2xl max-w-3xl">
+      <p class="text-caption-mono text-gold mb-xs">Import</p>
+      <h1 class="text-display-lg">Bring your data in.</h1>
+      <p class="text-body-md text-body mt-sm leading-relaxed">
+        Drop a spreadsheet, upload a bank statement, or snap a photo with your
+        phone. Everything runs locally in your browser.
+      </p>
+    </div>
+
+    <!-- Method tabs -->
+    <div role="tablist" class="flex flex-wrap gap-1 p-1 bg-canvas-soft-2 rounded-full mb-2xl max-w-md">
+      <button role="tab" aria-selected="true" data-tab="file" class="tab-pill flex-1">
+        Excel / CSV
+      </button>
+      <button role="tab" aria-selected="false" data-tab="image" class="tab-pill flex-1">
+        Bank statement
+      </button>
+      <button role="tab" aria-selected="false" data-tab="json" class="tab-pill flex-1">
+        JSON backup
+      </button>
+    </div>
+
+    <!-- ─── Excel/CSV tab ──────────────────────────────────────── -->
+    <div data-panel="file">
+      <div class="card-elevated">
+        <!-- Step 1: drop zone -->
+        <div id="xlsx-drop" class="border-2 border-dashed border-hairline rounded-md p-5xl text-center cursor-pointer hover:border-ink transition-colors" tabindex="0" role="button" aria-label="Choose a file or drop it here">
+          <div class="w-12 h-12 mx-auto rounded-full bg-canvas-soft-2 flex items-center justify-center mb-md text-body">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </div>
+          <p class="text-body-md text-ink font-medium mb-xs">Drop a spreadsheet here, or click to browse</p>
+          <p class="text-caption text-mute">Accepts .xlsx, .xls, .csv — multi-sheet workbooks supported</p>
+          <input type="file" id="xlsx-input" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="hidden" />
+        </div>
+
+        <!-- Step 2: sheet + entity + mapping -->
+        <div id="xlsx-config" class="hidden mt-2xl space-y-xl">
+          <div>
+            <p class="text-caption-mono text-body mb-sm">Step 2 · Choose sheet and entity type</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+              <div>
+                <label class="label" for="xlsx-sheet">Sheet</label>
+                <select class="select" id="xlsx-sheet"></select>
+              </div>
+              <div>
+                <label class="label" for="xlsx-entity">Import as</label>
+                <select class="select" id="xlsx-entity">
+                  <option value="investment">Investments</option>
+                  <option value="expense">Expenses</option>
+                  <option value="emi">EMIs / Loans</option>
+                  <option value="goal">Goals</option>
+                </select>
+              </div>
+              <div>
+                <label class="label" for="xlsx-default-type">Default type (if needed)</label>
+                <select class="select" id="xlsx-default-type">
+                  <option value="">— Use detected / leave blank —</option>
+                  <option value="Equity">Equity</option>
+                  <option value="Debt">Debt</option>
+                  <option value="Gold">Gold</option>
+                  <option value="Real Estate">Real Estate</option>
+                  <option value="Crypto">Crypto</option>
+                  <option value="ETF">ETF</option>
+                  <option value="Cash">Cash</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p class="text-caption-mono text-body mb-sm">Step 3 · Map columns</p>
+            <div id="xlsx-mapping" class="grid grid-cols-1 md:grid-cols-2 gap-md"></div>
+          </div>
+
+          <div>
+            <p class="text-caption-mono text-body mb-sm">Step 4 · Preview</p>
+            <div class="card-soft p-0 overflow-hidden max-h-72 overflow-y-auto">
+              <table class="w-full text-caption">
+                <thead id="xlsx-preview-head" class="text-left text-caption-mono text-body bg-canvas-soft-2 sticky top-0"></thead>
+                <tbody id="xlsx-preview-body" class="font-mono text-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <p class="text-caption text-mute"><span id="xlsx-count">0</span> rows ready to import</p>
+            <button id="xlsx-import" class="btn-primary" type="button">Import <span id="xlsx-count-2">0</span> rows</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Image / OCR tab ─────────────────────────────────────── -->
+    <div data-panel="image" class="hidden">
+      <div class="card-elevated">
+        <!-- Step 1: upload / camera -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-md mb-2xl">
+          <div id="img-drop" class="border-2 border-dashed border-hairline rounded-md p-3xl text-center cursor-pointer hover:border-ink transition-colors" tabindex="0" role="button" aria-label="Upload a bank statement image">
+            <svg class="w-8 h-8 mx-auto mb-sm text-body" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <path d="M21 15l-5-5L5 21"></path>
+            </svg>
+            <p class="text-body-sm-strong">Upload image</p>
+            <p class="text-caption text-mute mt-xs">JPG, PNG, WebP</p>
+            <input type="file" id="img-input" accept="image/*" class="hidden" />
+          </div>
+          <div id="img-camera" class="border-2 border-dashed border-hairline rounded-md p-3xl text-center cursor-pointer hover:border-ink transition-colors" tabindex="0" role="button" aria-label="Open camera to capture a bank statement">
+            <svg class="w-8 h-8 mx-auto mb-sm text-body" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+            <p class="text-body-sm-strong">Use camera</p>
+            <p class="text-caption text-mute mt-xs">Mobile permission required</p>
+          </div>
+        </div>
+
+        <!-- Camera viewfinder (hidden by default) -->
+        <div id="camera-viewfinder" class="hidden mb-2xl">
+          <div class="card-soft p-0 overflow-hidden">
+            <video id="camera-video" autoplay playsinline muted class="w-full max-h-[420px] object-cover bg-black" aria-label="Camera preview"></video>
+            <div class="p-md flex items-center justify-between gap-sm">
+              <p class="text-caption text-mute">Position the statement within the frame and tap capture.</p>
+              <div class="flex gap-sm">
+                <button id="camera-cancel" type="button" class="btn-secondary">Cancel</button>
+                <button id="camera-capture" type="button" class="btn-primary">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="13" r="4"></circle>
+                  </svg>
+                  Capture
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview + OCR progress -->
+        <div id="img-preview-wrap" class="hidden mb-2xl">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+            <div>
+              <p class="text-caption-mono text-body mb-sm">Image</p>
+              <img id="img-preview" class="w-full max-h-72 object-contain rounded-md bg-canvas-soft" alt="Selected bank statement" />
+            </div>
+            <div>
+              <p class="text-caption-mono text-body mb-sm">OCR Progress</p>
+              <div class="card-soft">
+                <div class="flex items-center justify-between mb-xs">
+                  <span class="text-body-sm" id="ocr-status">Ready</span>
+                  <span class="text-caption text-mute" id="ocr-percent">0%</span>
+                </div>
+                <div class="h-1.5 bg-canvas-soft-2 rounded-full overflow-hidden mb-md">
+                  <div id="ocr-progress-bar" class="h-full bg-gradient-gain transition-all" style="width: 0%"></div>
+                </div>
+                <p class="text-caption text-mute">All processing happens in your browser. The image never leaves your device.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detected transactions -->
+        <div id="ocr-result" class="hidden">
+          <div class="flex items-center justify-between mb-md">
+            <div>
+              <p class="text-caption-mono text-body">Detected transactions</p>
+              <p class="text-caption text-mute">Review before saving — deselect anything that's wrong.</p>
+            </div>
+            <div class="flex gap-sm">
+              <button id="ocr-select-all" type="button" class="btn-ghost">Select all</button>
+              <button id="ocr-deselect-all" type="button" class="btn-ghost">Deselect all</button>
+            </div>
+          </div>
+          <div class="card-soft p-0 overflow-hidden max-h-80 overflow-y-auto scroll-thin">
+            <table class="w-full text-body-sm">
+              <thead class="text-left text-caption-mono text-body bg-canvas-soft-2">
+                <tr>
+                  <th class="py-sm px-md w-8"></th>
+                  <th class="py-sm px-md">Date</th>
+                  <th class="py-sm px-md">Description</th>
+                  <th class="py-sm px-md">Type</th>
+                  <th class="py-sm px-md text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="ocr-tbody"></tbody>
+            </table>
+          </div>
+          <div class="flex items-center justify-between mt-md">
+            <p class="text-caption text-mute"><span id="ocr-selected-count">0</span> selected · <span id="ocr-total-count">0</span> detected</p>
+            <div class="flex gap-sm">
+              <button id="ocr-discard" type="button" class="btn-secondary">Discard</button>
+              <button id="ocr-import" type="button" class="btn-primary">Import as expenses</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── JSON tab ────────────────────────────────────────────── -->
+    <div data-panel="json" class="hidden">
+      <div class="card-elevated">
+        <p class="text-body-md text-body mb-md">Import a JSON backup to restore your full portfolio state, or export the current state to back it up.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+          <div id="json-drop" class="border-2 border-dashed border-hairline rounded-md p-3xl text-center cursor-pointer hover:border-ink transition-colors" tabindex="0" role="button" aria-label="Choose a JSON backup file">
+            <svg class="w-8 h-8 mx-auto mb-sm text-body" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+            <p class="text-body-sm-strong">Restore from backup</p>
+            <p class="text-caption text-mute mt-xs">Replaces your current data</p>
+            <input type="file" id="json-input" accept=".json,application/json" class="hidden" />
+          </div>
+          <div class="border-2 border-hairline rounded-md p-3xl text-center">
+            <svg class="w-8 h-8 mx-auto mb-sm text-body" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <p class="text-body-sm-strong">Export current data</p>
+            <p class="text-caption text-mute mt-xs">JSON or CSV format</p>
+            <div class="flex gap-xs justify-center mt-md">
+              <button id="export-json" type="button" class="btn-secondary" style="height: 32px; padding: 0 12px; font-size: 13px;">Export JSON</button>
+              <button id="export-csv" type="button" class="btn-secondary" style="height: 32px; padding: 0 12px; font-size: 13px;">Export CSV</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .tab-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    background: transparent;
+    color: var(--color-body);
+    border: 0;
+    cursor: pointer;
+    transition: background 150ms ease, color 150ms ease;
+  }
+  .tab-pill[aria-selected="true"] {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    box-shadow: var(--shadow-level-2);
+  }
+  .tab-pill:hover:not([aria-selected="true"]) {
+    color: var(--color-ink);
+  }
+</style>
+
+<script>
+  import "../scripts/import.ts";
+</script>

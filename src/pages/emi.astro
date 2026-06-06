@@ -1,0 +1,154 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHeader from "../components/PageHeader.astro";
+---
+
+<Layout title="EMI Tracker — Global Wealth Portfolio">
+  <section class="container-page pt-3xl pb-2xl">
+    <PageHeader
+      title="EMI Tracker"
+      description="Track home, car, personal, and education loans side by side. Watch principal shrink over time."
+      primaryAction={{ label: "+ Add EMI", id: "add-emi" }}
+      filters={[
+        {
+          id: "type",
+          label: "Type",
+          options: [
+            { value: "all", label: "All Types" },
+            { value: "Home Loan", label: "Home Loan" },
+            { value: "Car Loan", label: "Car Loan" },
+            { value: "Personal Loan", label: "Personal Loan" },
+            { value: "Education Loan", label: "Education Loan" },
+            { value: "Gold Loan", label: "Gold Loan" },
+            { value: "Two-Wheeler Loan", label: "Two-Wheeler Loan" },
+            { value: "Business Loan", label: "Business Loan" },
+            { value: "Other", label: "Other" },
+          ],
+        },
+      ]}
+    />
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-md mb-2xl">
+      <div class="card">
+        <p class="text-caption-mono text-body mb-xs">Monthly EMI</p>
+        <p class="text-display-sm" data-stat="monthly">₹0</p>
+        <p class="text-caption text-mute mt-xs"><span data-stat="active">0</span> active loans</p>
+      </div>
+      <div class="card">
+        <p class="text-caption-mono text-body mb-xs">Total Outstanding</p>
+        <p class="text-display-sm" data-stat="outstanding">₹0</p>
+      </div>
+      <div class="card">
+        <p class="text-caption-mono text-body mb-xs">Total Interest Paid</p>
+        <p class="text-display-sm" data-stat="interest">₹0</p>
+        <p class="text-caption text-mute mt-xs">Estimated so far</p>
+      </div>
+      <div class="card">
+        <p class="text-caption-mono text-body mb-xs">Closing Soon</p>
+        <p class="text-display-sm" data-stat="closing">0</p>
+        <p class="text-caption text-mute mt-xs">Within 6 months</p>
+      </div>
+    </div>
+
+    <div class="card p-0 overflow-hidden">
+      <div class="overflow-x-auto scroll-thin">
+        <table class="w-full text-body-sm">
+          <thead>
+            <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
+              <th class="font-medium py-sm px-md">#</th>
+              <th class="font-medium py-sm px-md">Loan</th>
+              <th class="font-medium py-sm px-md">Type</th>
+              <th class="font-medium py-sm px-md text-right">Principal</th>
+              <th class="font-medium py-sm px-md text-right">EMI</th>
+              <th class="font-medium py-sm px-md text-right">Rate</th>
+              <th class="font-medium py-sm px-md text-right">Tenure</th>
+              <th class="font-medium py-sm px-md">Start</th>
+              <th class="font-medium py-sm px-md text-right">Outstanding</th>
+              <th class="font-medium py-sm px-md w-32">Progress</th>
+              <th class="font-medium py-sm px-md text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="emi-tbody">
+            <tr><td colspan="11" class="text-center py-5xl text-body">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <dialog id="emi-modal" class="rounded-lg p-0 max-w-lg w-full shadow-level-5 backdrop:bg-black/30">
+    <form id="emi-form" method="dialog" class="p-lg">
+      <div class="flex items-center justify-between mb-md">
+        <h2 class="text-display-sm" id="emi-modal-title">Add EMI / Loan</h2>
+        <button type="button" data-close-modal class="btn-icon" aria-label="Close">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <input type="hidden" id="emi-id" name="id" />
+      <div class="space-y-md">
+        <div>
+          <label class="label" for="emi-name">Loan Name *</label>
+          <input class="input" type="text" id="emi-name" name="name" required />
+        </div>
+        <div class="grid grid-cols-2 gap-sm">
+          <div>
+            <label class="label" for="emi-type">Type *</label>
+            <select class="select" id="emi-type" name="type" required>
+              <option value="Home Loan">Home Loan</option>
+              <option value="Car Loan">Car Loan</option>
+              <option value="Personal Loan">Personal Loan</option>
+              <option value="Education Loan">Education Loan</option>
+              <option value="Gold Loan">Gold Loan</option>
+              <option value="Two-Wheeler Loan">Two-Wheeler Loan</option>
+              <option value="Business Loan">Business Loan</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="emi-start">Start Date *</label>
+            <input class="input" type="date" id="emi-start" name="startDate" required />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-sm">
+          <div>
+            <label class="label" for="emi-principal">Principal *</label>
+            <input class="input" type="number" id="emi-principal" name="principal" min="0" step="any" required />
+          </div>
+          <div>
+            <label class="label" for="emi-emi">Monthly EMI *</label>
+            <input class="input" type="number" id="emi-emi" name="emi" min="0" step="any" required />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-sm">
+          <div>
+            <label class="label" for="emi-rate">Interest Rate (% p.a.) *</label>
+            <input class="input" type="number" id="emi-rate" name="rate" min="0" step="any" required />
+          </div>
+          <div>
+            <label class="label" for="emi-tenure">Tenure (months) *</label>
+            <input class="input" type="number" id="emi-tenure" name="tenure" min="1" required />
+          </div>
+        </div>
+        <div>
+          <label class="label" for="emi-outstanding">Outstanding</label>
+          <input class="input" type="number" id="emi-outstanding" name="outstanding" min="0" step="any" />
+        </div>
+        <div>
+          <label class="label" for="emi-notes">Notes</label>
+          <input class="input" type="text" id="emi-notes" name="notes" />
+        </div>
+        <div class="card-soft text-caption text-body">
+          <p>Calculated EMI: <strong data-calc-emi>—</strong> · Total interest: <strong data-calc-interest>—</strong></p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-sm mt-lg">
+        <button type="button" data-close-modal class="btn-secondary">Cancel</button>
+        <button type="submit" class="btn-primary">Save loan</button>
+      </div>
+    </form>
+  </dialog>
+</Layout>
+
+<script>
+  import "../scripts/emi.ts";
+</script>

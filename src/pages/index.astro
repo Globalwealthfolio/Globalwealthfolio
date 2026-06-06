@@ -1,0 +1,421 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import Button from "../components/Button.astro";
+
+const features = [
+  {
+    eyebrow: "01",
+    title: "Multi-currency portfolio",
+    body: "Track holdings in 30+ world currencies, from Indian Rupees to US Dollars, Euros to Singapore Dollars. We auto-detect your locale on first visit, and every figure formats correctly for the currency you choose.",
+    icon: "wallet",
+  },
+  {
+    eyebrow: "02",
+    title: "Excel & CSV import",
+    body: "Drop a spreadsheet from your broker, bank, or accountant. We detect multi-sheet workbooks, auto-map columns for asset name, type, amount, and date, and let you preview everything before you commit a single row.",
+    icon: "spreadsheet",
+  },
+  {
+    eyebrow: "03",
+    title: "Bank-statement scanning",
+    body: "Upload a photo of a printed bank statement, or open the camera on your phone. Our on-device OCR reads the document in your browser, parses the transactions, and suggests categories for each one &mdash; nothing is ever uploaded to a server.",
+    icon: "scan",
+  },
+  {
+    eyebrow: "04",
+    title: "Net worth, in real time",
+    body: "See your assets, liabilities, and net worth update the moment you add an investment or log an expense. Compare your portfolio's return against the NIFTY 50, S&amp;P 500, Gold, and a dozen other benchmarks in a single view.",
+    icon: "chart",
+  },
+  {
+    eyebrow: "05",
+    title: "Goals &amp; retirement planning",
+    body: "Set a retirement, home, or education target. Project your corpus forward with conservative, expected, and optimistic CAGR scenarios adjusted for inflation, and see at a glance whether you are on track.",
+    icon: "target",
+  },
+  {
+    eyebrow: "06",
+    title: "Private, local, free",
+    body: "No account to create, no email to verify, no monthly subscription. Your entire portfolio lives in your browser's storage, and you can export it as JSON or CSV whenever you want. We do not have servers that hold your data &mdash; by design.",
+    icon: "lock",
+  },
+];
+
+const stats = [
+  { value: "30+", label: "Currencies" },
+  { value: "10", label: "Languages" },
+  { value: "0", label: "Trackers" },
+  { value: "100%", label: "Local-first" },
+];
+
+const audiences = [
+  {
+    title: "For the long-term investor",
+    body: "Build a multi-asset portfolio across equities, debt, gold, and international markets. Track returns against the indices that matter to you, see your asset allocation at a glance, and let compounding work without spreadsheets getting in the way.",
+  },
+  {
+    title: "For the salaried professional",
+    body: "Understand exactly where your money goes each month, plan around your EMIs, set a home-purchase goal with a target date, and watch your emergency fund fill up one contribution at a time. Import your bank statement once a month; let the categories do the rest.",
+  },
+  {
+    title: "For the globally mobile",
+    body: "Working in Singapore, paying loans in India, investing in US equities, and saving in Euros? Track it all in one dashboard with the currencies that actually matter to you, and a language you can read. We support right-to-left scripts out of the box.",
+  },
+];
+---
+
+<Layout>
+  <!-- Hero -->
+  <section class="relative overflow-hidden">
+    <!-- Mesh gradient backdrop with gold accent -->
+    <div class="absolute inset-0 bg-mesh-hero pointer-events-none" aria-hidden="true"></div>
+    <div class="mesh-blob" style="background: #c9a961; width: 520px; height: 520px; top: -120px; right: -120px; opacity: 0.18;" aria-hidden="true"></div>
+    <div class="mesh-blob" style="background: #0070f3; width: 460px; height: 460px; top: 100px; left: -120px; opacity: 0.14;" aria-hidden="true"></div>
+    <div class="mesh-blob" style="background: #ff0080; width: 380px; height: 380px; bottom: -120px; left: 30%; opacity: 0.10;" aria-hidden="true"></div>
+
+    <div class="container-page relative pt-5xl pb-6xl">
+      <div class="max-w-3xl mx-auto text-center animate-fade-in">
+        <a
+          href="/changelog"
+          class="inline-flex items-center gap-xs banner-marketing text-body hover:opacity-80 transition-opacity"
+        >
+          <span class="badge" style="background: var(--color-gold-soft); color: var(--color-gold-deep);">New</span>
+          <span>AI-powered bank statement scanning is live.</span>
+          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </a>
+
+        <h1 class="text-display-xl mt-lg mb-md">
+          Your wealth, your rules.<br/>
+          <span class="text-gradient-gold">One calm dashboard.</span>
+        </h1>
+        <p class="text-body-lg text-body mb-2xl max-w-2xl mx-auto leading-relaxed">
+          Global Wealth Portfolio is a private, browser-based dashboard for tracking investments,
+          expenses, loans, and financial goals across 30+ currencies and 10+ languages. Import
+          a spreadsheet, scan a bank statement with your phone, and see your complete financial
+          picture in one place &mdash; without ever giving up your data.
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-sm mb-2xl">
+          <Button href="/dashboard" size="lg" variant="primary">
+            Open Dashboard
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </Button>
+          <Button href="/import" size="lg" variant="secondary">
+            Try the importer
+          </Button>
+        </div>
+
+        <p class="text-caption text-mute">No signup. No credit card. No tracking. Your data stays on your device.</p>
+      </div>
+
+      <!-- Hero preview -->
+      <div class="mt-4xl max-w-5xl mx-auto animate-slide-up">
+        <div class="card-elevated overflow-hidden bg-canvas">
+          <div class="hairline-b px-md py-sm flex items-center gap-xs">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" aria-hidden="true"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" aria-hidden="true"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f]" aria-hidden="true"></span>
+            <span class="ml-md text-caption text-mute font-mono">globalwealthfolio.com/dashboard</span>
+            <span class="ml-auto badge" style="background: var(--color-gold-soft); color: var(--color-gold-deep);">PRIVATE</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-md p-lg">
+            <div class="card-soft md:col-span-2">
+              <p class="text-caption-mono text-body mb-xs">Total Portfolio</p>
+              <p class="text-display-md text-gradient-gold mb-2">₹24,86,250</p>
+              <p class="text-body-sm text-gain font-medium">+₹3,12,840 (+14.4%) all time</p>
+              <div class="mt-lg h-32 relative">
+                <svg viewBox="0 0 400 100" class="w-full h-full" preserveAspectRatio="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="chart" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" stop-color="#c9a961" stop-opacity="0.35"/>
+                      <stop offset="1" stop-color="#c9a961" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M0 70 L40 65 L80 50 L120 55 L160 40 L200 35 L240 25 L280 30 L320 18 L360 12 L400 8 L400 100 L0 100 Z" fill="url(#chart)"/>
+                  <path d="M0 70 L40 65 L80 50 L120 55 L160 40 L200 35 L240 25 L280 30 L320 18 L360 12 L400 8" fill="none" stroke="#c9a961" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="card-soft">
+              <p class="text-caption-mono text-body mb-xs">Asset Allocation</p>
+              <div class="flex flex-col gap-xs mt-md">
+                <div class="flex items-center justify-between text-body-sm">
+                  <span>Equity</span><span class="text-body">58%</span>
+                </div>
+                <div class="h-1.5 bg-canvas-soft-2 rounded-full overflow-hidden">
+                  <div class="h-full bg-gradient-develop" style="width: 58%"></div>
+                </div>
+                <div class="flex items-center justify-between text-body-sm mt-2">
+                  <span>Debt</span><span class="text-body">22%</span>
+                </div>
+                <div class="h-1.5 bg-canvas-soft-2 rounded-full overflow-hidden">
+                  <div class="h-full bg-gradient-preview" style="width: 22%"></div>
+                </div>
+                <div class="flex items-center justify-between text-body-sm mt-2">
+                  <span>Gold</span><span class="text-body">12%</span>
+                </div>
+                <div class="h-1.5 bg-canvas-soft-2 rounded-full overflow-hidden">
+                  <div class="h-full bg-gradient-gold" style="width: 12%"></div>
+                </div>
+                <div class="flex items-center justify-between text-body-sm mt-2">
+                  <span>Crypto</span><span class="text-body">8%</span>
+                </div>
+                <div class="h-1.5 bg-canvas-soft-2 rounded-full overflow-hidden">
+                  <div class="h-full bg-gain" style="width: 8%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Logos / trust strip -->
+  <section class="container-page py-3xl">
+    <p class="text-caption-mono text-body text-center mb-lg">Compatible with your favourite brokers, banks, and countries</p>
+    <div class="flex flex-wrap items-center justify-center gap-xl opacity-70">
+      <span class="text-body-md font-semibold tracking-tight">NSE</span>
+      <span class="text-body-md font-semibold tracking-tight">BSE</span>
+      <span class="text-body-md font-semibold tracking-tight">Zerodha</span>
+      <span class="text-body-md font-semibold tracking-tight">Groww</span>
+      <span class="text-body-md font-semibold tracking-tight">HDFC</span>
+      <span class="text-body-md font-semibold tracking-tight">SBI</span>
+      <span class="text-body-md font-semibold tracking-tight">ICICI</span>
+      <span class="text-body-md font-semibold tracking-tight">Kuvera</span>
+      <span class="text-body-md font-semibold tracking-tight">INDmoney</span>
+    </div>
+  </section>
+
+  <!-- Features grid -->
+  <section class="container-page py-5xl">
+    <div class="text-center mb-4xl max-w-3xl mx-auto">
+      <p class="text-caption-mono text-gold mb-sm">Features</p>
+      <h2 class="text-display-lg mb-md">A dashboard that finally respects your time, your data, and your currency.</h2>
+      <p class="text-body-lg text-body leading-relaxed">
+        Every feature in Global Wealth Portfolio is built around three principles: your money
+        stays private, your numbers stay accurate across borders, and the interface stays out
+        of your way. The result is a single, considered place to manage a financial life that
+        is increasingly global.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+      {
+        features.map((f) => (
+          <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm group">
+            <div class="flex items-center gap-sm mb-xs">
+              <span class="text-caption-mono text-gold">{f.eyebrow}</span>
+              <span class="flex-1 h-px bg-hairline"></span>
+            </div>
+            <h3 class="text-display-sm text-ink">{f.title}</h3>
+            <p class="text-body-md text-body leading-relaxed" set:html={f.body} />
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Showcase light band - Import -->
+  <section class="bg-canvas-soft py-5xl mt-3xl">
+    <div class="container-page">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3xl items-center">
+        <div>
+          <p class="text-caption-mono text-gold mb-sm">Import</p>
+          <h2 class="text-display-lg mb-md">Drop a spreadsheet. We'll figure out the rest.</h2>
+          <p class="text-body-lg text-body mb-md leading-relaxed">
+            Excel, CSV, or Google Sheets export. We auto-detect columns for asset
+            name, type, amount, date, and risk score. Tweak the mapping if you
+            need to, then import in one click.
+          </p>
+          <p class="text-body-md text-body mb-lg leading-relaxed">
+            Multi-sheet workbooks are first-class: a single file with separate
+            tabs for investments, expenses, and loans can be routed to the
+            right place in a single import flow. We support date formats used
+            across markets, including Indian DD/MM/YYYY, US MM/DD/YYYY, and
+            ISO 8601, and we coerce currency-formatted strings into numbers
+            without losing precision.
+          </p>
+          <ul class="flex flex-col gap-sm mb-lg">
+            <li class="flex items-start gap-xs text-body-md">
+              <span class="text-gold mt-0.5" aria-hidden="true">✓</span>
+              Multi-sheet workbook support with per-sheet entity mapping
+            </li>
+            <li class="flex items-start gap-xs text-body-md">
+              <span class="text-gold mt-0.5" aria-hidden="true">✓</span>
+              Smart header detection with synonym matching
+            </li>
+            <li class="flex items-start gap-xs text-body-md">
+              <span class="text-gold mt-0.5" aria-hidden="true">✓</span>
+              Side-by-side preview before any data is committed
+            </li>
+            <li class="flex items-start gap-xs text-body-md">
+              <span class="text-gold mt-0.5" aria-hidden="true">✓</span>
+              Locale-aware date and number parsing
+            </li>
+          </ul>
+          <Button href="/import" variant="primary">Try the importer</Button>
+        </div>
+        <div class="card-elevated bg-canvas overflow-hidden">
+          <div class="bg-ink px-md py-sm flex items-center justify-between">
+            <span class="text-caption-mono text-on-primary">portfolio.csv</span>
+            <span class="text-caption-mono text-gold opacity-80">12 rows detected</span>
+          </div>
+          <div class="font-mono text-caption p-md text-body">
+            <div class="grid grid-cols-3 gap-md hairline-b pb-xs mb-xs text-mute">
+              <span>Name</span><span>Type</span><span>Amount</span>
+            </div>
+            <div class="grid grid-cols-3 gap-md py-xs"><span>Reliance</span><span>Equity</span><span>₹45,000</span></div>
+            <div class="grid grid-cols-3 gap-md py-xs"><span>HDFC Bank</span><span>Equity</span><span>₹32,500</span></div>
+            <div class="grid grid-cols-3 gap-md py-xs"><span>SGB 2024-25</span><span>Gold</span><span>₹60,000</span></div>
+            <div class="grid grid-cols-3 gap-md py-xs"><span>Axis Liquid</span><span>Debt</span><span>₹1,20,000</span></div>
+            <div class="grid grid-cols-3 gap-md py-xs"><span>Bitcoin</span><span>Crypto</span><span>₹48,000</span></div>
+            <div class="grid grid-cols-3 gap-md py-xs hairline-t mt-xs pt-xs font-medium text-ink">
+              <span>5 detected</span><span>—</span><span class="text-gradient-gold">₹3,05,500</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Showcase dark band - OCR -->
+  <section class="card-dark relative overflow-hidden my-5xl" style="border-radius: 0;">
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="mesh-blob" style="background: #c9a961; width: 480px; height: 480px; top: -100px; left: 8%; opacity: 0.18;"></div>
+      <div class="mesh-blob" style="background: #ff0080; width: 400px; height: 400px; bottom: -100px; right: 10%; opacity: 0.12;"></div>
+    </div>
+    <div class="container-page relative py-5xl">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3xl items-center">
+        <div>
+          <p class="text-caption-mono text-gold mb-sm">Bank-statement OCR</p>
+          <h2 class="text-display-lg mb-md">Snap a bank statement. Get instant expenses.</h2>
+          <p class="text-body-lg opacity-80 mb-md leading-relaxed">
+            Take a photo on your phone, or upload an image. We run OCR entirely
+            in your browser &mdash; no server, no upload, no leak. Every row is parsed
+            and categorised for review.
+          </p>
+          <p class="text-body-md opacity-70 mb-lg leading-relaxed">
+            Tesseract.js powers the recognition, and our heuristic parser
+            extracts dates, descriptions, and amounts from common bank
+            statement formats across India, the US, the UK, and the EU. You
+            see every detected transaction in a checklist before anything
+            touches your portfolio, so you stay in control of what gets
+            imported.
+          </p>
+          <div class="flex flex-col gap-sm mb-lg">
+            <div class="flex items-center gap-sm">
+              <span class="w-2 h-2 rounded-full bg-gradient-gold" aria-hidden="true"></span>
+              <span class="text-body-md">Auto-detect on mobile → ask camera permission</span>
+            </div>
+            <div class="flex items-center gap-sm">
+              <span class="w-2 h-2 rounded-full bg-gradient-preview" aria-hidden="true"></span>
+              <span class="text-body-md">100% on-device — nothing leaves your browser</span>
+            </div>
+            <div class="flex items-center gap-sm">
+              <span class="w-2 h-2 rounded-full bg-gradient-ship" aria-hidden="true"></span>
+              <span class="text-body-md">Smart category suggestions per merchant</span>
+            </div>
+          </div>
+          <Button href="/import" variant="secondary">Try bank-statement OCR</Button>
+        </div>
+        <div class="relative">
+          <div class="card bg-canvas shadow-level-5 max-w-sm mx-auto">
+            <div class="flex items-center gap-md mb-md">
+              <span class="w-10 h-10 rounded-md bg-gradient-gold flex items-center justify-center text-ink" aria-hidden="true">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+              </span>
+              <div>
+                <p class="text-body-sm-strong">statement.jpg</p>
+                <p class="text-caption text-mute">3,214 × 1,800 · 412 KB</p>
+              </div>
+            </div>
+            <div class="space-y-xs">
+              <div class="flex items-center justify-between p-sm rounded-sm bg-canvas-soft">
+                <span class="text-body-sm">Scanning on device…</span>
+                <span class="text-caption text-body">68%</span>
+              </div>
+              <div class="h-1.5 bg-canvas-soft-2 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-gold" style="width: 68%"></div>
+              </div>
+              <div class="hairline pt-sm mt-sm space-y-xs">
+                <div class="flex items-center justify-between text-body-sm">
+                  <span>12 transactions found</span>
+                  <span class="text-gain">✓ ready</span>
+                </div>
+                <div class="flex items-center justify-between text-body-sm">
+                  <span>9 auto-categorised</span>
+                  <span class="text-mute">3 to review</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- For whom -->
+  <section class="container-page py-5xl">
+    <div class="text-center mb-4xl max-w-3xl mx-auto">
+      <p class="text-caption-mono text-gold mb-sm">Who is it for</p>
+      <h2 class="text-display-lg mb-md">Built for the way real people manage money.</h2>
+      <p class="text-body-lg text-body leading-relaxed">
+        We did not design Global Wealth Portfolio for a hypothetical user. We designed it for
+        the people who actually need to track investments, repay loans, and save for goals
+        &mdash; often all at once, often in more than one currency.
+      </p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+      {
+        audiences.map((a, i) => (
+          <article class="card hover:shadow-level-3 transition-shadow">
+            <p class="text-caption-mono text-gold mb-xs">0{i + 1}</p>
+            <h3 class="text-display-sm text-ink mb-md">{a.title}</h3>
+            <p class="text-body-md text-body leading-relaxed">{a.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Numbers -->
+  <section class="bg-canvas-soft py-5xl my-3xl">
+    <div class="container-page">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+        {
+          stats.map((s) => (
+            <div class="text-center py-3xl">
+              <p class="text-display-md text-gradient-gold">{s.value}</p>
+              <p class="text-caption-mono text-body mt-xs">{s.label}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA with paragraph -->
+  <section class="container-page py-5xl">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-caption-mono text-gold mb-sm">Get started</p>
+      <h2 class="text-display-lg mb-md">Track everything. Own all of it.</h2>
+      <p class="text-body-lg text-body mb-2xl leading-relaxed">
+        Open the dashboard, add your first investment, and see your money come into focus.
+        There is no account to create, no trial period to wait out, and no feature wall
+        hiding behind a paywall. The entire app is yours from the first click, and the
+        data is yours to keep forever.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-sm">
+        <Button href="/dashboard" size="lg" variant="primary">Open Dashboard</Button>
+        <Button href="/import" size="lg" variant="secondary">Import data</Button>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://globalwealthfolio.com/sitemap.xml

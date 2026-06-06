@@ -1,0 +1,43 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Audit Trail — Global Wealth Portfolio">
+  <section class="container-page pt-3xl pb-2xl">
+    <div class="mb-2xl max-w-3xl">
+      <p class="text-caption-mono text-gold mb-xs">Audit Trail</p>
+      <h1 class="text-display-lg">Activity log</h1>
+      <p class="text-body-md text-body mt-sm leading-relaxed">
+        A complete record of every action in your dashboard &mdash; additions,
+        edits, imports, and exports. Trace any number back to the moment it
+        happened.
+      </p>
+    </div>
+
+    <div class="card p-0 overflow-hidden">
+      <div class="px-md py-sm hairline-b flex items-center justify-between">
+        <p class="text-caption text-mute">Last 500 events</p>
+        <button id="clear-log" class="btn-ghost text-loss" type="button">Clear log</button>
+      </div>
+      <div class="max-h-[60vh] overflow-y-auto scroll-thin">
+        <table class="w-full text-body-sm">
+          <thead class="sticky top-0 bg-canvas-soft-2 z-10">
+            <tr class="text-left text-caption-mono text-body">
+              <th class="font-medium py-sm px-md w-44">When</th>
+              <th class="font-medium py-sm px-md w-24">Action</th>
+              <th class="font-medium py-sm px-md w-28">Entity</th>
+              <th class="font-medium py-sm px-md">Description</th>
+            </tr>
+          </thead>
+          <tbody id="audit-tbody">
+            <tr><td colspan="4" class="text-center py-5xl text-body">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import "../scripts/audit.ts";
+</script>

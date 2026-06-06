@@ -1,0 +1,71 @@
+---
+interface Props {
+  label: string;
+  value: string | number;
+  delta?: number; // percentage
+  hint?: string;
+  icon?: "wallet" | "trend" | "shield" | "target" | "coin" | "chart";
+  accent?: "default" | "gain" | "loss" | "gold";
+}
+const { label, value, delta, hint, icon = "wallet", accent = "default" } = Astro.props;
+const deltaClass = delta == null ? "" : delta >= 0 ? "text-gain" : "text-loss";
+const deltaPrefix = delta == null ? "" : delta >= 0 ? "+" : "";
+const valueAccent =
+  accent === "gain" ? "text-gain" : accent === "loss" ? "text-loss" : accent === "gold" ? "text-gradient-gold" : "";
+---
+
+<div class="card flex flex-col gap-2 hover:shadow-level-3 transition-shadow group">
+  <div class="flex items-center justify-between">
+    <span class="text-caption-mono text-body">{label}</span>
+    <span class="text-mute group-hover:text-gold transition-colors" aria-hidden="true">
+      {icon === "wallet" && (
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4M3 5v14a2 2 0 0 0 2 2h16v-5M18 12a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"></path>
+        </svg>
+      )}
+      {icon === "trend" && (
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+          <polyline points="17 6 23 6 23 12"></polyline>
+        </svg>
+      )}
+      {icon === "shield" && (
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+      )}
+      {icon === "target" && (
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <circle cx="12" cy="12" r="6"></circle>
+          <circle cx="12" cy="12" r="2"></circle>
+        </svg>
+      )}
+      {icon === "coin" && (
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M9 9h5.5a2 2 0 0 1 0 4H9.5a2 2 0 0 0 0 4H15M12 6v2m0 8v2"></path>
+        </svg>
+      )}
+      {icon === "chart" && (
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="20" x2="12" y2="10"></line>
+          <line x1="18" y1="20" x2="18" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+      )}
+    </span>
+  </div>
+  <div class:list={["text-display-md", valueAccent]} data-currency-target>
+    {value}
+  </div>
+  {delta != null && (
+    <div class:list={["text-body-sm-strong flex items-center gap-1", deltaClass]}>
+      <span>{deltaPrefix}{delta.toFixed(2)}%</span>
+      {hint && <span class="text-body font-normal">{hint}</span>}
+    </div>
+  )}
+  {!delta && hint && (
+    <div class="text-body-sm text-body">{hint}</div>
+  )}
+</div>
