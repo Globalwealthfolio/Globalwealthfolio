@@ -49,6 +49,14 @@ export type ExpenseCategory =
   | "Travel"
   | "Personal Care"
   | "Gifts"
+  | "Salary"
+  | "Freelance"
+  | "Dividend"
+  | "Interest"
+  | "Rental Income"
+  | "Bonus"
+  | "Refund"
+  | "Other Income"
   | "Other";
 
 export type RiskLevel = "Low" | "Medium" | "High";
@@ -103,6 +111,7 @@ export interface Expense {
   category: ExpenseCategory;
   amount: number;
   date: string;
+  type: "income" | "expense";
   recurring: "one-time" | "monthly" | "quarterly" | "yearly";
   recurringFrom?: string;
   recurringTo?: string;
@@ -114,10 +123,24 @@ export interface Expense {
 export interface AuditEntry {
   id: string;
   action: "create" | "update" | "delete" | "import" | "export";
-  entity: "investment" | "goal" | "emi" | "expense" | "settings";
+  entity: "investment" | "goal" | "emi" | "expense" | "blog" | "settings";
   entityId?: string;
   description: string;
   timestamp: string;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  tags: string[];
+  status: "draft" | "published";
+  authorName?: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
 }
 
 export interface UserPreferences {
@@ -135,6 +158,7 @@ export interface AppData {
   goals: Goal[];
   emis: EMI[];
   expenses: Expense[];
+  blog: BlogPost[];
   auditLog: AuditEntry[];
   preferences: UserPreferences;
   version: string;
@@ -155,6 +179,7 @@ export const DEFAULT_DATA: AppData = {
   goals: [],
   emis: [],
   expenses: [],
+  blog: [],
   auditLog: [],
   preferences: DEFAULT_PREFERENCES,
   version: "1.0.0",
@@ -264,7 +289,78 @@ export function netWorth(data: AppData): {
   liabilities: number;
   net: number;
 } {
-  const assets = totalCurrent(data.investments) + totalInvested(data.investments) * 0.2; // approx cash buffer
+  const assets = totalCurrent(data.investments);
   const liabilities = totalOutstanding(data.emis);
   return { assets, liabilities, net: assets - liabilities };
+}
+
+export function isIncomeCategory(category: ExpenseCategory): boolean {
+  return [
+    "Salary",
+    "Freelance",
+    "Dividend",
+    "Interest",
+    "Rental Income",
+    "Bonus",
+    "Refund",
+    "Other Income",
+  ].includes(category);
+}
+
+export function monthlyIncomeFromTransactions(expenses: Expense[]): number {
+  return expenses
+    .filter((e) => e.type === "income")
+    .reduce((sum, e) => {
+      const factor = e.recurring === "monthly" ? 1 : e.recurring === "quarterly" ? 1 / 3 : e.recurring === "yearly" ? 1 / 12 : 0;
+      return sum + e.amount * factor;
+    }, 0);
+}
+
+export function monthlyExpenseTotal(expenses: Expense[]): number {
+  return expenses
+    .filter((e) => e.type !== "income")
+    .reduce((sum, e) => {
+      const factor = e.recurring === "monthly" ? 1 : e.recurring === "quarterly" ? 1 / 3 : e.recurring === "yearly" ? 1 / 12 : 1;
+      return sum + e.amount * factor;
+    }, 0);
+}
+
+export function timeToGoalCompletion(
+  goal: Goal,
+  investments: Investment[],
+  now: Date = new Date(),
+): { months: number | null; perInvestment: { id: string; name: string; months: number | null }[] } {
+  const linked = investments.filter((i) => i.goalId === goal.id);
+  const remaining = goal.target - goal.current;
+  if (remaining <= 0) {
+    return {
+      months: 0,
+      perInvestment: linked.map((i) => ({ id: i.id, name: i.name, months: 0 })),
+    };
+  }
+  if (linked.length === 0) {
+    return { months: null, perInvestment: [] };
+  }
+  const perInvestment = linked.map((i) => {
+    const monthsElapsed = Math.max(
+      0.5,
+      (now.getTime() - new Date(i.date).getTime()) / (1000 * 60 * 60 * 24 * 30.44),
+    );
+    const growth = i.currentValue - i.amount;
+    const monthlyGrowth = growth / monthsElapsed;
+    if (monthlyGrowth <= 0) {
+      // Fall back to the goal's remaining amount proportionally across all linked investments
+      const totalCurrent = linked.reduce((s, x) => s + x.currentValue, 0) || 1;
+      const share = (i.currentValue / totalCurrent) * remaining;
+      // If we assume a baseline 8% annual growth on the invested amount as a conservative estimate
+      const baselineMonthly = (i.amount * 0.08) / 12;
+      if (baselineMonthly <= 0) return { id: i.id, name: i.name, months: null };
+      return { id: i.id, name: i.name, months: Math.ceil(share / baselineMonthly) };
+    }
+    const share = (i.currentValue / (linked.reduce((s, x) => s + x.currentValue, 0) || 1)) * remaining;
+    return { id: i.id, name: i.name, months: Math.ceil(share / monthlyGrowth) };
+  });
+  // The goal is reached when all linked contributions collectively cover the remaining
+  const longest = perInvestment.reduce((m, p) => (p.months == null ? m : Math.max(m, p.months)), 0);
+  return { months: longest || null, perInvestment };
 }

@@ -50,9 +50,9 @@ import Button from "../components/Button.astro";
     <!-- Stat grid -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-md mb-2xl">
       <StatCard label="Total Portfolio" value="₹0" icon="coin" accent="gold" data-stat="total" />
-      <StatCard label="Unrealised Gain" value="₹0" icon="trend" data-stat="gain" />
+      <StatCard label="This Month · Net" value="₹0" icon="trend" data-stat="net-month" />
       <StatCard label="Net Worth" value="₹0" icon="shield" data-stat="networth" />
-      <StatCard label="Active Goals" value="0 / 0" icon="target" data-stat="goals" />
+      <StatCard label="Goals on Track" value="0 / 0" icon="target" data-stat="goals" />
     </div>
 
     <!-- Main grid: chart + side cards -->
@@ -116,6 +116,20 @@ import Button from "../components/Button.astro";
         <div id="goal-progress" class="space-y-md">
           <!-- Populated dynamically -->
         </div>
+      </div>
+    </div>
+
+    <!-- Goal timing section -->
+    <div class="card-elevated mb-2xl" id="goal-timing-card">
+      <div class="flex items-center justify-between mb-md">
+        <div>
+          <h2 class="text-display-sm">Time to complete goals</h2>
+          <p class="text-caption text-mute mt-xs">Estimated from current growth pace of linked investments.</p>
+        </div>
+        <a href="/goals" class="text-body-sm text-link hover:underline">Manage goals →</a>
+      </div>
+      <div id="goal-timing" class="space-y-md">
+        <!-- Populated dynamically -->
       </div>
     </div>
 

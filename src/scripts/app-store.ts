@@ -27,7 +27,7 @@ function applyTheme(theme: ThemeMode) {
   document.documentElement.style.colorScheme = resolved;
   // Update theme-color meta for mobile browsers
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", resolved === "dark" ? "#0a0a0a" : "#ffffff");
+  if (meta) meta.setAttribute("content", resolved === "dark" ? "#0a0a0a" : "#f3f5f9");
 }
 
 function applyLang(lang: LangCode) {

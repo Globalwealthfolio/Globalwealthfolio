@@ -3,9 +3,10 @@
  * Provides reactive subscriptions for client-side UI updates.
  */
 
-import { DEFAULT_DATA, type AppData } from "./types";
+import { DEFAULT_DATA, isIncomeCategory, type AppData, type Expense } from "./types";
 
 const STORAGE_KEY = "gwp:data:v1";
+const SCHEMA_VERSION = "1.1.0";
 
 type Listener = (data: AppData) => void;
 const listeners = new Set<Listener>();
@@ -13,6 +14,25 @@ let cache: AppData | null = null;
 
 function isBrowser(): boolean {
   return typeof window !== "undefined" && typeof localStorage !== "undefined";
+}
+
+/** Backfill newer fields on data that was saved by an older build. */
+function migrate(parsed: Partial<AppData> | null): AppData {
+  const base = structuredClone(DEFAULT_DATA);
+  if (!parsed) return base;
+  const merged: AppData = {
+    ...base,
+    ...parsed,
+    preferences: { ...base.preferences, ...(parsed.preferences ?? {}) },
+  };
+  // Default missing `type` on existing expenses
+  merged.expenses = (merged.expenses ?? []).map((e: Partial<Expense> & { type?: "income" | "expense"; category?: string }) => ({
+    ...(e as Expense),
+    type: e.type ?? (e.category && isIncomeCategory(e.category as never) ? "income" : "expense"),
+  }));
+  merged.blog = merged.blog ?? [];
+  merged.version = SCHEMA_VERSION;
+  return merged;
 }
 
 export function loadData(): AppData {
@@ -25,11 +45,7 @@ export function loadData(): AppData {
       return cache;
     }
     const parsed = JSON.parse(raw) as Partial<AppData>;
-    cache = {
-      ...structuredClone(DEFAULT_DATA),
-      ...parsed,
-      preferences: { ...DEFAULT_DATA.preferences, ...(parsed.preferences ?? {}) },
-    } as AppData;
+    cache = migrate(parsed);
     return cache;
   } catch (e) {
     console.warn("Failed to load data from localStorage, using defaults.", e);

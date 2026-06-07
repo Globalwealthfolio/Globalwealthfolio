@@ -1,5 +1,5 @@
 import { loadData, subscribe } from "../lib/store";
-import { BENCHMARKS } from "../lib/types";
+import type { Benchmark } from "../lib/types";
 import {
   Chart,
   BarController,
@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { fetchLiveBenchmarks, clearBenchmarkCache } from "../lib/benchmarks-api";
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -34,7 +35,6 @@ function computePortfolioStats(): PerfStats | null {
   const totalReturn = (current - invested) / invested;
   const annualized = Math.pow(1 + totalReturn, 1 / yearsSince) - 1;
   const annualizedPct = annualized * 100;
-  // Approximate scaled values for shorter windows
   return {
     oneMonth: annualizedPct / 12,
     sixMonth: annualizedPct / 2,
@@ -45,9 +45,23 @@ function computePortfolioStats(): PerfStats | null {
 }
 
 let chart: Chart | null = null;
+let benchmarks: Benchmark[] = [];
+let isLive = false;
+let fetchedAt: number | null = null;
 
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function fmtTs(ts: number | null): string {
+  if (!ts) return "—";
+  const d = new Date(ts);
+  return d.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 function renderTable() {
@@ -70,8 +84,9 @@ function renderTable() {
       </tr>`
     : "";
 
-  const rows = BENCHMARKS.map(
-    (b) => `
+  const rows = benchmarks
+    .map(
+      (b) => `
       <tr class="border-t border-hairline hover:bg-canvas-soft">
         <td class="py-sm px-md text-body">
           <span class="text-ink font-medium">${esc(b.name)}</span>
@@ -83,8 +98,24 @@ function renderTable() {
         <td class="py-sm px-md text-right ${b.threeYear >= 0 ? "text-gain" : "text-loss"}">${b.threeYear >= 0 ? "+" : ""}${b.threeYear.toFixed(1)}%</td>
         <td class="py-sm px-md text-right ${b.fiveYear >= 0 ? "text-gain" : "text-loss"}">${b.fiveYear >= 0 ? "+" : ""}${b.fiveYear.toFixed(1)}%</td>
       </tr>`,
-  );
-  tbody.innerHTML = yours + rows.join("");
+    )
+    .join("");
+  tbody.innerHTML = yours + rows;
+
+  const liveBadge = document.querySelector("[data-source-badge]");
+  if (liveBadge) {
+    if (isLive) {
+      liveBadge.classList.remove("hidden");
+      liveBadge.textContent = "● Live";
+      liveBadge.classList.add("badge-gain");
+    } else {
+      liveBadge.classList.remove("hidden");
+      liveBadge.textContent = "● Cached";
+      liveBadge.classList.remove("badge-gain");
+    }
+  }
+  const tsEl = document.querySelector("[data-fetched-at]");
+  if (tsEl) tsEl.textContent = fmtTs(fetchedAt);
 }
 
 function renderChart() {
@@ -96,8 +127,8 @@ function renderChart() {
 
   if (chart) chart.destroy();
   const labels = ["1M", "6M", "1Y", "3Y CAGR", "5Y CAGR"];
-  const datasets = BENCHMARKS.slice(0, 4).map((b, i) => {
-    const colors = ["#0070f3", "#7928ca", "#ff0080", "#f9cb28", "#10b981"];
+  const datasets = benchmarks.slice(0, 4).map((b, i) => {
+    const colors = ["#0b5fff", "#7928ca", "#ff0080", "#f9cb28", "#10b981"];
     return {
       label: b.name,
       data: [b.oneMonth, b.sixMonth, b.oneYear, b.threeYear, b.fiveYear],
@@ -109,7 +140,7 @@ function renderChart() {
     datasets.unshift({
       label: "Your Portfolio",
       data: [stats.oneMonth, stats.sixMonth, stats.oneYear, stats.threeYear, stats.fiveYear],
-      backgroundColor: "#171717",
+      backgroundColor: "#0f1b2d",
       borderRadius: 4,
     });
   }
@@ -136,5 +167,18 @@ function renderAll() {
   renderChart();
 }
 
+async function loadBenchmarks(force = false) {
+  if (force) clearBenchmarkCache();
+  const { benchmarks: data, live, fetchedAt: ts } = await fetchLiveBenchmarks();
+  benchmarks = data;
+  isLive = live;
+  fetchedAt = ts;
+  renderAll();
+}
+
+document.getElementById("refresh-benchmarks")?.addEventListener("click", () => {
+  loadBenchmarks(true);
+});
+
 subscribe(renderAll);
-renderAll();
+loadBenchmarks();

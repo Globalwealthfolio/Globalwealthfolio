@@ -56,18 +56,21 @@ export function seedSampleData(): void {
   ];
 
   const expenseCategories = [
-    ["Housing", 1, 18000, "Home loan EMI + maintenance"],
-    ["Food & Dining", 2, 8500, "Groceries + eating out"],
-    ["Transport", 3, 6500, "Petrol + cabs"],
-    ["Utilities", 1, 3200, "Electricity, water, internet"],
-    ["Healthcare", 1, 2400, "Health insurance premium"],
-    ["Education", 1, 5000, "Child's tuition"],
-    ["Shopping", 2, 4200, "Clothing + misc"],
-    ["Entertainment", 3, 1500, "Netflix + dining"],
+    ["Housing", 1, 18000, "Home loan EMI + maintenance", "expense"],
+    ["Food & Dining", 2, 8500, "Groceries + eating out", "expense"],
+    ["Transport", 3, 6500, "Petrol + cabs", "expense"],
+    ["Utilities", 1, 3200, "Electricity, water, internet", "expense"],
+    ["Healthcare", 1, 2400, "Health insurance premium", "expense"],
+    ["Education", 1, 5000, "Child's tuition", "expense"],
+    ["Shopping", 2, 4200, "Clothing + misc", "expense"],
+    ["Entertainment", 3, 1500, "Netflix + dining", "expense"],
+    ["Salary", 1, 145000, "Monthly take-home salary", "income"],
+    ["Dividend", 1, 3200, "Mutual fund dividends", "income"],
+    ["Interest", 1, 1800, "Savings account interest", "income"],
   ] as const;
 
   const expenses: Expense[] = [];
-  expenseCategories.forEach(([cat, per, amt, note]) => {
+  expenseCategories.forEach(([cat, per, amt, note, type]) => {
     for (let m = 0; m < 6; m++) {
       const d = new Date(now);
       d.setMonth(d.getMonth() - m);
@@ -81,6 +84,7 @@ export function seedSampleData(): void {
         category: cat as Expense["category"],
         amount: Math.round((amt as number) * variance),
         date,
+        type: type as Expense["type"],
         recurring: "monthly",
         notes: "",
         createdAt: ts,
@@ -95,6 +99,7 @@ export function seedSampleData(): void {
     category: "Insurance",
     amount: 24000,
     date: daysAgo(45),
+    type: "expense",
     recurring: "yearly",
     notes: "LIC + health",
     createdAt: ts,

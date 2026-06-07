@@ -1,5 +1,5 @@
 import { loadData, updateData, addAudit, uid, nowISO, subscribe } from "../lib/store";
-import { type Goal, type GoalType } from "../lib/types";
+import { timeToGoalCompletion, type Goal, type GoalType } from "../lib/types";
 import { formatCurrency, getCurrencySymbol, type CurrencyCode } from "../lib/currency";
 
 function getCurrency(): CurrencyCode {
@@ -10,6 +10,17 @@ function fmt(n: number, compact = false): string {
 }
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+function formatMonthsHuman(months: number | null): string {
+  if (months == null) return "—";
+  if (months <= 0) return "Reached";
+  if (months < 1) return "< 1 mo";
+  if (months < 12) return `${months} mo`;
+  const years = Math.floor(months / 12);
+  const rem = months % 12;
+  if (rem === 0) return `${years} yr`;
+  return `${years} yr ${rem} mo`;
 }
 
 let filterType = "all";
@@ -101,17 +112,34 @@ function filteredGoals() {
 }
 
 function renderTable() {
+  const data = loadData();
   const rows = filteredGoals();
   const tbody = document.getElementById("goals-tbody");
   if (!tbody) return;
   if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" class="text-center py-5xl text-body text-body">${loadData().goals.length === 0 ? "No goals yet. Click <strong>+ Add</strong> to get started." : "No goals match your filters."}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5xl text-body text-body">${loadData().goals.length === 0 ? "No goals yet. Click <strong>+ Add</strong> to get started." : "No goals match your filters."}</td></tr>`;
     return;
   }
   tbody.innerHTML = rows
     .map((g) => {
       const pct = g.target > 0 ? Math.min((g.current / g.target) * 100, 100) : 0;
       const onTrack = pct >= 100;
+      const { months } = timeToGoalCompletion(g, data.investments);
+      const remaining = Math.max(0, g.target - g.current);
+      const linked = data.investments.filter((i) => i.goalId === g.id);
+      let etaLabel: string;
+      let etaCls: string;
+      if (months == null) {
+        etaLabel = linked.length === 0
+          ? "No linked investments"
+          : remaining > 0
+            ? "Project later"
+            : "Reached";
+        etaCls = "text-mute";
+      } else {
+        etaLabel = formatMonthsHuman(months);
+        etaCls = months === 0 ? "text-gain" : "text-gold";
+      }
       return `
         <tr class="border-t border-hairline hover:bg-canvas-soft">
           <td class="py-sm px-md">
@@ -129,6 +157,10 @@ function renderTable() {
               </div>
               <span class="text-caption text-body whitespace-nowrap">${pct.toFixed(0)}%</span>
             </div>
+          </td>
+          <td class="py-sm px-md">
+            <div class="text-body-sm-strong ${etaCls}">${etaLabel}</div>
+            ${linked.length > 0 ? `<div class="text-caption text-mute">${linked.length} linked</div>` : ""}
           </td>
           <td class="py-sm px-md text-right">
             <button class="btn-ghost" data-edit="${g.id}" type="button">Edit</button>

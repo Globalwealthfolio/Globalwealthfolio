@@ -20,6 +20,9 @@ import {
   totalEMI,
   totalOutstanding,
   netWorth,
+  monthlyIncomeFromTransactions,
+  monthlyExpenseTotal,
+  timeToGoalCompletion,
   type Investment,
   type AssetType,
 } from "../lib/types";
@@ -305,7 +308,13 @@ function renderCashflowChart() {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  // Aggregate expenses by month for the last 6 months
+  // Aggregate income and expenses by month for the last 6 months.
+  // For recurring transactions, project the recurring amount into each month
+  // they cover so the chart reflects true monthly cash flow, not just entries.
+  // If the user has not logged any income transactions yet, fall back to the
+  // baseline value from Preferences → Monthly Income.
+  const hasIncomeTx = data.expenses.some((e) => e.type === "income");
+  const baselineIncome = !hasIncomeTx ? data.preferences.monthlyIncome || 0 : 0;
   const now = new Date();
   const labels: string[] = [];
   const expData: number[] = [];
@@ -314,11 +323,31 @@ function renderCashflowChart() {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     labels.push(d.toLocaleString("en", { month: "short" }));
     const monthKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-    const exp = data.expenses
-      .filter((e) => e.date.startsWith(monthKey))
-      .reduce((s, e) => s + e.amount, 0);
+    let exp = 0;
+    let inc = 0;
+    data.expenses.forEach((e) => {
+      const from = e.recurringFrom ? new Date(e.recurringFrom) : new Date(e.date);
+      const to = e.recurringTo ? new Date(e.recurringTo) : null;
+      if (e.recurring === "one-time") {
+        if (e.date.startsWith(monthKey)) {
+          if (e.type === "income") inc += e.amount;
+          else exp += e.amount;
+        }
+        return;
+      }
+      if (d < from) return;
+      if (to && d > to) return;
+      const matches =
+        (e.recurring === "monthly") ||
+        (e.recurring === "quarterly" && d.getMonth() % 3 === new Date(e.date).getMonth() % 3) ||
+        (e.recurring === "yearly" && d.getMonth() === new Date(e.date).getMonth());
+      if (matches) {
+        if (e.type === "income") inc += e.amount;
+        else exp += e.amount;
+      }
+    });
     expData.push(exp);
-    incData.push(i === 5 ? data.preferences.monthlyIncome : data.preferences.monthlyIncome);
+    incData.push(inc + baselineIncome);
   }
 
   if (cashChart) {
@@ -334,15 +363,15 @@ function renderCashflowChart() {
       labels,
       datasets: [
         {
-          label: "Expenses",
-          data: expData,
-          backgroundColor: "#ff0080",
-          borderRadius: 4,
-        },
-        {
           label: "Income",
           data: incData,
           backgroundColor: "#10b981",
+          borderRadius: 4,
+        },
+        {
+          label: "Expenses",
+          data: expData,
+          backgroundColor: "#ef4444",
           borderRadius: 4,
         },
       ],
@@ -381,30 +410,121 @@ function renderCashflowChart() {
   });
 }
 
+function formatMonthsHuman(months: number | null): string {
+  if (months == null) return "—";
+  if (months <= 0) return "Reached";
+  if (months < 1) return "< 1 mo";
+  if (months < 12) return `${months} mo`;
+  const years = Math.floor(months / 12);
+  const rem = months % 12;
+  if (rem === 0) return `${years} yr`;
+  return `${years} yr ${rem} mo`;
+}
+
+function renderGoalTiming() {
+  const data = loadData();
+  const currency = getCurrency();
+  const root = document.getElementById("goal-timing");
+  if (!root) return;
+  if (data.goals.length === 0) {
+    root.innerHTML = `
+      <div class="text-center py-3xl card-soft">
+        <p class="text-body-sm text-body">No goals yet. Add a goal and link investments to estimate completion timing.</p>
+        <a href="/goals" class="btn-secondary mt-md inline-flex" style="height: 32px; padding: 0 12px; font-size: 13px;">Add a goal</a>
+      </div>`;
+    return;
+  }
+  root.innerHTML = data.goals
+    .map((g) => {
+      const linked = data.investments.filter((i) => i.goalId === g.id);
+      const { months, perInvestment } = timeToGoalCompletion(g, data.investments);
+      const remaining = Math.max(0, g.target - g.current);
+      const pct = g.target > 0 ? Math.min((g.current / g.target) * 100, 100) : 0;
+      const eta = months == null
+        ? (linked.length === 0
+            ? "No investments linked"
+            : remaining > 0
+              ? "Need higher growth to project"
+              : "Goal reached")
+        : formatMonthsHuman(months);
+      const etaClass = months == null
+        ? "text-mute"
+        : months === 0
+          ? "text-gain"
+          : "text-gold";
+      return `
+        <div class="card-soft p-md">
+          <div class="flex items-start justify-between gap-md mb-sm">
+            <div class="min-w-0 flex-1">
+              <p class="text-body-sm-strong text-ink">${escapeHtml(g.name)}</p>
+              <p class="text-caption text-mute">${fmt(g.current, currency)} of ${fmt(g.target, currency)} (${pct.toFixed(0)}%)</p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-caption-mono text-body">ETA</p>
+              <p class="text-body-sm-strong ${etaClass}">${eta}</p>
+            </div>
+          </div>
+          <div class="h-1.5 bg-canvas-soft-2 rounded-full overflow-hidden mb-sm">
+            <div class="h-full ${pct >= 100 ? "bg-gain" : "bg-gradient-gain"}" style="width: ${pct.toFixed(1)}%"></div>
+          </div>
+          ${
+            linked.length > 0
+              ? `<div class="flex flex-wrap gap-xs">
+                  ${linked
+                    .map((i) => {
+                      const per = perInvestment.find((p) => p.id === i.id);
+                      return `<span class="badge" title="${escapeHtml(i.name)}">${escapeHtml(i.name)} · ${formatMonthsHuman(per?.months ?? null)}</span>`;
+                    })
+                    .join("")}
+                </div>`
+              : `<p class="text-caption text-mute">Link an investment to this goal to see completion timing.</p>`
+          }
+        </div>`;
+    })
+    .join("");
+}
+
 function renderStats() {
   const data = loadData();
   const currency = getCurrency();
   const total = totalCurrent(data.investments);
   const gain = totalGain(data.investments);
-  const gainPct = gainPercent(data.investments);
   const nw = netWorth(data);
+
+  // This month net = monthly income (preferences + recurring income transactions) - this month expenses
+  const now = new Date();
+  const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const thisMonthExpenses = data.expenses
+    .filter((e) => e.type !== "income" && e.date.startsWith(monthKey))
+    .reduce((s, e) => s + e.amount, 0);
+  const recurringIncome = monthlyIncomeFromTransactions(data.expenses);
+  const baseIncome = data.preferences.monthlyIncome || 0;
+  const monthlyIncome = recurringIncome + baseIncome;
+  const netMonth = monthlyIncome - thisMonthExpenses;
+
   const goalsTotal = data.goals.length;
   const goalsOnTrack = data.goals.filter((g) => g.target > 0 && g.current >= g.target).length;
+  const activeGoals = data.goals.filter((g) => {
+    if (!g.deadline) return true;
+    return new Date(g.deadline) >= now;
+  }).length;
 
   setText("[data-stat='total']", fmt(total, currency, true));
   const totalEl = document.querySelector("[data-stat='total']") as HTMLElement | null;
-  if (totalEl) {
-    // Apply gold gradient to the headline number
-    totalEl.classList.add("text-gradient-gold");
-  }
-  const gainEl = document.querySelector("[data-stat='gain']") as HTMLElement | null;
-  if (gainEl) {
-    gainEl.textContent = fmt(gain, currency, true);
-    gainEl.classList.toggle("text-gain", gain >= 0);
-    gainEl.classList.toggle("text-loss", gain < 0);
+  if (totalEl) totalEl.classList.add("text-gradient-gold");
+
+  const netMonthEl = document.querySelector("[data-stat='net-month']") as HTMLElement | null;
+  if (netMonthEl) {
+    netMonthEl.textContent = `${netMonth >= 0 ? "+" : "−"}${fmt(Math.abs(netMonth), currency, true)}`;
+    netMonthEl.classList.toggle("text-gain", netMonth >= 0);
+    netMonthEl.classList.toggle("text-loss", netMonth < 0);
   }
   setText("[data-stat='networth']", fmt(nw.net, currency, true));
-  setText("[data-stat='goals']", `${goalsOnTrack} / ${goalsTotal}`);
+  const goalsEl = document.querySelector("[data-stat='goals']") as HTMLElement | null;
+  if (goalsEl) {
+    goalsEl.textContent = `${goalsOnTrack} / ${goalsTotal}`;
+    goalsEl.setAttribute("title", `${activeGoals} active · ${goalsTotal - activeGoals} past deadline`);
+  }
   setText("[data-stat='alloc-total']", fmt(total, currency, true));
 }
 
@@ -637,6 +757,7 @@ function renderAll() {
   renderCashflowChart();
   renderTopHoldings();
   renderGoalProgress();
+  renderGoalTiming();
   renderEMISummary();
 }
 

@@ -4,6 +4,7 @@ import {
   totalGain,
   totalInvested,
   gainPercent,
+  timeToGoalCompletion,
   type Investment,
   type AssetType,
   type Goal,
@@ -23,6 +24,17 @@ function riskLevelLabel(score: number): string {
   if (score <= 3) return "Low";
   if (score <= 6) return "Medium";
   return "High";
+}
+
+function formatMonthsHuman(months: number | null): string {
+  if (months == null) return "—";
+  if (months <= 0) return "Reached";
+  if (months < 1) return "< 1 mo";
+  if (months < 12) return `${months} mo`;
+  const years = Math.floor(months / 12);
+  const rem = months % 12;
+  if (rem === 0) return `${years} yr`;
+  return `${years} yr ${rem} mo`;
 }
 
 const modal = document.getElementById("investment-modal") as HTMLDialogElement | null;
@@ -164,18 +176,36 @@ function renderTable() {
   if (rows.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="11" class="text-center py-5xl">
+        <td colspan="12" class="text-center py-5xl">
           <div class="text-body-md text-body">${data.investments.length === 0 ? "No investments yet. Click <strong>+ Add</strong> to get started." : "No investments match your filters."}</div>
         </td>
       </tr>`;
     return;
   }
 
+  // Pre-compute time-to-goal per linked goal so the table render is fast.
+  const goalEtaCache = new Map<string, ReturnType<typeof timeToGoalCompletion>>();
+  data.goals.forEach((g) => {
+    goalEtaCache.set(g.id, timeToGoalCompletion(g, data.investments));
+  });
+
   tbody.innerHTML = rows
     .map((i, idx) => {
       const gain = i.currentValue - i.amount;
       const pct = i.amount > 0 ? (gain / i.amount) * 100 : 0;
       const goalName = i.goalId ? goalMap.get(i.goalId) ?? "—" : "—";
+      const eta = i.goalId ? goalEtaCache.get(i.goalId) : null;
+      const per = eta?.perInvestment.find((p) => p.id === i.id);
+      const months = per?.months ?? null;
+      let etaCell: string;
+      if (!i.goalId) {
+        etaCell = `<span class="text-caption text-mute">Not linked</span>`;
+      } else if (months == null) {
+        etaCell = `<span class="text-caption text-mute">Need more history</span>`;
+      } else {
+        const cls = months <= 0 ? "text-gain" : "text-gold";
+        etaCell = `<span class="text-body-sm-strong ${cls}">${formatMonthsHuman(months)}</span>`;
+      }
       return `
         <tr class="border-t border-hairline hover:bg-canvas-soft">
           <td class="py-sm px-md text-mute">${idx + 1}</td>
@@ -191,6 +221,7 @@ function renderTable() {
           <td class="py-sm px-md">
             <span class="badge ${i.risk <= 3 ? "badge-gain" : i.risk >= 7 ? "badge-loss" : ""}">${riskLevelLabel(i.risk)} ${i.risk}</span>
           </td>
+          <td class="py-sm px-md">${etaCell}</td>
           <td class="py-sm px-md text-body max-w-[12ch] truncate" title="${esc(i.notes ?? "")}">${esc(i.notes ?? "")}</td>
           <td class="py-sm px-md text-right">
             <button class="btn-ghost" data-edit="${i.id}" type="button" aria-label="Edit">Edit</button>

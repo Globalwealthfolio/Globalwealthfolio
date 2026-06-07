@@ -139,14 +139,14 @@ function renderTable() {
   }
   tbody.innerHTML = rows
     .map((e, idx) => {
-      const paidPrincipal = e.principal - e.outstanding;
+      const paidPrincipal = Math.max(0, e.principal - e.outstanding);
       const pct = e.principal > 0 ? (paidPrincipal / e.principal) * 100 : 0;
       return `
         <tr class="border-t border-hairline hover:bg-canvas-soft">
           <td class="py-sm px-md text-mute">${idx + 1}</td>
           <td class="py-sm px-md text-body-sm-strong text-ink">${esc(e.name)}</td>
           <td class="py-sm px-md"><span class="badge">${e.type}</span></td>
-          <td class="py-sm px-md text-right">${fmt(e.principal)}</td>
+          <td class="py-sm px-md text-right text-gain">${fmt(paidPrincipal)}</td>
           <td class="py-sm px-md text-right">${fmt(e.emi)}</td>
           <td class="py-sm px-md text-right">${e.rate.toFixed(2)}%</td>
           <td class="py-sm px-md text-right">${e.tenure} mo</td>
