@@ -6,6 +6,20 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
 
 <Layout title="Expenses — Global Wealth Portfolio">
   <section class="container-page pt-3xl pb-2xl">
+    <!-- First-run empty state banner -->
+    <div id="exp-empty-banner" class="hidden card-elevated bg-gradient-finance border border-gold/30 p-lg mb-2xl">
+      <div class="flex flex-col md:flex-row items-start md:items-center gap-md">
+        <div class="flex-1">
+          <p class="text-caption-mono text-gold mb-xs">No transactions yet</p>
+          <h2 class="text-display-sm mb-xs">Want to see how this page looks?</h2>
+          <p class="text-body-sm text-body leading-relaxed">Load a sample set of expenses and income to explore the page with realistic data, or add your own transactions manually.</p>
+        </div>
+        <div class="flex gap-sm">
+          <button id="seed-expenses" class="btn-primary" type="button">Load sample data</button>
+        </div>
+      </div>
+    </div>
+
     <PageHeader
       title="Expenses"
       description="Daily, monthly, and recurring expenses in one place. See where your money goes and track your savings rate."
@@ -240,5 +254,19 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
 <script>
   import "../scripts/expenses.ts";
   import { initDateRangeFilter } from "../scripts/date-range-filter";
+  import { hasAnyData, seedSampleData } from "../lib/sample-data";
+
   initDateRangeFilter();
+
+  // Show empty-state banner when there is no data
+  const banner = document.getElementById("exp-empty-banner");
+  if (banner && !hasAnyData()) {
+    banner.classList.remove("hidden");
+  }
+  document.getElementById("seed-expenses")?.addEventListener("click", () => {
+    if (confirm("Load sample data? This will replace anything you've already entered.")) {
+      seedSampleData();
+      banner?.classList.add("hidden");
+    }
+  });
 </script>

@@ -53,6 +53,8 @@ const PROXIES = [
   (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
 ];
 
+const FETCH_TIMEOUT_MS = 8000; // 8 seconds per attempt
+
 function isBrowser(): boolean {
   return typeof window !== "undefined";
 }
@@ -116,9 +118,15 @@ async function fetchYahoo(ticker: TickerConfig): Promise<YSeriesResult | null> {
     ticker.symbol,
   )}?range=${ticker.range}&interval=${ticker.interval}`;
 
+  const timeoutFetch = (u: string, init?: RequestInit): Promise<Response> => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    return fetch(u, { ...init, signal: controller.signal }).finally(() => clearTimeout(timer));
+  };
+
   // Try direct fetch first
   try {
-    const res = await fetch(url, { headers: { Accept: "application/json" } });
+    const res = await timeoutFetch(url, { headers: { Accept: "application/json" } });
     if (res.ok) {
       const data = (await res.json()) as { chart?: { result?: YSeriesResult[]; error?: unknown } };
       const r = data?.chart?.result?.[0];
@@ -131,7 +139,7 @@ async function fetchYahoo(ticker: TickerConfig): Promise<YSeriesResult | null> {
   // Try proxies
   for (const proxy of PROXIES) {
     try {
-      const res = await fetch(proxy(url), { headers: { Accept: "application/json" } });
+      const res = await timeoutFetch(proxy(url), { headers: { Accept: "application/json" } });
       if (res.ok) {
         const data = (await res.json()) as { chart?: { result?: YSeriesResult[]; error?: unknown } };
         const r = data?.chart?.result?.[0];
@@ -206,15 +214,28 @@ export async function fetchLiveBenchmarks(): Promise<{
   live: boolean;
   fetchedAt: number;
 }> {
-  const cached = readCache();
-  if (cached) {
-    return { benchmarks: cached.benchmarks, live: true, fetchedAt: cached.ts };
+  try {
+    const cached = readCache();
+    if (cached) {
+      return { benchmarks: cached.benchmarks, live: true, fetchedAt: cached.ts };
+    }
+    // Fetch all in parallel with an overall timeout
+    const allLive = Promise.all(BENCHMARKS.map((b) => fetchBenchmark(b)));
+    const overallTimeout = new Promise<null>((resolve) =>
+      setTimeout(() => resolve(null), 30000),
+    );
+    const result = await Promise.race([allLive, overallTimeout]);
+    if (result === null) {
+      // Overall timeout hit — return static data
+      return { benchmarks: [...BENCHMARKS], live: false, fetchedAt: Date.now() };
+    }
+    const anyLive = result.some((r, i) => r !== BENCHMARKS[i]);
+    if (anyLive) writeCache(result);
+    return { benchmarks: result, live: anyLive, fetchedAt: Date.now() };
+  } catch (e) {
+    console.warn("[benchmarks] fetchLiveBenchmarks failed, returning static data.", e);
+    return { benchmarks: [...BENCHMARKS], live: false, fetchedAt: Date.now() };
   }
-  // Fetch all in parallel; keep the static fallback on failure
-  const results = await Promise.all(BENCHMARKS.map((b) => fetchBenchmark(b)));
-  const anyLive = results.some((r, i) => r !== BENCHMARKS[i]);
-  if (anyLive) writeCache(results);
-  return { benchmarks: results, live: anyLive, fetchedAt: Date.now() };
 }
 
 export function clearBenchmarkCache(): void {

@@ -343,7 +343,10 @@ function renderStats() {
 }
 
 function formatRangeLabel(range: ReturnType<typeof getDateRange>): string {
-  if (!range.active) return "This month";
+  if (!range.active) {
+    if (range.preset === "all") return "All time";
+    return "This month";
+  }
   if (range.preset === "thisMonth") return "This month";
   if (range.preset === "last30") return "Last 30 days";
   if (range.preset === "last3Months") return "Last 3 months";

@@ -105,7 +105,7 @@ function writeInputs(preset: DateRangePreset, from: string, to: string) {
 function syncURL(preset: DateRangePreset, from: string, to: string) {
   try {
     const url = new URL(window.location.href);
-    if (preset === "thisMonth") {
+    if (preset === "thisMonth" || preset === "all") {
       url.searchParams.delete(QUERY_KEY);
     } else {
       const compact = `${from || ""}__${to || ""}__${preset}`;
@@ -126,6 +126,9 @@ function readURLPreset(): { preset: DateRangePreset; from: string; to: string } 
     const validPresets: DateRangePreset[] = ["thisMonth", "last30", "last3Months", "last12Months", "ytd", "all", "custom"];
     if (preset && validPresets.includes(preset as DateRangePreset)) {
       return { preset: preset as DateRangePreset, from: from ?? "", to: to ?? "" };
+    }
+    if (from === "all" || to === "all") {
+      return { preset: "all", from: "", to: "" };
     }
     if (from || to) {
       return { preset: "custom", from: from ?? "", to: to ?? "" };
@@ -189,6 +192,9 @@ export function initDateRangeFilter(): void {
     writeInputs("all", from, to);
     dispatch();
   });
+
+  // Dispatch once so page scripts pick up the hydrated preset.
+  dispatch();
 }
 
 function dispatch() {

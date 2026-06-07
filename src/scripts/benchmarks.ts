@@ -216,11 +216,17 @@ function renderAll() {
 }
 
 async function loadBenchmarks(force = false) {
-  if (force) clearBenchmarkCache();
-  const { benchmarks: data, live, fetchedAt: ts } = await fetchLiveBenchmarks();
-  benchmarks = data;
-  isLive = live;
-  fetchedAt = ts;
+  try {
+    if (force) clearBenchmarkCache();
+    const { benchmarks: data, live, fetchedAt: ts } = await fetchLiveBenchmarks();
+    benchmarks = data;
+    isLive = live;
+    fetchedAt = ts;
+  } catch (e) {
+    console.warn("[benchmarks] Failed to fetch live data, using static fallback.", e);
+    isLive = false;
+    fetchedAt = null;
+  }
   renderAll();
 }
 
