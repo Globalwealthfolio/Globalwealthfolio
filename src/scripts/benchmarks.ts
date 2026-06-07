@@ -12,6 +12,8 @@ import {
 import { fetchLiveBenchmarks, clearBenchmarkCache } from "../lib/benchmarks-api";
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+import { applyChartDefaults, CHART_FONT_FAMILY } from "./chart-defaults";
+applyChartDefaults();
 
 interface PerfStats {
   oneMonth: number;
@@ -51,6 +53,33 @@ let fetchedAt: number | null = null;
 
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function isDark(): boolean {
+  return document.documentElement.classList.contains("dark");
+}
+
+function chartTooltip() {
+  return {
+    backgroundColor: "rgba(10, 10, 10, 0.94)",
+    titleColor: "#ffffff",
+    bodyColor: "#ffffff",
+    borderColor: "rgba(255,255,255,0.08)",
+    borderWidth: 1,
+    padding: 10,
+    cornerRadius: 6,
+    displayColors: false,
+    titleFont: { weight: 600 },
+    bodyFont: { weight: 500 },
+  };
+}
+
+function chartAxisColors() {
+  const dark = isDark();
+  return {
+    tick: dark ? "rgba(220,220,220,0.75)" : "rgba(80,80,80,0.75)",
+    grid: dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+  };
 }
 
 function fmtTs(ts: number | null): string {
@@ -144,6 +173,7 @@ function renderChart() {
       borderRadius: 4,
     });
   }
+  const axis = chartAxisColors();
   chart = new Chart(ctx, {
     type: "bar",
     data: { labels, datasets },
@@ -151,12 +181,30 @@ function renderChart() {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { position: "bottom", labels: { boxWidth: 8, font: { size: 11 } } },
-        tooltip: { callbacks: { label: (item) => `${item.dataset.label}: ${item.parsed.y.toFixed(1)}%` } },
+        legend: {
+          position: "bottom",
+          labels: { boxWidth: 8, font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 } },
+        },
+        tooltip: {
+          ...chartTooltip(),
+          titleFont: { family: CHART_FONT_FAMILY, size: 12, weight: 600 },
+          bodyFont: { family: CHART_FONT_FAMILY, size: 12, weight: 500 },
+          callbacks: { label: (item) => `${item.dataset.label}: ${item.parsed.y.toFixed(1)}%` },
+        },
       },
       scales: {
-        x: { grid: { display: false } },
-        y: { grid: { color: "rgba(120,120,120,0.1)" }, ticks: { callback: (v) => `${v}%` } },
+        x: {
+          grid: { display: false },
+          ticks: { color: axis.tick, font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 } },
+        },
+        y: {
+          grid: { color: axis.grid },
+          ticks: {
+            color: axis.tick,
+            font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 },
+            callback: (v) => `${v}%`,
+          },
+        },
       },
     },
   });

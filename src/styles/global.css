@@ -15,16 +15,16 @@
     Menlo, Monaco, "Cascadia Code", "Source Code Pro", Consolas, monospace;
 
   /* ── Brand & Accent (Light Mode) ──────────────────────────── */
-  /* Soft, professional finance palette: muted slate-cream base, never pure white. */
+  /* Warm cream/sand finance palette aligned with the gold accent system. */
   --color-ink: #0f1b2d;
   --color-on-primary: #ffffff;
   --color-body: #4a5568;
   --color-mute: #8a94a6;
-  --color-hairline: #dde3ec;
-  --color-hairline-strong: #94a3b8;
-  --color-canvas: #ffffff;
-  --color-canvas-soft: #eef1f6;
-  --color-canvas-soft-2: #e1e6ee;
+  --color-hairline: #e3d8c1;
+  --color-hairline-strong: #b8a47a;
+  --color-canvas: #fdfbf7;
+  --color-canvas-soft: #f4ecde;
+  --color-canvas-soft-2: #e8dfc9;
   --color-link: #0b5fff;
   --color-link-deep: #0747b3;
   --color-link-bg-soft: #d6e4ff;

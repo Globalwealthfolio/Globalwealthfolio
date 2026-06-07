@@ -15,19 +15,19 @@ import {
 import {
   totalCurrent,
   totalGain,
-  gainPercent,
   allocationByType,
   totalEMI,
   totalOutstanding,
-  netWorth,
   monthlyIncomeFromTransactions,
-  monthlyExpenseTotal,
   timeToGoalCompletion,
+  monthKey,
+  formatMonthLabel,
   type Investment,
   type AssetType,
 } from "../lib/types";
 import { formatCurrency, type CurrencyCode } from "../lib/currency";
 import { hasAnyData, seedSampleData } from "../lib/sample-data";
+import { getDateRange, isInRange, type DateRange } from "./date-range-filter";
 
 // Chart.js — register only what we need
 import {
@@ -60,6 +60,8 @@ Chart.register(
   BarController,
   BarElement,
 );
+import { applyChartDefaults, CHART_FONT_FAMILY } from "./chart-defaults";
+applyChartDefaults();
 
 /* ── Greeting based on time of day ─────────────────────────── */
 function setGreeting(prefs: { language: string; currency: string }) {
@@ -98,6 +100,33 @@ function getCssVar(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || "#171717";
 }
 
+function isDark(): boolean {
+  return document.documentElement.classList.contains("dark");
+}
+
+function chartTooltip() {
+  return {
+    backgroundColor: "rgba(10, 10, 10, 0.94)",
+    titleColor: "#ffffff",
+    bodyColor: "#ffffff",
+    borderColor: "rgba(255,255,255,0.08)",
+    borderWidth: 1,
+    padding: 10,
+    cornerRadius: 6,
+    displayColors: false,
+    titleFont: { weight: 600 },
+    bodyFont: { weight: 500 },
+  };
+}
+
+function chartAxisColors() {
+  const dark = isDark();
+  return {
+    tick: dark ? "rgba(220,220,220,0.75)" : "rgba(80,80,80,0.75)",
+    grid: dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+  };
+}
+
 function getCurrency(): CurrencyCode {
   const stored = (document.documentElement.dataset.currency ?? "INR") as CurrencyCode;
   return stored;
@@ -112,7 +141,38 @@ function getRangeMonths(): number | "all" {
   return "all";
 }
 
+let selectedMonth = monthKey(new Date());
+
+function getSelectedMonth(): string {
+  return selectedMonth;
+}
+
+function getSelectedRange(): DateRange {
+  return getDateRange();
+}
+
+/** Returns the month key used to anchor the growth chart. Prefers the range's
+ * "to" date, falling back to the legacy month selector. */
+function getRangeAnchorMonth(): string {
+  const r = getSelectedRange();
+  if (r.active && r.to) return r.to.slice(0, 7);
+  return selectedMonth;
+}
+
+function getInvestmentsAsOf(cutoffISO: string, investments: Investment[]): Investment[] {
+  return investments.filter((i) => i.date <= cutoffISO);
+}
+
+function getRangeEndISO(): string {
+  const r = getSelectedRange();
+  if (r.active && r.to) return r.to;
+  // Fall back to the last day of the selected month.
+  const [y, m] = selectedMonth.split("-").map(Number);
+  return new Date(y, m, 0).toISOString().split("T")[0];
+}
+
 function buildGrowthSeries(investments: Investment[], rangeMonths: number | "all") {
+  const r = getSelectedRange();
   if (investments.length === 0) {
     const now = new Date();
     const months = 12;
@@ -130,16 +190,30 @@ function buildGrowthSeries(investments: Investment[], rangeMonths: number | "all
     (min, i) => (new Date(i.date) < new Date(min) ? i.date : min),
     investments[0].date,
   );
-  const start = new Date(earliest);
-  if (rangeMonths !== "all") {
-    start.setMonth(now.getMonth() - rangeMonths);
-    if (start < new Date(earliest)) start.setTime(new Date(earliest).getTime());
+  // If a custom date range is active, use it as the chart bounds. Otherwise
+  // honor the legacy 1M / 6M / 1Y / All buttons.
+  let start: Date;
+  let end: Date;
+  if (r.active && r.from && r.to) {
+    start = new Date(r.from);
+    end = new Date(r.to);
+    // Don't extend before the earliest investment
+    if (start < new Date(earliest)) start = new Date(earliest);
+  } else {
+    start = new Date(earliest);
+    if (rangeMonths !== "all") {
+      start = new Date(now);
+      start.setMonth(now.getMonth() - rangeMonths);
+      if (start < new Date(earliest)) start = new Date(earliest);
+    }
+    end = now;
   }
   // Build month buckets
   const labels: string[] = [];
   const data: number[] = [];
   const cursor = new Date(start.getFullYear(), start.getMonth(), 1);
-  while (cursor <= now) {
+  const endCursor = new Date(end.getFullYear(), end.getMonth(), 1);
+  while (cursor <= endCursor) {
     labels.push(cursor.toLocaleString("en", { month: "short" }));
     const point = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0);
     const pointValue = investments
@@ -163,8 +237,11 @@ function renderGrowthChart() {
 
   const inkColor = getCssVar("--color-ink");
   const goldColor = "#c9a961";
+  const goldColorDark = "#d4b16a";
+  const lineColor = isDark() ? goldColorDark : goldColor;
+  const axis = chartAxisColors();
   const gradient = ctx.createLinearGradient(0, 0, 0, 220);
-  gradient.addColorStop(0, "rgba(201,169,97,0.30)");
+  gradient.addColorStop(0, isDark() ? "rgba(212,177,106,0.32)" : "rgba(201,169,97,0.30)");
   gradient.addColorStop(1, "rgba(201,169,97,0)");
 
   if (growthChart) {
@@ -181,12 +258,12 @@ function renderGrowthChart() {
         {
           label: "Portfolio value",
           data: series.data,
-          borderColor: series.isEmpty ? "rgba(120,120,120,0.4)" : goldColor,
+          borderColor: series.isEmpty ? (isDark() ? "rgba(180,180,180,0.45)" : "rgba(120,120,120,0.4)") : lineColor,
           backgroundColor: series.isEmpty ? "transparent" : gradient,
           borderWidth: 2,
           pointRadius: 0,
           pointHoverRadius: 4,
-          pointHoverBackgroundColor: goldColor,
+          pointHoverBackgroundColor: lineColor,
           tension: 0.3,
           fill: !series.isEmpty,
         },
@@ -198,23 +275,22 @@ function renderGrowthChart() {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: inkColor,
-          titleColor: "#fff",
-          bodyColor: "#fff",
-          padding: 10,
-          cornerRadius: 6,
-          displayColors: false,
+          ...chartTooltip(),
           callbacks: {
             label: (item) => fmt(item.parsed.y, getCurrency()),
           },
         },
       },
       scales: {
-        x: { grid: { display: false }, ticks: { color: "rgba(120,120,120,0.7)" } },
+        x: {
+          grid: { display: false },
+          ticks: { color: axis.tick, font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 } },
+        },
         y: {
-          grid: { color: "rgba(120,120,120,0.1)" },
+          grid: { color: axis.grid },
           ticks: {
-            color: "rgba(120,120,120,0.7)",
+            color: axis.tick,
+            font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 },
             callback: (v) => fmt(Number(v), getCurrency(), true),
           },
         },
@@ -264,12 +340,9 @@ function renderAllocChart() {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: getCssVar("--color-ink"),
-          titleColor: "#fff",
-          bodyColor: "#fff",
-          padding: 10,
-          cornerRadius: 6,
-          displayColors: false,
+          ...chartTooltip(),
+          titleFont: { family: CHART_FONT_FAMILY, size: 12, weight: 600 },
+          bodyFont: { family: CHART_FONT_FAMILY, size: 12, weight: 500 },
           callbacks: {
             label: (item) => `${item.label}: ${(item.parsed / totalCurrent(data.investments) * 100).toFixed(1)}%`,
           },
@@ -308,28 +381,58 @@ function renderCashflowChart() {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  // Aggregate income and expenses by month for the last 6 months.
-  // For recurring transactions, project the recurring amount into each month
-  // they cover so the chart reflects true monthly cash flow, not just entries.
-  // If the user has not logged any income transactions yet, fall back to the
-  // baseline value from Preferences → Monthly Income.
+  // Aggregate income and expenses by month for the months covered by the
+  // selected range (or the 6 months centered on the selected month when no
+  // range is active). For recurring transactions, project the recurring
+  // amount into each month they cover so the chart reflects true monthly
+  // cash flow, not just entries. If the user has not logged any income
+  // transactions yet, fall back to the baseline value from Preferences →
+  // Monthly Income.
   const hasIncomeTx = data.expenses.some((e) => e.type === "income");
   const baselineIncome = !hasIncomeTx ? data.preferences.monthlyIncome || 0 : 0;
-  const now = new Date();
+  const range = getSelectedRange();
+  const centerMonth = getRangeAnchorMonth();
+  const [sy, sm] = centerMonth.split("-").map(Number);
+  const center = new Date(sy, sm - 1, 1);
+  // Decide the month window for the chart
+  let monthsBack: number;
+  let monthsForward: number;
+  if (range.active && range.from && range.to) {
+    const fromDate = new Date(range.from);
+    const toDate = new Date(range.to);
+    monthsBack = Math.max(
+      0,
+      (center.getFullYear() - fromDate.getFullYear()) * 12 +
+        (center.getMonth() - fromDate.getMonth()),
+    );
+    monthsForward = Math.max(
+      0,
+      (toDate.getFullYear() - center.getFullYear()) * 12 +
+        (toDate.getMonth() - center.getMonth()),
+    );
+    // Cap the chart at 18 months so it stays readable for long ranges
+    if (monthsBack + monthsForward > 18) {
+      const trim = monthsBack + monthsForward - 18;
+      monthsBack = Math.max(0, monthsBack - trim);
+    }
+  } else {
+    monthsBack = 5;
+    monthsForward = 0;
+  }
   const labels: string[] = [];
   const expData: number[] = [];
   const incData: number[] = [];
-  for (let i = 5; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+  for (let i = monthsBack; i >= -monthsForward; i--) {
+    const d = new Date(center.getFullYear(), center.getMonth() - i, 1);
     labels.push(d.toLocaleString("en", { month: "short" }));
-    const monthKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    const mk = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
     let exp = 0;
     let inc = 0;
     data.expenses.forEach((e) => {
       const from = e.recurringFrom ? new Date(e.recurringFrom) : new Date(e.date);
       const to = e.recurringTo ? new Date(e.recurringTo) : null;
       if (e.recurring === "one-time") {
-        if (e.date.startsWith(monthKey)) {
+        if (e.date.startsWith(mk)) {
           if (e.type === "income") inc += e.amount;
           else exp += e.amount;
         }
@@ -357,6 +460,7 @@ function renderCashflowChart() {
     cashChart.update();
     return;
   }
+  const axisCash = chartAxisColors();
   cashChart = new Chart(ctx, {
     type: "bar",
     data: {
@@ -383,25 +487,25 @@ function renderCashflowChart() {
         legend: {
           display: true,
           position: "bottom",
-          labels: { color: getCssVar("--color-body"), boxWidth: 8, font: { size: 11 } },
+          labels: { color: getCssVar("--color-body"), boxWidth: 8, font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 } },
         },
         tooltip: {
-          backgroundColor: getCssVar("--color-ink"),
-          titleColor: "#fff",
-          bodyColor: "#fff",
-          padding: 10,
-          cornerRadius: 6,
-          displayColors: false,
+          ...chartTooltip(),
+          titleFont: { family: CHART_FONT_FAMILY, size: 12, weight: 600 },
+          bodyFont: { family: CHART_FONT_FAMILY, size: 12, weight: 500 },
           callbacks: { label: (item) => `${item.dataset.label}: ${fmt(item.parsed.y, getCurrency())}` },
         },
       },
       scales: {
-        x: { grid: { display: false }, ticks: { color: getCssVar("--color-body"), font: { size: 11 } } },
+        x: {
+          grid: { display: false },
+          ticks: { color: axisCash.tick, font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 } },
+        },
         y: {
-          grid: { color: "rgba(120,120,120,0.1)" },
+          grid: { color: axisCash.grid },
           ticks: {
-            color: getCssVar("--color-body"),
-            font: { size: 11 },
+            color: axisCash.tick,
+            font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 },
             callback: (v) => fmt(Number(v), getCurrency(), true),
           },
         },
@@ -487,23 +591,32 @@ function renderGoalTiming() {
 function renderStats() {
   const data = loadData();
   const currency = getCurrency();
-  const total = totalCurrent(data.investments);
-  const gain = totalGain(data.investments);
-  const nw = netWorth(data);
+  const range = getSelectedRange();
+  const rangeEndISO = getRangeEndISO();
+  const invsAsOf = getInvestmentsAsOf(rangeEndISO, data.investments);
+  const total = totalCurrent(invsAsOf);
+  const gain = totalGain(invsAsOf);
+  const nw = {
+    assets: total,
+    liabilities: totalOutstanding(data.emis),
+    net: total - totalOutstanding(data.emis),
+  };
 
-  // This month net = monthly income (preferences + recurring income transactions) - this month expenses
-  const now = new Date();
-  const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-  const thisMonthExpenses = data.expenses
-    .filter((e) => e.type !== "income" && e.date.startsWith(monthKey))
-    .reduce((s, e) => s + e.amount, 0);
+  // Period net = income (preferences + recurring + recorded in range) - expenses in range
+  const monthExpenses = data.expenses.filter((e) => e.type !== "income" && isInRange(e.date, range));
+  const monthIncome = data.expenses.filter((e) => e.type === "income" && isInRange(e.date, range));
+  const expensesTotal = monthExpenses.reduce((s, e) => s + e.amount, 0);
+  const incomeRecorded = monthIncome.reduce((s, e) => s + e.amount, 0);
+  // For pre-selected periods, still layer in the recurring/baseline income so a net estimate
+  // is meaningful when the user hasn't logged monthly income transactions yet.
   const recurringIncome = monthlyIncomeFromTransactions(data.expenses);
   const baseIncome = data.preferences.monthlyIncome || 0;
-  const monthlyIncome = recurringIncome + baseIncome;
-  const netMonth = monthlyIncome - thisMonthExpenses;
+  const monthlyIncomeEstimate = recurringIncome + baseIncome;
+  const netMonth = incomeRecorded + monthlyIncomeEstimate - expensesTotal;
 
   const goalsTotal = data.goals.length;
   const goalsOnTrack = data.goals.filter((g) => g.target > 0 && g.current >= g.target).length;
+  const now = new Date();
   const activeGoals = data.goals.filter((g) => {
     if (!g.deadline) return true;
     return new Date(g.deadline) >= now;
@@ -512,6 +625,17 @@ function renderStats() {
   setText("[data-stat='total']", fmt(total, currency, true));
   const totalEl = document.querySelector("[data-stat='total']") as HTMLElement | null;
   if (totalEl) totalEl.classList.add("text-gradient-gold");
+
+  // Update the stat label to reflect the selected period
+  const periodLabel = formatRangeLabel(range);
+  const monthLabelEls = document.querySelectorAll<HTMLElement>("[data-stat-label='net-month']");
+  monthLabelEls.forEach((el) => {
+    el.textContent = `${periodLabel} · Net`;
+  });
+  const dashLabel = document.getElementById("dash-net-month-label");
+  if (dashLabel) {
+    dashLabel.textContent = `${periodLabel} · Net`;
+  }
 
   const netMonthEl = document.querySelector("[data-stat='net-month']") as HTMLElement | null;
   if (netMonthEl) {
@@ -528,6 +652,23 @@ function renderStats() {
   setText("[data-stat='alloc-total']", fmt(total, currency, true));
 }
 
+function formatRangeLabel(range: DateRange): string {
+  if (!range.active) return "This Month";
+  if (range.preset === "thisMonth") return "This Month";
+  if (range.preset === "last30") return "Last 30 days";
+  if (range.preset === "last3Months") return "Last 3 months";
+  if (range.preset === "last12Months") return "Last 12 months";
+  if (range.preset === "ytd") return "Year to date";
+  if (range.preset === "custom" && range.from && range.to) {
+    const fmtShort = (s: string) => {
+      const d = new Date(s);
+      return d.toLocaleString("en", { month: "short", day: "numeric" });
+    };
+    return `${fmtShort(range.from)} – ${fmtShort(range.to)}`;
+  }
+  return "Period";
+}
+
 function setText(sel: string, text: string) {
   const el = document.querySelector(sel) as HTMLElement | null;
   if (el) el.textContent = text;
@@ -538,7 +679,8 @@ function renderTopHoldings() {
   const currency = getCurrency();
   const root = document.getElementById("top-holdings");
   if (!root) return;
-  if (data.investments.length === 0) {
+  const invs = getInvestmentsAsOf(getRangeEndISO(), data.investments);
+  if (invs.length === 0) {
     root.innerHTML = `
       <div class="card-soft text-center py-4xl">
         <p class="text-display-sm text-ink mb-xs">No investments yet</p>
@@ -548,7 +690,7 @@ function renderTopHoldings() {
     root.querySelector("[data-open-quick-add]")?.addEventListener("click", openQuickAdd);
     return;
   }
-  const top = [...data.investments]
+  const top = [...invs]
     .sort((a, b) => b.currentValue - a.currentValue)
     .slice(0, 5);
   root.innerHTML = `
@@ -610,16 +752,20 @@ function renderEMISummary() {
   const currency = getCurrency();
   const root = document.getElementById("emi-summary");
   if (!root) return;
-  if (data.emis.length === 0) {
+  // Show loans that were active up to the end of the selected range (or current
+  // month when no range is set), and have outstanding > 0.
+  const cutoffISO = getRangeEndISO();
+  const activeEmis = data.emis.filter((e) => e.startDate <= cutoffISO && e.outstanding > 0);
+  if (activeEmis.length === 0) {
     root.innerHTML = `
       <div class="text-center py-3xl">
-        <p class="text-body-sm text-body mb-md">No active loans.</p>
+        <p class="text-body-sm text-body mb-md">${data.emis.length === 0 ? "No active loans." : "No loans were active in this month."}</p>
         <a href="/emi" class="btn-secondary" style="height: 32px; padding: 0 12px; font-size: 13px;">Add an EMI</a>
       </div>`;
     return;
   }
-  const totalEmi = totalEMI(data.emis);
-  const outstanding = totalOutstanding(data.emis);
+  const totalEmi = totalEMI(activeEmis);
+  const outstanding = totalOutstanding(activeEmis);
   const interest = outstanding * 0.12; // rough estimate
   root.innerHTML = `
     <div class="grid grid-cols-3 gap-md text-center mb-md">
@@ -633,11 +779,11 @@ function renderEMISummary() {
       </div>
       <div>
         <p class="text-caption-mono text-body">Active</p>
-        <p class="text-display-sm text-ink">${data.emis.length}</p>
+        <p class="text-display-sm text-ink">${activeEmis.length}</p>
       </div>
     </div>
     <ul class="space-y-xs">
-      ${data.emis
+      ${activeEmis
         .slice(0, 3)
         .map(
           (e) => `
@@ -733,6 +879,22 @@ document.querySelectorAll<HTMLButtonElement>("[data-range]").forEach((btn) => {
     renderGrowthChart();
   });
 });
+
+/* ── Date range filter ────────────────────────────────────── */
+window.addEventListener("gwp:daterange", () => {
+  renderAll();
+});
+
+// Sync the legacy month selector so the rest of the app behaves consistently
+// when the user has no custom range set.
+function syncLegacyMonthFromRange() {
+  const r = getSelectedRange();
+  if (!r.active && r.to) {
+    selectedMonth = r.to.slice(0, 7);
+  }
+}
+syncLegacyMonthFromRange();
+window.addEventListener("gwp:daterange", syncLegacyMonthFromRange);
 
 /* ── First-run banner ─────────────────────────────────────── */
 const firstRunBanner = document.getElementById("first-run-banner") as HTMLElement | null;

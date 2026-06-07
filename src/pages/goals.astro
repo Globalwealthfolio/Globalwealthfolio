@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import PageHeader from "../components/PageHeader.astro";
+import DateRangeFilter from "../components/DateRangeFilter.astro";
 ---
 
 <Layout title="Goals — Global Wealth Portfolio">
@@ -25,6 +26,10 @@ import PageHeader from "../components/PageHeader.astro";
         },
       ]}
     />
+
+    <div class="mb-2xl -mt-lg">
+      <DateRangeFilter id="goal-range" defaultPreset="all" showLabel={true} />
+    </div>
 
     <!-- Summary -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-md mb-2xl">
@@ -172,4 +177,6 @@ import PageHeader from "../components/PageHeader.astro";
 
 <script>
   import "../scripts/goals.ts";
+  import { initDateRangeFilter } from "../scripts/date-range-filter";
+  initDateRangeFilter();
 </script>

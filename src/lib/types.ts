@@ -364,3 +364,36 @@ export function timeToGoalCompletion(
   const longest = perInvestment.reduce((m, p) => (p.months == null ? m : Math.max(m, p.months)), 0);
   return { months: longest || null, perInvestment };
 }
+
+/* ── Month filter helpers ──────────────────────────────────── */
+/** Returns the "YYYY-MM" key for a given Date object. */
+export function monthKey(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+/** Parses a "YYYY-MM" string into a Date set to the first of that month. */
+export function parseMonthKey(key: string): Date | null {
+  if (!/^\d{4}-\d{2}$/.test(key)) return null;
+  const [y, m] = key.split("-").map(Number);
+  return new Date(y, m - 1, 1);
+}
+
+/** True when the given ISO date string falls in the "YYYY-MM" month. */
+export function isInMonth(isoDate: string, ymKey: string): boolean {
+  return isoDate.startsWith(ymKey);
+}
+
+/** Returns the YYYY-MM key for the previous month of the given key. */
+export function addMonths(ymKey: string, delta: number): string {
+  const d = parseMonthKey(ymKey);
+  if (!d) return ymKey;
+  d.setMonth(d.getMonth() + delta);
+  return monthKey(d);
+}
+
+/** Human label like "June 2026" for a "YYYY-MM" key. */
+export function formatMonthLabel(ymKey: string): string {
+  const d = parseMonthKey(ymKey);
+  if (!d) return ymKey;
+  return d.toLocaleString("en", { month: "long", year: "numeric" });
+}

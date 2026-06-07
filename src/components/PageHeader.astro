@@ -5,8 +5,12 @@ interface Props {
   primaryAction?: { label: string; href?: string; id?: string };
   secondaryAction?: { label: string; href?: string; id?: string };
   filters?: { id: string; options: { value: string; label: string }[]; label?: string }[];
+  showMonthFilter?: boolean;
+  monthFilterId?: string;
 }
-const { title, description, primaryAction, secondaryAction, filters = [] } = Astro.props;
+const { title, description, primaryAction, secondaryAction, filters = [], showMonthFilter = false, monthFilterId = "month-filter" } = Astro.props;
+const now = new Date();
+const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 ---
 
 <div class="flex flex-col gap-md mb-2xl">
@@ -34,15 +38,36 @@ const { title, description, primaryAction, secondaryAction, filters = [] } = Ast
       )}
     </div>
   </div>
-  {filters.length > 0 && (
+  {(filters.length > 0 || showMonthFilter) && (
     <div class="flex flex-wrap items-center gap-sm">
+      {showMonthFilter && (
+        <div class="relative" data-month-filter-wrap>
+          <label class="sr-only" for={monthFilterId}>Filter by month</label>
+          <input
+            type="month"
+            id={monthFilterId}
+            class="input input-sm"
+            style="max-width: 180px; padding-right: 28px;"
+            value={currentMonth}
+            data-month-filter
+            aria-label="Filter by month"
+          />
+          <svg class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-body" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+      )}
       {filters.map((f) => (
         <select class="select" style="height: 32px; padding: 0 28px 0 10px; font-size: 13px; width: auto;" data-filter={f.id}>
           {f.options.map((o) => <option value={o.value}>{o.label}</option>)}
         </select>
       ))}
-      <input class="input input-sm" style="max-width: 220px;" type="search" placeholder="Search…" data-search />
+      {filters.length > 0 && (
+        <input class="input input-sm" style="max-width: 220px;" type="search" placeholder="Search…" data-search />
+      )}
     </div>
   )}
 </div>
-

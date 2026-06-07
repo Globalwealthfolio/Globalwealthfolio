@@ -14,12 +14,15 @@ import Layout from "../layouts/Layout.astro";
     </div>
 
     <!-- Method tabs -->
-    <div role="tablist" class="flex flex-wrap gap-1 p-1 bg-canvas-soft-2 rounded-full mb-2xl max-w-md">
+    <div role="tablist" class="flex flex-wrap gap-1 p-1 bg-canvas-soft-2 rounded-full mb-2xl max-w-2xl">
       <button role="tab" aria-selected="true" data-tab="file" class="tab-pill flex-1">
         Excel / CSV
       </button>
+      <button role="tab" aria-selected="false" data-tab="pdf" class="tab-pill flex-1">
+        PDF
+      </button>
       <button role="tab" aria-selected="false" data-tab="image" class="tab-pill flex-1">
-        Bank statement
+        Statement image
       </button>
       <button role="tab" aria-selected="false" data-tab="json" class="tab-pill flex-1">
         JSON backup
@@ -95,6 +98,127 @@ import Layout from "../layouts/Layout.astro";
           <div class="flex items-center justify-between">
             <p class="text-caption text-mute"><span id="xlsx-count">0</span> rows ready to import</p>
             <button id="xlsx-import" class="btn-primary" type="button">Import <span id="xlsx-count-2">0</span> rows</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PDF tab ────────────────────────────────────────────── -->
+    <div data-panel="pdf" class="hidden">
+      <div class="card-elevated">
+        <!-- Step 1: choose file + statement type -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-md mb-2xl">
+          <div id="pdf-drop" class="border-2 border-dashed border-hairline rounded-md p-3xl text-center cursor-pointer hover:border-ink transition-colors" tabindex="0" role="button" aria-label="Upload a PDF bank or depository statement">
+            <svg class="w-8 h-8 mx-auto mb-sm text-body" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <p class="text-body-sm-strong">Upload PDF</p>
+            <p class="text-caption text-mute mt-xs">.pdf up to ~20 MB</p>
+            <input type="file" id="pdf-input" accept=".pdf,application/pdf" class="hidden" />
+          </div>
+          <div>
+            <p class="text-caption-mono text-body mb-sm">Statement type</p>
+            <div class="space-y-sm">
+              <label class="flex items-start gap-sm cursor-pointer card-soft p-sm">
+                <input type="radio" name="pdf-mode" value="bank" class="mt-1 accent-current" checked data-pdf-mode />
+                <div>
+                  <p class="text-body-sm-strong">Bank / credit-card statement</p>
+                  <p class="text-caption text-mute">Extracts dated transactions and saves them as expenses.</p>
+                </div>
+              </label>
+              <label class="flex items-start gap-sm cursor-pointer card-soft p-sm">
+                <input type="radio" name="pdf-mode" value="depository" class="mt-1 accent-current" data-pdf-mode />
+                <div>
+                  <p class="text-body-sm-strong">Depository / Demat / broker note</p>
+                  <p class="text-caption text-mute">Extracts holdings and lets you import them as investments after review.</p>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress -->
+        <div id="pdf-progress-wrap" class="hidden mb-2xl">
+          <div class="card-soft">
+            <div class="flex items-center justify-between mb-xs">
+              <span class="text-body-sm" id="pdf-status">Ready</span>
+              <span class="text-caption text-mute" id="pdf-percent">0%</span>
+            </div>
+            <div class="h-1.5 bg-canvas-soft-2 rounded-full overflow-hidden mb-md">
+              <div id="pdf-progress-bar" class="h-full bg-gradient-gain transition-all" style="width: 0%"></div>
+            </div>
+            <p class="text-caption text-mute" id="pdf-strategy">All processing happens in your browser. The PDF never leaves your device.</p>
+          </div>
+        </div>
+
+        <!-- Detected transactions (bank mode) -->
+        <div id="pdf-result" class="hidden">
+          <div class="flex items-center justify-between mb-md">
+            <div>
+              <p class="text-caption-mono text-body">Detected transactions</p>
+              <p class="text-caption text-mute">Review before saving — deselect anything that's wrong.</p>
+            </div>
+            <div class="flex gap-sm">
+              <button id="pdf-select-all" type="button" class="btn-ghost">Select all</button>
+              <button id="pdf-deselect-all" type="button" class="btn-ghost">Deselect all</button>
+            </div>
+          </div>
+          <div class="card-soft p-0 overflow-hidden max-h-80 overflow-y-auto scroll-thin">
+            <table class="w-full text-body-sm">
+              <thead class="text-left text-caption-mono text-body bg-canvas-soft-2">
+                <tr>
+                  <th class="py-sm px-md w-8"></th>
+                  <th class="py-sm px-md">Date</th>
+                  <th class="py-sm px-md">Description</th>
+                  <th class="py-sm px-md">Type</th>
+                  <th class="py-sm px-md text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="pdf-tbody"></tbody>
+            </table>
+          </div>
+          <div class="flex items-center justify-between mt-md">
+            <p class="text-caption text-mute"><span id="pdf-selected-count">0</span> selected · <span id="pdf-total-count">0</span> detected</p>
+            <div class="flex gap-sm">
+              <button id="pdf-discard" type="button" class="btn-secondary">Discard</button>
+              <button id="pdf-import" type="button" class="btn-primary">Import as expenses</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detected holdings (depository mode) -->
+        <div id="pdf-holdings" class="hidden">
+          <div class="flex items-center justify-between mb-md">
+            <div>
+              <p class="text-caption-mono text-body">Detected holdings</p>
+              <p class="text-caption text-mute">Tick the rows you want to import. The script name becomes the asset name.</p>
+            </div>
+            <div class="flex gap-sm">
+              <button id="pdf-holdings-select-all" type="button" class="btn-ghost">Select all</button>
+              <button id="pdf-holdings-deselect-all" type="button" class="btn-ghost">Deselect all</button>
+            </div>
+          </div>
+          <div class="card-soft p-0 overflow-hidden max-h-80 overflow-y-auto scroll-thin">
+            <table class="w-full text-body-sm">
+              <thead class="text-left text-caption-mono text-body bg-canvas-soft-2">
+                <tr>
+                  <th class="py-sm px-md w-8"></th>
+                  <th class="py-sm px-md">Script</th>
+                  <th class="py-sm px-md text-right">Qty</th>
+                  <th class="py-sm px-md text-right">Value</th>
+                  <th class="py-sm px-md">As of</th>
+                </tr>
+              </thead>
+              <tbody id="pdf-holdings-tbody"></tbody>
+            </table>
+          </div>
+          <div class="flex items-center justify-between mt-md">
+            <p class="text-caption text-mute"><span id="pdf-holdings-selected-count">0</span> selected · <span id="pdf-holdings-total-count">0</span> detected</p>
+            <div class="flex gap-sm">
+              <button id="pdf-holdings-discard" type="button" class="btn-secondary">Discard</button>
+              <button id="pdf-holdings-import" type="button" class="btn-primary">Import as investments</button>
+            </div>
           </div>
         </div>
       </div>

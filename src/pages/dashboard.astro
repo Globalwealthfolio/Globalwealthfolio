@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import StatCard from "../components/StatCard.astro";
 import EmptyState from "../components/EmptyState.astro";
 import Button from "../components/Button.astro";
+import DateRangeFilter from "../components/DateRangeFilter.astro";
 ---
 
 <Layout title="Dashboard — Global Wealth Portfolio">
@@ -29,6 +30,7 @@ import Button from "../components/Button.astro";
         <p class="text-body-md text-body mt-sm leading-relaxed" data-greeting>Welcome back. A single view of how your money is doing today &mdash; total value, goal progress, active EMIs, and monthly cash flow.</p>
       </div>
       <div class="flex gap-sm flex-wrap shrink-0">
+        <DateRangeFilter id="dash-range" defaultPreset="all" showLabel={false} />
         <Button href="/import" variant="secondary" size="sm">
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -49,10 +51,10 @@ import Button from "../components/Button.astro";
 
     <!-- Stat grid -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-md mb-2xl">
-      <StatCard label="Total Portfolio" value="₹0" icon="coin" accent="gold" data-stat="total" />
-      <StatCard label="This Month · Net" value="₹0" icon="trend" data-stat="net-month" />
-      <StatCard label="Net Worth" value="₹0" icon="shield" data-stat="networth" />
-      <StatCard label="Goals on Track" value="0 / 0" icon="target" data-stat="goals" />
+      <StatCard label="Total Portfolio" value="₹0" icon="coin" accent="gold" stat="total" />
+      <StatCard label="This Month · Net" value="₹0" icon="trend" stat="net-month" labelId="dash-net-month-label" />
+      <StatCard label="Net Worth" value="₹0" icon="shield" stat="networth" />
+      <StatCard label="Goals on Track" value="0 / 0" icon="target" stat="goals" />
     </div>
 
     <!-- Main grid: chart + side cards -->
@@ -222,4 +224,7 @@ import Button from "../components/Button.astro";
 
 <script>
   import "../scripts/dashboard.ts";
+  import "../scripts/date-range-filter.ts";
+  import { initDateRangeFilter } from "../scripts/date-range-filter";
+  initDateRangeFilter();
 </script>

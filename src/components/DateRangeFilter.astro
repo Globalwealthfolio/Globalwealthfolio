@@ -1,0 +1,81 @@
+---
+interface Props {
+  id?: string;
+  defaultPreset?: "thisMonth" | "last30" | "last3Months" | "last12Months" | "ytd" | "all" | "custom";
+  showLabel?: boolean;
+}
+const { id = "date-range", defaultPreset = "all", showLabel = true } = Astro.props;
+
+const now = new Date();
+const isoToday = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+const firstOfMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
+// When the page defaults to "all time" we leave the from/to inputs blank so
+// the picker reflects the active preset before the JS hydrates.
+const initialFrom = defaultPreset === "all" ? "" : firstOfMonth;
+const initialTo = defaultPreset === "all" ? "" : isoToday;
+---
+
+<div
+  id={id}
+  class="flex flex-wrap items-center gap-sm"
+  data-date-range
+  data-default-preset={defaultPreset}
+>
+  {showLabel && (
+    <span class="text-caption-mono text-body shrink-0" data-date-range-label>Range</span>
+  )}
+
+  <div class="relative shrink-0">
+    <label class="sr-only" for={`${id}-preset`}>Date range preset</label>
+    <select
+      id={`${id}-preset`}
+      class="select"
+      style="height: 32px; padding: 0 28px 0 10px; font-size: 13px; width: auto;"
+      data-date-preset
+    >
+      <option value="thisMonth">This month</option>
+      <option value="last30">Last 30 days</option>
+      <option value="last3Months">Last 3 months</option>
+      <option value="last12Months">Last 12 months</option>
+      <option value="ytd">Year to date</option>
+      <option value="all">All time</option>
+      <option value="custom">Custom…</option>
+    </select>
+  </div>
+
+  <div class="flex items-center gap-xs shrink-0">
+    <label class="sr-only" for={`${id}-from`}>From date</label>
+    <input
+      type="date"
+      id={`${id}-from`}
+      class="input input-sm"
+      style="max-width: 150px;"
+      value={initialFrom}
+      data-date-from
+      aria-label="From date"
+    />
+    <span class="text-mute text-caption" aria-hidden="true">→</span>
+    <label class="sr-only" for={`${id}-to`}>To date</label>
+    <input
+      type="date"
+      id={`${id}-to`}
+      class="input input-sm"
+      style="max-width: 150px;"
+      value={initialTo}
+      max={isoToday}
+      data-date-to
+      aria-label="To date"
+    />
+  </div>
+
+  <button
+    type="button"
+    class="btn-ghost text-body shrink-0"
+    style="height: 32px; padding: 0 10px; font-size: 13px;"
+    data-date-clear
+    aria-label="Clear date range"
+    title="Clear date range"
+  >
+    Clear
+  </button>
+</div>

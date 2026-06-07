@@ -6,8 +6,10 @@ interface Props {
   hint?: string;
   icon?: "wallet" | "trend" | "shield" | "target" | "coin" | "chart";
   accent?: "default" | "gain" | "loss" | "gold";
+  stat?: string;
+  labelId?: string;
 }
-const { label, value, delta, hint, icon = "wallet", accent = "default" } = Astro.props;
+const { label, value, delta, hint, icon = "wallet", accent = "default", stat, labelId } = Astro.props;
 const deltaClass = delta == null ? "" : delta >= 0 ? "text-gain" : "text-loss";
 const deltaPrefix = delta == null ? "" : delta >= 0 ? "+" : "";
 const valueAccent =
@@ -16,7 +18,7 @@ const valueAccent =
 
 <div class="card flex flex-col gap-2 hover:shadow-level-3 transition-shadow group">
   <div class="flex items-center justify-between">
-    <span class="text-caption-mono text-body">{label}</span>
+    <span class="text-caption-mono text-body" id={labelId} data-stat-label={stat}>{label}</span>
     <span class="text-mute group-hover:text-gold transition-colors" aria-hidden="true">
       {icon === "wallet" && (
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -56,7 +58,7 @@ const valueAccent =
       )}
     </span>
   </div>
-  <div class:list={["text-display-md", valueAccent]} data-currency-target>
+  <div class:list={["text-display-md", valueAccent]} data-currency-target data-stat={stat}>
     {value}
   </div>
   {delta != null && (

@@ -5,9 +5,10 @@
  * - JSON backup restore + export
  */
 
-import { updateData, addAudit } from "../lib/store";
+import { updateData, addAudit, uid, nowISO, type Investment } from "../lib/store";
 import { parseSpreadsheet, autoMapColumns, buildEntities, importJSON, exportJSON, exportCSV, downloadFile, type ParsedSheet } from "../lib/import-export";
 import { ocrImage, transactionsToExpenses, type ParsedTransaction } from "../lib/ocr";
+import { importPdf, parseHoldings, type ParsedHolding, type PdfMode } from "../lib/pdf-import";
 
 /* ── Tabs ──────────────────────────────────────────────────── */
 const tabs = document.querySelectorAll<HTMLButtonElement>("[data-tab]");
@@ -439,6 +440,262 @@ document.getElementById("ocr-import")?.addEventListener("click", () => {
   imgPreviewWrap?.classList.add("hidden");
   ocrResult?.classList.add("hidden");
   if (imgInput) imgInput.value = "";
+});
+
+/* ═════════════════════════════════════════════════════════════
+   PDF TAB
+   ═════════════════════════════════════════════════════════════ */
+
+const pdfDrop = document.getElementById("pdf-drop") as HTMLElement | null;
+const pdfInput = document.getElementById("pdf-input") as HTMLInputElement | null;
+const pdfProgressWrap = document.getElementById("pdf-progress-wrap");
+const pdfStatusEl = document.getElementById("pdf-status");
+const pdfPercentEl = document.getElementById("pdf-percent");
+const pdfBar = document.getElementById("pdf-progress-bar");
+const pdfStrategyEl = document.getElementById("pdf-strategy");
+const pdfResult = document.getElementById("pdf-result");
+const pdfTbody = document.getElementById("pdf-tbody");
+const pdfHoldingsPanel = document.getElementById("pdf-holdings");
+const pdfHoldingsTbody = document.getElementById("pdf-holdings-tbody");
+
+let currentPdfFile: File | null = null;
+let currentPdfTransactions: ParsedTransaction[] = [];
+let currentPdfHoldings: ParsedHolding[] = [];
+let currentPdfMode: PdfMode = "bank";
+
+document.querySelectorAll<HTMLInputElement>("[data-pdf-mode]").forEach((r) => {
+  r.addEventListener("change", () => {
+    if (r.checked) currentPdfMode = r.value as PdfMode;
+  });
+});
+
+pdfDrop?.addEventListener("click", () => pdfInput?.click());
+pdfDrop?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    pdfInput?.click();
+  }
+});
+pdfDrop?.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  pdfDrop.classList.add("border-ink");
+});
+pdfDrop?.addEventListener("dragleave", () => pdfDrop.classList.remove("border-ink"));
+pdfDrop?.addEventListener("drop", async (e) => {
+  e.preventDefault();
+  pdfDrop.classList.remove("border-ink");
+  const file = e.dataTransfer?.files?.[0];
+  if (file && file.type === "application/pdf") await handlePdf(file);
+});
+pdfInput?.addEventListener("change", async (e) => {
+  const file = (e.target as HTMLInputElement).files?.[0];
+  if (file) await handlePdf(file);
+});
+
+async function handlePdf(file: File) {
+  currentPdfFile = file;
+  pdfProgressWrap?.classList.remove("hidden");
+  pdfResult?.classList.add("hidden");
+  pdfHoldingsPanel?.classList.add("hidden");
+  if (pdfStatusEl) pdfStatusEl.textContent = "Reading PDF…";
+  if (pdfPercentEl) pdfPercentEl.textContent = "0%";
+  if (pdfBar) pdfBar.style.width = "0%";
+  try {
+    const result = await importPdf(file, (p) => {
+      if (pdfStatusEl) pdfStatusEl.textContent = p.status;
+      if (pdfPercentEl) pdfPercentEl.textContent = `${Math.round(p.progress * 100)}%`;
+      if (pdfBar) pdfBar.style.width = `${Math.round(p.progress * 100)}%`;
+    });
+    if (pdfStrategyEl) {
+      pdfStrategyEl.textContent =
+        result.strategy === "text"
+          ? `Extracted from ${result.pageCount} page(s) using the PDF text layer in ${(result.durationMs / 1000).toFixed(1)}s.`
+          : `Scanned PDF — rendered ${result.pageCount} page(s) to images and ran OCR in ${(result.durationMs / 1000).toFixed(1)}s.`;
+    }
+    if (currentPdfMode === "bank") {
+      currentPdfTransactions = result.transactions;
+      renderPdfTransactions();
+      pdfResult?.classList.remove("hidden");
+    } else {
+      currentPdfHoldings = parseHoldings(result.text);
+      renderPdfHoldings();
+      pdfHoldingsPanel?.classList.remove("hidden");
+    }
+    addAudit({ action: "import", entity: "settings", description: `Imported PDF: ${file.name}` });
+  } catch (e) {
+    console.error(e);
+    if (pdfStatusEl) pdfStatusEl.textContent = "Failed to read the PDF. Please try a different file.";
+  }
+}
+
+function renderPdfTransactions() {
+  if (!pdfTbody) return;
+  if (currentPdfTransactions.length === 0) {
+    pdfTbody.innerHTML = `<tr><td colspan="5" class="text-center py-3xl text-body">No transactions detected. Try the other statement type or a clearer scan.</td></tr>`;
+    const sc = document.getElementById("pdf-selected-count");
+    const tc = document.getElementById("pdf-total-count");
+    if (sc) sc.textContent = "0";
+    if (tc) tc.textContent = "0";
+    return;
+  }
+  pdfTbody.innerHTML = currentPdfTransactions
+    .map(
+      (t, i) => `
+    <tr class="border-t border-hairline">
+      <td class="py-sm px-md"><input type="checkbox" data-pdf-tx="${i}" checked class="w-4 h-4 accent-current" aria-label="Select transaction" /></td>
+      <td class="py-sm px-md text-body">${t.date}</td>
+      <td class="py-sm px-md">${esc(t.description)}</td>
+      <td class="py-sm px-md"><span class="badge ${t.type === "credit" ? "badge-gain" : ""}">${t.type}</span></td>
+      <td class="py-sm px-md text-right text-body-sm-strong">${t.amount.toFixed(2)}</td>
+    </tr>`,
+    )
+    .join("");
+  const sc = document.getElementById("pdf-selected-count");
+  const tc = document.getElementById("pdf-total-count");
+  if (sc) sc.textContent = String(currentPdfTransactions.length);
+  if (tc) tc.textContent = String(currentPdfTransactions.length);
+}
+
+function renderPdfHoldings() {
+  if (!pdfHoldingsTbody) return;
+  if (currentPdfHoldings.length === 0) {
+    pdfHoldingsTbody.innerHTML = `<tr><td colspan="5" class="text-center py-3xl text-body">No holdings detected. The script/quantity/value columns could not be matched automatically.</td></tr>`;
+    const sc = document.getElementById("pdf-holdings-selected-count");
+    const tc = document.getElementById("pdf-holdings-total-count");
+    if (sc) sc.textContent = "0";
+    if (tc) tc.textContent = "0";
+    return;
+  }
+  pdfHoldingsTbody.innerHTML = currentPdfHoldings
+    .map(
+      (h, i) => `
+    <tr class="border-t border-hairline">
+      <td class="py-sm px-md"><input type="checkbox" data-pdf-h="${i}" checked class="w-4 h-4 accent-current" aria-label="Select holding" /></td>
+      <td class="py-sm px-md text-body-sm-strong">${esc(h.script)}</td>
+      <td class="py-sm px-md text-right">${h.quantity != null ? h.quantity.toLocaleString() : "—"}</td>
+      <td class="py-sm px-md text-right">${h.value != null ? h.value.toLocaleString() : "—"}</td>
+      <td class="py-sm px-md text-body">${h.asOf ?? "—"}</td>
+    </tr>`,
+    )
+    .join("");
+  const sc = document.getElementById("pdf-holdings-selected-count");
+  const tc = document.getElementById("pdf-holdings-total-count");
+  if (sc) sc.textContent = String(currentPdfHoldings.length);
+  if (tc) tc.textContent = String(currentPdfHoldings.length);
+}
+
+document.getElementById("pdf-select-all")?.addEventListener("click", () => {
+  document.querySelectorAll<HTMLInputElement>("[data-pdf-tx]").forEach((c) => (c.checked = true));
+  updatePdfSelectedCount();
+});
+document.getElementById("pdf-deselect-all")?.addEventListener("click", () => {
+  document.querySelectorAll<HTMLInputElement>("[data-pdf-tx]").forEach((c) => (c.checked = false));
+  updatePdfSelectedCount();
+});
+pdfTbody?.addEventListener("change", updatePdfSelectedCount);
+
+function updatePdfSelectedCount() {
+  const checked = document.querySelectorAll<HTMLInputElement>("[data-pdf-tx]:checked").length;
+  const sc = document.getElementById("pdf-selected-count");
+  if (sc) sc.textContent = String(checked);
+}
+
+document.getElementById("pdf-holdings-select-all")?.addEventListener("click", () => {
+  document.querySelectorAll<HTMLInputElement>("[data-pdf-h]").forEach((c) => (c.checked = true));
+  updatePdfHoldingsCount();
+});
+document.getElementById("pdf-holdings-deselect-all")?.addEventListener("click", () => {
+  document.querySelectorAll<HTMLInputElement>("[data-pdf-h]").forEach((c) => (c.checked = false));
+  updatePdfHoldingsCount();
+});
+pdfHoldingsTbody?.addEventListener("change", updatePdfHoldingsCount);
+
+function updatePdfHoldingsCount() {
+  const checked = document.querySelectorAll<HTMLInputElement>("[data-pdf-h]:checked").length;
+  const sc = document.getElementById("pdf-holdings-selected-count");
+  if (sc) sc.textContent = String(checked);
+}
+
+document.getElementById("pdf-discard")?.addEventListener("click", () => {
+  currentPdfTransactions = [];
+  currentPdfFile = null;
+  pdfResult?.classList.add("hidden");
+  pdfProgressWrap?.classList.add("hidden");
+  if (pdfInput) pdfInput.value = "";
+});
+
+document.getElementById("pdf-holdings-discard")?.addEventListener("click", () => {
+  currentPdfHoldings = [];
+  currentPdfFile = null;
+  pdfHoldingsPanel?.classList.add("hidden");
+  pdfProgressWrap?.classList.add("hidden");
+  if (pdfInput) pdfInput.value = "";
+});
+
+document.getElementById("pdf-import")?.addEventListener("click", () => {
+  const checked = Array.from(document.querySelectorAll<HTMLInputElement>("[data-pdf-tx]:checked")).map((c) => Number(c.dataset.pdfTx));
+  const selected = checked.map((i) => currentPdfTransactions[i]).filter(Boolean);
+  if (selected.length === 0) {
+    alert("Select at least one transaction to import.");
+    return;
+  }
+  const expenses = transactionsToExpenses(selected);
+  updateData((data) => {
+    data.expenses.push(...expenses);
+  });
+  addAudit({
+    action: "import",
+    entity: "expense",
+    description: `Imported ${expenses.length} expense(s) from PDF`,
+  });
+  alert(`Successfully imported ${expenses.length} expense(s) from the PDF.`);
+  currentPdfTransactions = [];
+  currentPdfFile = null;
+  pdfResult?.classList.add("hidden");
+  pdfProgressWrap?.classList.add("hidden");
+  if (pdfInput) pdfInput.value = "";
+});
+
+document.getElementById("pdf-holdings-import")?.addEventListener("click", () => {
+  const checked = Array.from(document.querySelectorAll<HTMLInputElement>("[data-pdf-h]:checked")).map((c) => Number(c.dataset.pdfH));
+  const selected = checked.map((i) => currentPdfHoldings[i]).filter(Boolean);
+  if (selected.length === 0) {
+    alert("Select at least one holding to import.");
+    return;
+  }
+  const ts = nowISO();
+  const investments: Investment[] = selected
+    .filter((h) => h.value != null && h.value > 0)
+    .map((h) => ({
+      id: uid(),
+      name: h.script,
+      type: "Equity",
+      amount: h.value ?? 0,
+      currentValue: h.value ?? 0,
+      date: h.asOf ?? ts.split("T")[0],
+      risk: 6,
+      notes: "Imported from PDF depository statement",
+      createdAt: ts,
+      updatedAt: ts,
+    }));
+  if (investments.length === 0) {
+    alert("None of the selected holdings had a recognisable value. Try a different statement.");
+    return;
+  }
+  updateData((data) => {
+    data.investments.push(...investments);
+  });
+  addAudit({
+    action: "import",
+    entity: "investment",
+    description: `Imported ${investments.length} holding(s) from PDF depository statement`,
+  });
+  alert(`Successfully imported ${investments.length} holding(s) from the PDF.`);
+  currentPdfHoldings = [];
+  currentPdfFile = null;
+  pdfHoldingsPanel?.classList.add("hidden");
+  pdfProgressWrap?.classList.add("hidden");
+  if (pdfInput) pdfInput.value = "";
 });
 
 /* ═════════════════════════════════════════════════════════════

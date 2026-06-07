@@ -1,13 +1,14 @@
 import { loadData, updateData, addAudit, uid, nowISO, subscribe } from "../lib/store";
 import {
   expensesByCategory,
-  monthlyExpenses,
   monthlyIncomeFromTransactions,
   isIncomeCategory,
+  formatMonthLabel,
   type Expense,
   type ExpenseCategory,
 } from "../lib/types";
 import { formatCurrency, type CurrencyCode } from "../lib/currency";
+import { getDateRange, isInRange } from "./date-range-filter";
 import {
   Chart,
   BarController,
@@ -34,6 +35,8 @@ Chart.register(
   PointElement,
   Filler,
 );
+import { applyChartDefaults, CHART_FONT_FAMILY } from "./chart-defaults";
+applyChartDefaults();
 
 function getCurrency(): CurrencyCode {
   return (document.documentElement.dataset.currency ?? "INR") as CurrencyCode;
@@ -44,6 +47,30 @@ function fmt(n: number, compact = false): string {
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
+function isDark(): boolean {
+  return document.documentElement.classList.contains("dark");
+}
+function chartTooltip() {
+  return {
+    backgroundColor: "rgba(10, 10, 10, 0.94)",
+    titleColor: "#ffffff",
+    bodyColor: "#ffffff",
+    borderColor: "rgba(255,255,255,0.08)",
+    borderWidth: 1,
+    padding: 10,
+    cornerRadius: 6,
+    displayColors: false,
+    titleFont: { weight: 600 },
+    bodyFont: { weight: 500 },
+  };
+}
+function chartAxisColors() {
+  const dark = isDark();
+  return {
+    tick: dark ? "rgba(220,220,220,0.75)" : "rgba(80,80,80,0.75)",
+    grid: dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+  };
+}
 
 let filterType = "all";
 let filterCategory = "all";
@@ -52,6 +79,13 @@ let searchTerm = "";
 
 let catChart: Chart | null = null;
 let trendChart: Chart | null = null;
+
+const monthFilterEl = document.querySelector<HTMLInputElement>("[data-month-filter]");
+let filterMonth = monthFilterEl?.value ?? "";
+
+function readFilterMonth(): string {
+  return monthFilterEl?.value ?? filterMonth;
+}
 
 const modal = document.getElementById("expense-modal") as HTMLDialogElement | null;
 const form = document.getElementById("expense-form") as HTMLFormElement | null;
@@ -169,6 +203,15 @@ function filteredExpenses() {
   if (filterType !== "all") rows = rows.filter((r) => r.type === filterType);
   if (filterCategory !== "all") rows = rows.filter((r) => r.category === filterCategory);
   if (filterRecurring !== "all") rows = rows.filter((r) => r.recurring === filterRecurring);
+  // Date range takes priority when active; otherwise fall back to the legacy
+  // month selector.
+  const range = getDateRange();
+  if (range.active) {
+    rows = rows.filter((r) => isInRange(r.date, range));
+  } else {
+    const monthKey = readFilterMonth();
+    if (monthKey) rows = rows.filter((r) => r.date.startsWith(monthKey));
+  }
   if (searchTerm) {
     const term = searchTerm.toLowerCase();
     rows = rows.filter((r) => r.description.toLowerCase().includes(term) || r.notes?.toLowerCase().includes(term));
@@ -180,8 +223,17 @@ function renderTable() {
   const rows = filteredExpenses();
   const tbody = document.getElementById("expenses-tbody");
   if (!tbody) return;
+  const range = getDateRange();
+  let periodLabel = "";
+  if (range.active && range.from && range.to) {
+    const fmtShort = (s: string) => new Date(s).toLocaleString("en", { month: "short", day: "numeric", year: "numeric" });
+    periodLabel = ` between ${fmtShort(range.from)} – ${fmtShort(range.to)}`;
+  } else {
+    const monthKey = readFilterMonth();
+    if (monthKey) periodLabel = ` in ${formatMonthLabel(monthKey)}`;
+  }
   if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" class="text-center py-5xl text-body text-body">${loadData().expenses.length === 0 ? "No transactions yet. Click <strong>+ Add</strong> to get started." : "No transactions match your filters."}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" class="text-center py-5xl text-body text-body">${loadData().expenses.length === 0 ? "No transactions yet. Click <strong>+ Add</strong> to get started." : `No transactions match your filters${periodLabel}.`}</td></tr>`;
     return;
   }
   tbody.innerHTML = rows
@@ -238,41 +290,76 @@ function renderTable() {
 function renderStats() {
   const data = loadData();
   const rows = filteredExpenses();
-  const now = new Date();
-  const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-  const expensesThisMonth = rows.filter((e) => e.type !== "income" && e.date.startsWith(monthKey));
-  const incomeThisMonth = rows.filter((e) => e.type === "income" && e.date.startsWith(monthKey));
-  const thisMonth = expensesThisMonth.reduce((s, e) => s + e.amount, 0);
-  const incomeThisMonthTotal = incomeThisMonth.reduce((s, e) => s + e.amount, 0);
+  // When a custom date range is active, show totals for that range and label
+  // the stat cards accordingly. Otherwise fall back to the selected month.
+  const range = getDateRange();
+  const targetMonth = readFilterMonth() || `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+  const rangeExpenses = range.active
+    ? rows.filter((e) => e.type !== "income" && isInRange(e.date, range))
+    : rows.filter((e) => e.type !== "income" && e.date.startsWith(targetMonth));
+  const rangeIncome = range.active
+    ? rows.filter((e) => e.type === "income" && isInRange(e.date, range))
+    : rows.filter((e) => e.type === "income" && e.date.startsWith(targetMonth));
+  const periodSpent = rangeExpenses.reduce((s, e) => s + e.amount, 0);
+  const periodIncome = rangeIncome.reduce((s, e) => s + e.amount, 0);
+
+  // 3-month average is anchored on the range's end (or the target month)
+  const anchorMonth = range.active && range.to
+    ? range.to.slice(0, 7)
+    : targetMonth;
   const last3: string[] = [];
+  const [ty, tm] = anchorMonth.split("-").map(Number);
   for (let i = 2; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const d = new Date(ty, tm - 1 - i, 1);
     last3.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
   }
-  const last3Sum = rows.filter((e) => e.type !== "income" && last3.includes(e.date.slice(0, 7))).reduce((s, e) => s + e.amount, 0);
+  const last3Sum = data.expenses.filter((e) => e.type !== "income" && last3.includes(e.date.slice(0, 7))).reduce((s, e) => s + e.amount, 0);
   const avg = last3Sum / 3;
+
   const setText = (sel: string, text: string) => {
     const el = document.querySelector(sel) as HTMLElement | null;
     if (el) el.textContent = text;
   };
-  setText("[data-stat='thismonth']", fmt(thisMonth, true));
-  setText("[data-stat='income-month']", fmt(incomeThisMonthTotal, true));
+
+  // Update labels to reflect the active period
+  const periodLabel = formatRangeLabel(range);
+  document.querySelectorAll<HTMLElement>("[data-stat-label='thismonth']").forEach((el) => (el.textContent = `${periodLabel} · Spent`));
+  document.querySelectorAll<HTMLElement>("[data-stat-label='income-month']").forEach((el) => (el.textContent = `${periodLabel} · Income`));
+
+  setText("[data-stat='thismonth']", fmt(periodSpent, true));
+  setText("[data-stat='income-month']", fmt(periodIncome, true));
   setText("[data-stat='avg']", fmt(avg, true));
+
   // Savings rate uses monthly income transactions (recurring) + preferences monthly income
   const recurringIncome = monthlyIncomeFromTransactions(data.expenses.filter((e) => e.type === "income"));
   const baseIncome = data.preferences.monthlyIncome || 0;
   const monthlyIncome = recurringIncome + baseIncome;
   if (monthlyIncome > 0) {
-    const rate = ((monthlyIncome - thisMonth) / monthlyIncome) * 100;
+    const rate = ((monthlyIncome - periodSpent) / monthlyIncome) * 100;
     setText("[data-stat='savings']", `${rate >= 0 ? "+" : ""}${rate.toFixed(1)}%`);
   } else {
     setText("[data-stat='savings']", "—");
   }
 }
 
+function formatRangeLabel(range: ReturnType<typeof getDateRange>): string {
+  if (!range.active) return "This month";
+  if (range.preset === "thisMonth") return "This month";
+  if (range.preset === "last30") return "Last 30 days";
+  if (range.preset === "last3Months") return "Last 3 months";
+  if (range.preset === "last12Months") return "Last 12 months";
+  if (range.preset === "ytd") return "Year to date";
+  if (range.preset === "custom" && range.from && range.to) {
+    const fmtShort = (s: string) => new Date(s).toLocaleString("en", { month: "short", day: "numeric" });
+    return `${fmtShort(range.from)} – ${fmtShort(range.to)}`;
+  }
+  return "Period";
+}
+
 function renderCharts() {
   const rows = filteredExpenses();
   const inkColor = getComputedStyle(document.documentElement).getPropertyValue("--color-ink").trim() || "#171717";
+  const axis = chartAxisColors();
   const byCat = expensesByCategory(rows.filter((e) => e.type !== "income"));
   const catCanvas = document.getElementById("categoryChart") as HTMLCanvasElement | null;
   const trendCanvas = document.getElementById("trendChart") as HTMLCanvasElement | null;
@@ -293,29 +380,69 @@ function renderCharts() {
             },
           ],
         },
-        options: {
-          indexAxis: "y",
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false }, tooltip: { backgroundColor: inkColor, titleColor: "#fff", bodyColor: "#fff", callbacks: { label: (item) => fmt(item.parsed.x) } } },
-          scales: {
-            x: { grid: { color: "rgba(120,120,120,0.1)" }, ticks: { color: "rgba(120,120,120,0.7)", callback: (v) => fmt(Number(v), true) } },
-            y: { grid: { display: false }, ticks: { color: "rgba(120,120,120,0.7)" } },
+          options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                ...chartTooltip(),
+                titleFont: { family: CHART_FONT_FAMILY, size: 12, weight: 600 },
+                bodyFont: { family: CHART_FONT_FAMILY, size: 12, weight: 500 },
+                callbacks: { label: (item) => fmt(item.parsed.x) },
+              },
+            },
+            scales: {
+              x: {
+                grid: { color: axis.grid },
+                ticks: {
+                  color: axis.tick,
+                  font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 },
+                  callback: (v) => fmt(Number(v), true),
+                },
+              },
+              y: {
+                grid: { display: false },
+                ticks: { color: axis.tick, font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 } },
+              },
+            },
           },
-        },
-      });
-    }
-  }
-  if (trendCanvas) {
-    const ctx = trendCanvas.getContext("2d");
-    if (ctx) {
-      // Build last 6 months of income vs expense from all data
-      const now = new Date();
-      const monthKeys: string[] = [];
-      for (let i = 5; i >= 0; i--) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        monthKeys.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
+        });
       }
+    }
+    if (trendCanvas) {
+      const ctx = trendCanvas.getContext("2d");
+      if (ctx) {
+        // Build the month window covered by the selected range (or 6 months
+        // centered on the selected month when no range is active).
+        const target = readFilterMonth() || `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+        const range = getDateRange();
+        const [ty, tm] = target.split("-").map(Number);
+        const center = new Date(ty, tm - 1, 1);
+        const monthKeys: string[] = [];
+        let monthsBack = 5;
+        let monthsForward = 0;
+        if (range.active && range.from && range.to) {
+          const fromDate = new Date(range.from);
+          const toDate = new Date(range.to);
+          monthsBack = Math.max(
+            0,
+            (center.getFullYear() - fromDate.getFullYear()) * 12 + (center.getMonth() - fromDate.getMonth()),
+          );
+          monthsForward = Math.max(
+            0,
+            (toDate.getFullYear() - center.getFullYear()) * 12 + (toDate.getMonth() - center.getMonth()),
+          );
+          if (monthsBack + monthsForward > 18) {
+            const trim = monthsBack + monthsForward - 18;
+            monthsBack = Math.max(0, monthsBack - trim);
+          }
+        }
+        for (let i = monthsBack; i >= -monthsForward; i--) {
+          const d = new Date(center.getFullYear(), center.getMonth() - i, 1);
+          monthKeys.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
+        }
       const labels = monthKeys.map((mk) => {
         const [y, m] = mk.split("-");
         return new Date(Number(y), Number(m) - 1, 1).toLocaleString("en", { month: "short" });
@@ -354,22 +481,44 @@ function renderCharts() {
             },
           ],
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: "bottom", labels: { color: inkColor, boxWidth: 8, font: { size: 11 } } },
-            tooltip: { backgroundColor: inkColor, titleColor: "#fff", bodyColor: "#fff", callbacks: { label: (item) => `${item.dataset.label}: ${fmt(item.parsed.y)}` } },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  color: inkColor,
+                  boxWidth: 8,
+                  font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 },
+                },
+              },
+              tooltip: {
+                ...chartTooltip(),
+                titleFont: { family: CHART_FONT_FAMILY, size: 12, weight: 600 },
+                bodyFont: { family: CHART_FONT_FAMILY, size: 12, weight: 500 },
+                callbacks: { label: (item) => `${item.dataset.label}: ${fmt(item.parsed.y)}` },
+              },
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: axis.tick, font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 } },
+              },
+              y: {
+                grid: { color: axis.grid },
+                ticks: {
+                  color: axis.tick,
+                  font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 },
+                  callback: (v) => fmt(Number(v), true),
+                },
+              },
+            },
           },
-          scales: {
-            x: { grid: { display: false }, ticks: { color: "rgba(120,120,120,0.7)" } },
-            y: { grid: { color: "rgba(120,120,120,0.1)" }, ticks: { color: "rgba(120,120,120,0.7)", callback: (v) => fmt(Number(v), true) } },
-          },
-        },
-      });
+        });
+      }
     }
   }
-}
 
 function renderAll() {
   renderTable();
@@ -378,4 +527,5 @@ function renderAll() {
 }
 
 subscribe(renderAll);
+window.addEventListener("gwp:daterange", renderAll);
 renderAll();

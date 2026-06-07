@@ -1,6 +1,7 @@
 import { loadData, updateData, addAudit, uid, nowISO, subscribe } from "../lib/store";
 import { timeToGoalCompletion, type Goal, type GoalType } from "../lib/types";
 import { formatCurrency, getCurrencySymbol, type CurrencyCode } from "../lib/currency";
+import { getDateRange, isInRange } from "./date-range-filter";
 
 function getCurrency(): CurrencyCode {
   return (document.documentElement.dataset.currency ?? "INR") as CurrencyCode;
@@ -104,6 +105,12 @@ function filteredGoals() {
   const data = loadData();
   let rows = data.goals;
   if (filterType !== "all") rows = rows.filter((r) => r.type === filterType);
+  const range = getDateRange();
+  if (range.active) {
+    // Show goals whose deadline falls in the active range, or any goal with
+    // no deadline (we keep it visible so users can still see active work).
+    rows = rows.filter((r) => !r.deadline || isInRange(r.deadline, range));
+  }
   if (searchTerm) {
     const term = searchTerm.toLowerCase();
     rows = rows.filter((r) => r.name.toLowerCase().includes(term) || r.notes?.toLowerCase().includes(term));
@@ -111,13 +118,28 @@ function filteredGoals() {
   return rows;
 }
 
+function formatRangeLabel(range: ReturnType<typeof getDateRange>): string {
+  if (!range.active) return "";
+  if (range.preset === "thisMonth") return " due this month";
+  if (range.preset === "last30") return " due in the last 30 days";
+  if (range.preset === "last3Months") return " due in the last 3 months";
+  if (range.preset === "last12Months") return " due in the last 12 months";
+  if (range.preset === "ytd") return " due year to date";
+  if (range.preset === "custom" && range.from && range.to) {
+    const fmtShort = (s: string) => new Date(s).toLocaleString("en", { month: "short", day: "numeric", year: "numeric" });
+    return ` due between ${fmtShort(range.from)} – ${fmtShort(range.to)}`;
+  }
+  return "";
+}
+
 function renderTable() {
   const data = loadData();
   const rows = filteredGoals();
   const tbody = document.getElementById("goals-tbody");
   if (!tbody) return;
+  const periodLabel = formatRangeLabel(getDateRange());
   if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5xl text-body text-body">${loadData().goals.length === 0 ? "No goals yet. Click <strong>+ Add</strong> to get started." : "No goals match your filters."}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5xl text-body text-body">${loadData().goals.length === 0 ? "No goals yet. Click <strong>+ Add</strong> to get started." : `No goals match your filters${periodLabel}.`}</td></tr>`;
     return;
   }
   tbody.innerHTML = rows
@@ -245,4 +267,5 @@ function renderAll() {
 }
 
 subscribe(renderAll);
+window.addEventListener("gwp:daterange", renderAll);
 renderAll();

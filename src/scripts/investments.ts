@@ -10,6 +10,7 @@ import {
   type Goal,
 } from "../lib/types";
 import { formatCurrency, type CurrencyCode } from "../lib/currency";
+import { getDateRange, isInRange } from "./date-range-filter";
 
 function getCurrency(): CurrencyCode {
   return (document.documentElement.dataset.currency ?? "INR") as CurrencyCode;
@@ -129,26 +130,23 @@ let searchTerm = "";
 
 document.querySelector<HTMLSelectElement>("[data-filter='type']")?.addEventListener("change", (e) => {
   filterType = (e.target as HTMLSelectElement).value;
-  renderTable();
+  renderAll();
 });
 document.querySelector<HTMLSelectElement>("[data-filter='goal']")?.addEventListener("change", (e) => {
   filterGoal = (e.target as HTMLSelectElement).value;
-  renderTable();
+  renderAll();
 });
 document.querySelector<HTMLSelectElement>("[data-filter='risk']")?.addEventListener("change", (e) => {
   filterRisk = (e.target as HTMLSelectElement).value;
-  renderTable();
+  renderAll();
 });
 document.querySelector<HTMLInputElement>("[data-search]")?.addEventListener("input", (e) => {
   searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
-  renderTable();
+  renderAll();
 });
 
-function renderTable() {
+function filteredInvestments() {
   const data = loadData();
-  const tbody = document.getElementById("investments-tbody");
-  if (!tbody) return;
-  const goalMap = new Map(data.goals.map((g) => [g.id, g.name] as const));
   let rows = data.investments;
   if (filterType !== "all") rows = rows.filter((r) => r.type === filterType);
   if (filterGoal !== "all") rows = rows.filter((r) => r.goalId === filterGoal);
@@ -159,10 +157,23 @@ function renderTable() {
       return r.risk >= 7;
     });
   }
+  const range = getDateRange();
+  if (range.active) {
+    rows = rows.filter((r) => isInRange(r.date, range));
+  }
   if (searchTerm) {
     const term = searchTerm.toLowerCase();
     rows = rows.filter((r) => r.name.toLowerCase().includes(term) || r.notes?.toLowerCase().includes(term));
   }
+  return rows;
+}
+
+function renderTable() {
+  const data = loadData();
+  const tbody = document.getElementById("investments-tbody");
+  if (!tbody) return;
+  const goalMap = new Map(data.goals.map((g) => [g.id, g.name] as const));
+  const rows = filteredInvestments();
 
   // Refresh goal filter options dynamically
   const goalFilter = document.querySelector<HTMLSelectElement>("[data-filter='goal']");
@@ -173,11 +184,14 @@ function renderTable() {
     goalFilter.value = current;
   }
 
+  // Update the empty-state copy to mention the active period when relevant.
+  const periodLabel = formatRangeLabel(getDateRange());
+
   if (rows.length === 0) {
     tbody.innerHTML = `
       <tr>
         <td colspan="12" class="text-center py-5xl">
-          <div class="text-body-md text-body">${data.investments.length === 0 ? "No investments yet. Click <strong>+ Add</strong> to get started." : "No investments match your filters."}</div>
+          <div class="text-body-md text-body">${data.investments.length === 0 ? "No investments yet. Click <strong>+ Add</strong> to get started." : `No investments match your filters${periodLabel ? ` ${periodLabel}` : ""}.`}</div>
         </td>
       </tr>`;
     return;
@@ -258,21 +272,7 @@ function renderTable() {
 }
 
 function renderStats() {
-  const data = loadData();
-  let rows = data.investments;
-  if (filterType !== "all") rows = rows.filter((r) => r.type === filterType);
-  if (filterGoal !== "all") rows = rows.filter((r) => r.goalId === filterGoal);
-  if (filterRisk !== "all") {
-    rows = rows.filter((r) => {
-      if (filterRisk === "low") return r.risk <= 3;
-      if (filterRisk === "medium") return r.risk >= 4 && r.risk <= 6;
-      return r.risk >= 7;
-    });
-  }
-  if (searchTerm) {
-    const term = searchTerm.toLowerCase();
-    rows = rows.filter((r) => r.name.toLowerCase().includes(term) || r.notes?.toLowerCase().includes(term));
-  }
+  const rows = filteredInvestments();
   const invested = totalInvested(rows);
   const current = totalCurrent(rows);
   const gain = current - invested;
@@ -290,6 +290,20 @@ function renderStats() {
   setText("[data-stat='return']", `${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%`, gain >= 0 ? "text-gain" : "text-loss");
 }
 
+function formatRangeLabel(range: ReturnType<typeof getDateRange>): string {
+  if (!range.active) return "";
+  if (range.preset === "thisMonth") return "this month";
+  if (range.preset === "last30") return "in the last 30 days";
+  if (range.preset === "last3Months") return "in the last 3 months";
+  if (range.preset === "last12Months") return "in the last 12 months";
+  if (range.preset === "ytd") return "year to date";
+  if (range.preset === "custom" && range.from && range.to) {
+    const fmtShort = (s: string) => new Date(s).toLocaleString("en", { month: "short", day: "numeric", year: "numeric" });
+    return `between ${fmtShort(range.from)} – ${fmtShort(range.to)}`;
+  }
+  return "";
+}
+
 function renderAll() {
   populateGoalSelect();
   renderStats();
@@ -297,4 +311,5 @@ function renderAll() {
 }
 
 subscribe(renderAll);
+window.addEventListener("gwp:daterange", renderAll);
 renderAll();

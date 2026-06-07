@@ -1,6 +1,7 @@
 import { loadData, updateData, addAudit, uid, nowISO, subscribe } from "../lib/store";
-import { type EMI, type LoanType, totalEMI, totalOutstanding } from "../lib/types";
+import { type EMI, type LoanType, totalEMI, totalOutstanding, formatMonthLabel } from "../lib/types";
 import { formatCurrency, type CurrencyCode } from "../lib/currency";
+import { getDateRange, isInRange } from "./date-range-filter";
 
 function getCurrency(): CurrencyCode {
   return (document.documentElement.dataset.currency ?? "INR") as CurrencyCode;
@@ -14,6 +15,13 @@ function esc(s: string): string {
 
 let filterType = "all";
 let searchTerm = "";
+
+const monthFilterEl = document.querySelector<HTMLInputElement>("[data-month-filter]");
+let filterMonth = monthFilterEl?.value ?? "";
+
+function readFilterMonth(): string {
+  return monthFilterEl?.value ?? filterMonth;
+}
 
 const modal = document.getElementById("emi-modal") as HTMLDialogElement | null;
 const form = document.getElementById("emi-form") as HTMLFormElement | null;
@@ -122,6 +130,23 @@ function filteredEMIs() {
   const data = loadData();
   let rows = data.emis;
   if (filterType !== "all") rows = rows.filter((r) => r.type === filterType);
+  // Date range takes priority when active; otherwise fall back to the legacy
+  // month selector (used as a coarse "active in this month" filter).
+  const range = getDateRange();
+  const monthKey = readFilterMonth();
+  if (range.active) {
+    if (range.from) {
+      rows = rows.filter((r) => r.startDate >= range.from || (r.startDate <= range.from && (r.outstanding > 0)));
+    }
+    if (range.to) {
+      // Include loans that started on or before the range end
+      rows = rows.filter((r) => r.startDate <= range.to);
+    }
+  } else if (monthKey) {
+    const [y, m] = monthKey.split("-").map(Number);
+    const cutoffISO = new Date(y, m, 0).toISOString().split("T")[0];
+    rows = rows.filter((r) => r.startDate <= cutoffISO);
+  }
   if (searchTerm) {
     const term = searchTerm.toLowerCase();
     rows = rows.filter((r) => r.name.toLowerCase().includes(term) || r.notes?.toLowerCase().includes(term));
@@ -133,8 +158,17 @@ function renderTable() {
   const rows = filteredEMIs();
   const tbody = document.getElementById("emi-tbody");
   if (!tbody) return;
+  const range = getDateRange();
+  let periodLabel = "";
+  if (range.active && range.from && range.to) {
+    const fmtShort = (s: string) => new Date(s).toLocaleString("en", { month: "short", day: "numeric", year: "numeric" });
+    periodLabel = ` active between ${fmtShort(range.from)} – ${fmtShort(range.to)}`;
+  } else {
+    const monthKey = readFilterMonth();
+    if (monthKey) periodLabel = ` active in ${formatMonthLabel(monthKey)}`;
+  }
   if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="11" class="text-center py-5xl text-body text-body">${loadData().emis.length === 0 ? "No EMIs yet. Click <strong>+ Add EMI</strong> to get started." : "No loans match your filters."}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="11" class="text-center py-5xl text-body text-body">${loadData().emis.length === 0 ? "No EMIs yet. Click <strong>+ Add EMI</strong> to get started." : `No loans match your filters${periodLabel}.`}</td></tr>`;
     return;
   }
   tbody.innerHTML = rows
@@ -219,4 +253,5 @@ function renderAll() {
 }
 
 subscribe(renderAll);
+window.addEventListener("gwp:daterange", renderAll);
 renderAll();
