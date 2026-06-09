@@ -256,7 +256,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
   import { initDateRangeFilter } from "../scripts/date-range-filter";
   import { hasAnyData, seedSampleData } from "../lib/sample-data";
 
-  initDateRangeFilter();
+  try { initDateRangeFilter(); } catch (_) {}
 
   // Show empty-state banner when there is no data
   const banner = document.getElementById("exp-empty-banner");

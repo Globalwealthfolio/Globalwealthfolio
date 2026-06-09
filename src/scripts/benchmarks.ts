@@ -1,5 +1,5 @@
 import { loadData, subscribe } from "../lib/store";
-import type { Benchmark } from "../lib/types";
+import { BENCHMARKS, type Benchmark } from "../lib/types";
 import {
   Chart,
   BarController,
@@ -219,9 +219,11 @@ async function loadBenchmarks(force = false) {
   try {
     if (force) clearBenchmarkCache();
     const { benchmarks: data, live, fetchedAt: ts } = await fetchLiveBenchmarks();
-    benchmarks = data;
-    isLive = live;
-    fetchedAt = ts;
+    if (data && data.length > 0) {
+      benchmarks = data;
+      isLive = live;
+      fetchedAt = ts;
+    }
   } catch (e) {
     console.warn("[benchmarks] Failed to fetch live data, using static fallback.", e);
     isLive = false;
@@ -235,4 +237,7 @@ document.getElementById("refresh-benchmarks")?.addEventListener("click", () => {
 });
 
 subscribe(renderAll);
+
+benchmarks = [...BENCHMARKS];
+renderAll();
 loadBenchmarks();

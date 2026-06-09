@@ -65,7 +65,7 @@ function readCache(): CacheShape | null {
     const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as CacheShape;
-    if (!parsed?.ts || !Array.isArray(parsed.benchmarks)) return null;
+    if (!parsed?.ts || !Array.isArray(parsed.benchmarks) || parsed.benchmarks.length === 0) return null;
     if (Date.now() - parsed.ts > CACHE_TTL_MS) return null;
     return parsed;
   } catch {

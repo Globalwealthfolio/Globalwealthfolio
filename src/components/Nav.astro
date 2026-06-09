@@ -1,5 +1,12 @@
 ---
+import { currencies } from "../lib/currency";
 const path = Astro.url.pathname;
+
+const currencyList = Object.entries(currencies).map(([code, meta]) => ({
+  code,
+  symbol: meta.symbol,
+  name: meta.name,
+}));
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
@@ -112,6 +119,34 @@ const isActive = (href: string) => {
         </div>
       </div>
 
+      <div class="relative hidden sm:block" data-currency-menu>
+        <button type="button" class="btn-icon" data-currency-toggle aria-label="Change currency" aria-haspopup="menu">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </button>
+        <div
+          data-currency-dropdown
+          class="hidden absolute right-0 top-full mt-2 min-w-48 bg-canvas rounded-md shadow-level-4 p-1 z-50 max-h-80 overflow-y-auto scroll-thin"
+          role="menu"
+        >
+          {
+            currencyList.map((c) => (
+              <button
+                type="button"
+                class="w-full text-left px-3 py-1.5 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors"
+                data-set-currency={c.code}
+                role="menuitem"
+              >
+                <span class="mr-1.5 text-mute">{c.symbol}</span>
+                {c.name}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
       <a href="/settings" class="btn-icon hidden sm:inline-flex" aria-label="Settings">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="3"></circle>
@@ -183,22 +218,46 @@ const isActive = (href: string) => {
   const langMenu = document.querySelector("[data-lang-menu]");
   const langToggle = document.querySelector("[data-lang-toggle]");
   const langDropdown = document.querySelector("[data-lang-dropdown]");
+
+  // Currency menu
+  const currencyMenu = document.querySelector("[data-currency-menu]");
+  const currencyToggle = document.querySelector("[data-currency-toggle]");
+  const currencyDropdown = document.querySelector("[data-currency-dropdown]");
+
   langToggle?.addEventListener("click", (e) => {
     e.stopPropagation();
+    currencyDropdown?.classList.add("hidden");
     langDropdown?.classList.toggle("hidden");
-  });
-  document.addEventListener("click", (e) => {
-    if (!langMenu?.contains(e.target as Node)) {
-      langDropdown?.classList.add("hidden");
-    }
   });
   document.querySelectorAll<HTMLButtonElement>("[data-set-lang]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const code = btn.dataset.setLang!;
       window.gwp?.setLanguage(code as never);
       langDropdown?.classList.add("hidden");
+      currencyDropdown?.classList.add("hidden");
       // Re-render i18n strings
       window.dispatchEvent(new CustomEvent("gwp:lang", { detail: code }));
+    });
+  });
+
+  currencyToggle?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    langDropdown?.classList.add("hidden");
+    currencyDropdown?.classList.toggle("hidden");
+  });
+  document.addEventListener("click", (e) => {
+    if (!langMenu?.contains(e.target as Node)) {
+      langDropdown?.classList.add("hidden");
+    }
+    if (!currencyMenu?.contains(e.target as Node)) {
+      currencyDropdown?.classList.add("hidden");
+    }
+  });
+  document.querySelectorAll<HTMLButtonElement>("[data-set-currency]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const code = btn.dataset.setCurrency!;
+      window.gwp?.setCurrency(code as never);
+      currencyDropdown?.classList.add("hidden");
     });
   });
 

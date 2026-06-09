@@ -33,13 +33,13 @@ const initialTo = defaultPreset === "all" ? "" : isoToday;
       style="height: 32px; padding: 0 28px 0 10px; font-size: 13px; width: auto;"
       data-date-preset
     >
-      <option value="thisMonth">This month</option>
-      <option value="last30">Last 30 days</option>
-      <option value="last3Months">Last 3 months</option>
-      <option value="last12Months">Last 12 months</option>
-      <option value="ytd">Year to date</option>
-      <option value="all">All time</option>
-      <option value="custom">Custom…</option>
+      <option value="thisMonth" selected={defaultPreset === "thisMonth"}>This month</option>
+      <option value="last30" selected={defaultPreset === "last30"}>Last 30 days</option>
+      <option value="last3Months" selected={defaultPreset === "last3Months"}>Last 3 months</option>
+      <option value="last12Months" selected={defaultPreset === "last12Months"}>Last 12 months</option>
+      <option value="ytd" selected={defaultPreset === "ytd"}>Year to date</option>
+      <option value="all" selected={defaultPreset === "all"}>All time</option>
+      <option value="custom" selected={defaultPreset === "custom"}>Custom…</option>
     </select>
   </div>
 

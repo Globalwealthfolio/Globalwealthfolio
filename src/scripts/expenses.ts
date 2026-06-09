@@ -23,20 +23,22 @@ import {
   Filler,
 } from "chart.js";
 
-Chart.register(
-  BarController,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  LineController,
-  LineElement,
-  PointElement,
-  Filler,
-);
+try {
+  Chart.register(
+    BarController,
+    BarElement,
+    CategoryScale,
+    LinearScale,
+    Tooltip,
+    Legend,
+    LineController,
+    LineElement,
+    PointElement,
+    Filler,
+  );
+} catch (_) {}
 import { applyChartDefaults, CHART_FONT_FAMILY } from "./chart-defaults";
-applyChartDefaults();
+try { applyChartDefaults(); } catch (_) {}
 
 function getCurrency(): CurrencyCode {
   return (document.documentElement.dataset.currency ?? "INR") as CurrencyCode;
@@ -44,8 +46,8 @@ function getCurrency(): CurrencyCode {
 function fmt(n: number, compact = false): string {
   return formatCurrency(n, getCurrency(), { compact, decimals: compact ? 1 : 0 });
 }
-function esc(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+function esc(s: string | null | undefined): string {
+  return (s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 function isDark(): boolean {
   return document.documentElement.classList.contains("dark");
@@ -291,19 +293,26 @@ function renderStats() {
   const data = loadData();
   const rows = filteredExpenses();
   // When a custom date range is active, show totals for that range and label
-  // the stat cards accordingly. Otherwise fall back to the selected month.
+  // the stat cards accordingly. Otherwise fall back to the selected month
+  // (or all data when "All time" is selected).
   const range = getDateRange();
-  const targetMonth = readFilterMonth() || `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+  const monthFilter = readFilterMonth();
+  const currentMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+  const targetMonth = monthFilter || currentMonth;
   const rangeExpenses = range.active
     ? rows.filter((e) => e.type !== "income" && isInRange(e.date, range))
-    : rows.filter((e) => e.type !== "income" && e.date.startsWith(targetMonth));
+    : monthFilter
+      ? rows.filter((e) => e.type !== "income" && e.date.startsWith(targetMonth))
+      : rows.filter((e) => e.type !== "income");
   const rangeIncome = range.active
     ? rows.filter((e) => e.type === "income" && isInRange(e.date, range))
-    : rows.filter((e) => e.type === "income" && e.date.startsWith(targetMonth));
+    : monthFilter
+      ? rows.filter((e) => e.type === "income" && e.date.startsWith(targetMonth))
+      : rows.filter((e) => e.type === "income");
   const periodSpent = rangeExpenses.reduce((s, e) => s + e.amount, 0);
   const periodIncome = rangeIncome.reduce((s, e) => s + e.amount, 0);
 
-  // 3-month average is anchored on the range's end (or the target month)
+  // 3-month average is anchored on the range's end (or the current month)
   const anchorMonth = range.active && range.to
     ? range.to.slice(0, 7)
     : targetMonth;
@@ -524,9 +533,11 @@ function renderCharts() {
   }
 
 function renderAll() {
-  renderTable();
-  renderStats();
-  renderCharts();
+  try {
+    renderTable();
+    renderStats();
+    renderCharts();
+  } catch (_) {}
 }
 
 subscribe(renderAll);
