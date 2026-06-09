@@ -1,0 +1,101 @@
+---
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+const faqItems: FAQItem[] = [
+  {
+    question: "What is an investment portfolio?",
+    answer: "<p>An investment portfolio is a collection of financial assets owned by an individual or institution. It includes a mix of investments such as stocks, bonds, mutual funds, exchange-traded funds (ETFs), real estate, gold, cryptocurrencies, and cash equivalents. Your portfolio represents your total investment holdings and is typically structured to balance risk and return according to your financial goals, time horizon, and risk tolerance. A well-managed investment portfolio helps you grow wealth over time while managing exposure to market volatility.</p>"
+  },
+  {
+    question: "What is in an investment portfolio?",
+    answer: "<p>An investment portfolio can contain a wide variety of assets including: <strong>Equities</strong> (individual stocks of publicly traded companies), <strong>Fixed Income</strong> (government and corporate bonds, debt mutual funds, fixed deposits), <strong>Gold &amp; Precious Metals</strong> (physical gold, Sovereign Gold Bonds, gold ETFs), <strong>Real Estate</strong> (direct property investments or REITs), <strong>Mutual Funds &amp; ETFs</strong> (professionally managed baskets of securities), <strong>Cash &amp; Equivalents</strong> (savings accounts, money market instruments), and <strong>Alternative Investments</strong> (cryptocurrencies, commodities, private equity). The specific mix depends on your financial goals, investment horizon, and risk appetite.</p>"
+  },
+  {
+    question: "How to build an investment portfolio?",
+    answer: "<p>Building an investment portfolio involves six key steps: <strong>1.</strong> Define your financial goals (retirement, home purchase, education, wealth creation). <strong>2.</strong> Assess your risk tolerance — how much volatility you can comfortably handle. <strong>3.</strong> Choose your asset allocation strategy (e.g., 60% equities, 30% debt, 10% gold). <strong>4.</strong> Select specific investments within each asset class. <strong>5.</strong> Start investing through lump sum or systematic investment plans (SIPs). <strong>6.</strong> Monitor and rebalance your portfolio periodically to maintain your target allocation. Tools like Global Wealth Portfolio make it easy to track all your investments in a single dashboard.</p>"
+  },
+  {
+    question: "How to start an investment portfolio?",
+    answer: "<p>Starting an investment portfolio is simpler than most people think. First, open a brokerage account or Demat account if you are in India, or use a portfolio tracker like Global Wealth Portfolio to manage holdings across multiple accounts. Set a realistic budget — even &#8377;500 or $10 per month is enough to begin. Start with low-cost diversified investments like index funds or ETFs that give you exposure to hundreds of companies at once. Set up automatic recurring investments (SIPs) to build the habit of consistent investing. Track your portfolio using a free investment portfolio manager to see your progress and stay motivated.</p>"
+  },
+  {
+    question: "How to diversify your investment portfolio?",
+    answer: "<p>Diversification is the practice of spreading your investments across different assets to reduce risk. Key strategies include: <strong>Across asset classes</strong> — combine equities, debt, gold, and real estate. <strong>Across sectors</strong> — invest in technology, healthcare, finance, energy, and consumer goods. <strong>Across geographies</strong> — include domestic and international markets (US, India, Europe, emerging markets). <strong>Across market caps</strong> — blend large-cap, mid-cap, and small-cap stocks. <strong>Across investment styles</strong> — mix growth and value stocks. A diversified portfolio ensures that a downturn in one area does not derail your overall financial plan.</p>"
+  },
+  {
+    question: "How to create an investment portfolio?",
+    answer: "<p>To create an investment portfolio from scratch, begin by taking stock of your current financial situation — income, expenses, existing savings, and debts. Define clear financial goals with timelines. Determine your risk profile (conservative, moderate, or aggressive). Select an asset allocation model that matches your profile — for example, a moderate investor might choose 50% equities, 30% debt, 10% gold, and 10% cash. Choose specific funds or stocks within each category, invest your capital according to the allocation, and use an investment portfolio manager like Global Wealth Portfolio to track everything in real time and rebalance when needed.</p>"
+  },
+  {
+    question: "How to diversify investment portfolio?",
+    answer: "<p>Portfolio diversification reduces risk by allocating your capital across investments that react differently to the same economic event. Practical diversification strategies include: investing across different asset classes (stocks, bonds, gold, real estate), sectors (defensive and cyclical), market capitalizations (large-cap stability with mid/small-cap growth potential), and geographic regions (domestic plus international exposure). You can also diversify by investment instrument — use a mix of direct stocks, mutual funds, ETFs, and fixed deposits. The goal is to ensure no single investment can significantly harm your overall portfolio returns.</p>"
+  },
+  {
+    question: "How to build an investment portfolio for beginners?",
+    answer: "<p>Beginners should follow a simple, proven approach: <strong>Start small</strong> — invest what you can afford consistently, even small amounts. <strong>Use index funds or ETFs</strong> — they provide instant diversification across hundreds of stocks with low fees. <strong>Focus on the big picture</strong> — prioritize asset allocation over stock-picking. <strong>Automate your investments</strong> — set up monthly SIPs or automatic transfers. <strong>Track everything</strong> — use a free dashboard like Global Wealth Portfolio to see all your investments in one place. <strong>Stay patient</strong> — investing is a long-term game; avoid the temptation to time the market or chase hot stocks. Let compounding do the heavy lifting over years.</p>"
+  }
+];
+---
+
+<section class="bg-canvas-soft py-5xl my-3xl" aria-label="Frequently Asked Questions about Investment Portfolios">
+  <div class="container-page">
+    <div class="max-w-4xl mx-auto">
+      <p class="text-caption-mono text-gold mb-sm">Frequently Asked Questions</p>
+      <h2 class="text-display-lg mb-lg">FAQs About Investment Portfolios</h2>
+      <div class="space-y-sm" id="faq-accordion" role="list">
+        {
+          faqItems.map((item, i) => (
+            <div class="card overflow-hidden transition-shadow" role="listitem">
+              <button
+                class="w-full flex items-center justify-between gap-sm text-left cursor-pointer"
+                aria-expanded="false"
+                aria-controls={`faq-answer-${i}`}
+                id={`faq-question-${i}`}
+                data-faq-toggle
+              >
+                <span class="font-medium text-ink">{item.question}</span>
+                <svg class="w-5 h-5 flex-shrink-0 transition-transform duration-300 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div
+                id={`faq-answer-${i}`}
+                class="overflow-hidden transition-all duration-300 max-h-0"
+                role="region"
+                aria-labelledby={`faq-question-${i}`}
+                data-faq-content
+              >
+                <div class="pt-sm text-body-md text-body leading-relaxed" set:html={item.answer} />
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('click', (e) => {
+    const toggle = e.target.closest('[data-faq-toggle]');
+    if (!toggle) return;
+
+    const content = toggle.nextElementSibling;
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+
+    document.querySelectorAll('[data-faq-toggle]').forEach((btn) => {
+      btn.setAttribute('aria-expanded', 'false');
+    });
+    document.querySelectorAll('[data-faq-content]').forEach((el) => {
+      el.style.maxHeight = '0';
+    });
+
+    if (!isOpen) {
+      toggle.setAttribute('aria-expanded', 'true');
+      content.style.maxHeight = content.scrollHeight + 'px';
+    }
+  });
+</script>

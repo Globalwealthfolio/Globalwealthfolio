@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import Button from "../components/Button.astro";
+import FAQ from "../components/FAQ.astro";
 
 const features = [
   {
@@ -430,6 +431,83 @@ const audiences = [
       </div>
     </div>
   </section>
+
+  <!-- FAQ Section -->
+  <FAQ />
+
+  <!-- JSON-LD FAQ Schema -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is an investment portfolio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "An investment portfolio is a collection of financial assets owned by an individual or institution. It includes a mix of investments such as stocks, bonds, mutual funds, exchange-traded funds (ETFs), real estate, gold, cryptocurrencies, and cash equivalents. Your portfolio represents your total investment holdings and is typically structured to balance risk and return according to your financial goals, time horizon, and risk tolerance."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is in an investment portfolio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "An investment portfolio can contain a wide variety of assets including: Equities (individual stocks of publicly traded companies), Fixed Income (government and corporate bonds, debt mutual funds, fixed deposits), Gold and Precious Metals (physical gold, Sovereign Gold Bonds, gold ETFs), Real Estate (direct property investments or REITs), Mutual Funds and ETFs (professionally managed baskets of securities), Cash and Equivalents (savings accounts, money market instruments), and Alternative Investments (cryptocurrencies, commodities, private equity). The specific mix depends on your financial goals, investment horizon, and risk appetite."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How to build an investment portfolio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Building an investment portfolio involves six key steps: 1. Define your financial goals (retirement, home purchase, education, wealth creation). 2. Assess your risk tolerance — how much volatility you can comfortably handle. 3. Choose your asset allocation strategy (e.g., 60% equities, 30% debt, 10% gold). 4. Select specific investments within each asset class. 5. Start investing through lump sum or systematic investment plans (SIPs). 6. Monitor and rebalance your portfolio periodically to maintain your target allocation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How to start an investment portfolio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Starting an investment portfolio is simpler than most people think. First, open a brokerage account or Demat account if you are in India, or use a portfolio tracker to manage holdings across multiple accounts. Set a realistic budget — even small amounts per month are enough to begin. Start with low-cost diversified investments like index funds or ETFs that give you exposure to hundreds of companies at once. Set up automatic recurring investments (SIPs) to build the habit of consistent investing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How to diversify your investment portfolio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Diversification is the practice of spreading your investments across different assets to reduce risk. Key strategies include: Across asset classes — combine equities, debt, gold, and real estate. Across sectors — invest in technology, healthcare, finance, energy, and consumer goods. Across geographies — include domestic and international markets (US, India, Europe, emerging markets). Across market caps — blend large-cap, mid-cap, and small-cap stocks. A diversified portfolio ensures that a downturn in one area does not derail your overall financial plan."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How to create an investment portfolio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "To create an investment portfolio from scratch, begin by taking stock of your current financial situation — income, expenses, existing savings, and debts. Define clear financial goals with timelines. Determine your risk profile (conservative, moderate, or aggressive). Select an asset allocation model that matches your profile. Choose specific funds or stocks within each category, invest your capital according to the allocation, and track everything in real time to rebalance when needed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How to diversify investment portfolio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Portfolio diversification reduces risk by allocating your capital across investments that react differently to the same economic event. Practical diversification strategies include: investing across different asset classes (stocks, bonds, gold, real estate), sectors (defensive and cyclical), market capitalizations (large-cap stability with mid/small-cap growth potential), and geographic regions (domestic plus international exposure). You can also diversify by investment instrument — use a mix of direct stocks, mutual funds, ETFs, and fixed deposits."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How to build an investment portfolio for beginners?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Beginners should follow a simple, proven approach: Start small — invest what you can afford consistently, even small amounts. Use index funds or ETFs — they provide instant diversification across hundreds of stocks with low fees. Focus on the big picture — prioritize asset allocation over stock-picking. Automate your investments — set up monthly SIPs or automatic transfers. Track everything — use a free dashboard to see all your investments in one place. Stay patient — investing is a long-term game; avoid the temptation to time the market or chase hot stocks."
+          }
+        }
+      ]
+    }
+  </script>
 
   <!-- JSON-LD Structured Data for Homepage -->
   <script type="application/ld+json">
