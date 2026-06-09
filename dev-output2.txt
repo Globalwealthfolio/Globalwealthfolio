@@ -1454,3 +1454,1729 @@ Error: Failed to load url astro:server-app.js (resolved id: astro:server-app.js)
 [vite] program reload
 [2m23:00:07[22m [34m[200][39m /blog [2m25ms[22m
 [vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:00:50[22m [34m[200][39m /blog [2m56ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:00:51[22m [34m[200][39m /blog [2m232ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:00:52[22m [34m[200][39m /blog [2m325ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:00:52[22m [34m[200][39m /blog [2m72ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:00:54[22m [34m[200][39m /blog [2m259ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:00:54[22m [34m[200][39m /blog [2m253ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:00:55[22m [34m[200][39m /blog [2m86ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:00:56[22m [34m[200][39m /blog [2m135ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:00:57[22m [34m[200][39m /blog [2m33ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:01:04[22m [34m[200][39m /blog [2m223ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:01:05[22m [34m[200][39m /blog [2m188ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:01:06[22m [34m[200][39m /blog [2m243ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:01:06[22m [34m[200][39m /blog [2m231ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:01:15[22m [34m[200][39m / [2m23ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:01:16[22m [34m[200][39m / [2m31ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:03:58[22m [34m[200][39m / [2m142ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:04:14[22m [34m[200][39m / [2m76ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:04:17[22m [34m[200][39m / [2m449ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:04:30[22m [34m[200][39m / [2m21ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:04:31[22m [34m[200][39m / [2m125ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:04:37[22m [34m[200][39m / [2m30ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:04:39[22m [34m[200][39m / [2m261ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:04:47[22m [34m[200][39m / [2m36ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:04:49[22m [34m[200][39m / [2m487ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:04:55[22m [34m[200][39m / [2m229ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:04:58[22m [34m[200][39m / [2m46ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:04:59[22m [34m[200][39m / [2m302ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:00[22m [34m[200][39m / [2m298ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:01[22m [34m[200][39m / [2m56ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:02[22m [34m[200][39m / [2m217ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:03[22m [34m[200][39m / [2m264ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:04[22m [34m[200][39m / [2m315ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:06[22m [34m[200][39m / [2m319ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:07[22m [34m[200][39m / [2m304ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:08[22m [34m[200][39m / [2m245ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:09[22m [34m[200][39m / [2m319ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:10[22m [34m[200][39m / [2m214ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:11[22m [34m[200][39m / [2m276ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:12[22m [34m[200][39m / [2m310ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:13[22m [34m[200][39m / [2m182ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:14[22m [34m[200][39m / [2m279ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:16[22m [34m[200][39m / [2m311ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:17[22m [34m[200][39m / [2m230ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:18[22m [34m[200][39m / [2m401ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:20[22m [34m[200][39m / [2m295ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:21[22m [34m[200][39m / [2m212ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:24[22m [34m[200][39m /blog [2m23ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:26[22m [34m[200][39m /dashboard [2m28ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:29[22m [34m[200][39m / [2m23ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:32[22m [34m[200][39m /contact [2m44ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:05:33[22m [34m[200][39m /contact [2m299ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:06:09[22m [34m[200][39m / [2m365ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:06:12[22m [34m[200][39m / [2m44ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:06:18[22m [34m[200][39m / [2m208ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:19[22m [34m[200][39m / [2m144ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:06:20[22m [34m[200][39m / [2m356ms[22m
+[2m23:06:20[22m [34m[200][39m / [2m264ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:21[22m [34m[200][39m / [2m373ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:22[22m [34m[200][39m / [2m265ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:23[22m [34m[200][39m / [2m372ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:24[22m [34m[200][39m / [2m168ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:25[22m [34m[200][39m / [2m145ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:26[22m [34m[200][39m / [2m218ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:27[22m [34m[200][39m / [2m216ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:37[22m [34m[watch][39m src/pages/blog.astro
+[vite] program reload
+[2m23:06:38[22m [34m[200][39m / [2m288ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:39[22m [34m[200][39m / [2m266ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:40[22m [34m[200][39m / [2m144ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:45[22m [34m[watch][39m src/pages/blog.astro
+[vite] program reload
+[2m23:06:46[22m [34m[200][39m / [2m73ms[22m
+[vite] program reload
+[2m23:06:46[22m [34m[200][39m / [2m35ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:48[22m [34m[200][39m / [2m38ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:06:53[22m [34m[200][39m / [2m37ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:06:54[22m [34m[200][39m / [2m319ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:55[22m [34m[200][39m / [2m176ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:56[22m [34m[200][39m / [2m246ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:57[22m [34m[200][39m / [2m333ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:58[22m [34m[200][39m / [2m379ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:59[22m [34m[200][39m / [2m219ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:06:59[22m [34m[200][39m / [2m123ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:07:06[22m [34m[200][39m / [2m294ms[22m
+[2m23:07:06[22m [34m[200][39m / [2m158ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:07:09[22m [34m[200][39m / [2m395ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:12[22m [34m[200][39m /blog [2m33ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:13[22m [34m[200][39m /blog [2m132ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:14[22m [34m[200][39m /blog [2m188ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:14[22m [34m[200][39m /blog [2m140ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:15[22m [34m[200][39m /blog [2m103ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:15[22m [34m[200][39m /blog [2m126ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:16[22m [34m[200][39m /blog [2m98ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:17[22m [34m[200][39m /blog [2m156ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:18[22m [34m[200][39m /blog [2m141ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:18[22m [34m[200][39m /blog [2m231ms[22m
+[2m23:07:18[22m [34m[200][39m /blog/how-to-use-this-portfolio-manager [2m56ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:19[22m [34m[200][39m /blog [2m140ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:19[22m [34m[200][39m /blog [2m112ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:20[22m [34m[200][39m /blog [2m131ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:07:22[22m [34m[200][39m /blog [2m506ms[22m
+[2m23:07:22[22m [34m[200][39m /blog [2m352ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:23[22m [34m[200][39m /blog [2m260ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:24[22m [34m[200][39m /blog [2m291ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:25[22m [34m[200][39m /blog [2m273ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:25[22m [34m[200][39m /blog [2m239ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:27[22m [34m[200][39m /blog [2m304ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:28[22m [34m[200][39m /blog [2m205ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:07:29[22m [34m[200][39m /blog [2m428ms[22m
+[2m23:07:29[22m [34m[200][39m /blog [2m316ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:31[22m [34m[200][39m /blog [2m241ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:31[22m [34m[200][39m /blog [2m160ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:32[22m [34m[200][39m /blog [2m167ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:33[22m [34m[200][39m /blog [2m245ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:34[22m [34m[200][39m /blog [2m273ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:35[22m [34m[200][39m /blog [2m266ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:36[22m [34m[200][39m /blog [2m257ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:37[22m [34m[200][39m /blog [2m152ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:38[22m [34m[200][39m /blog [2m156ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:38[22m [34m[200][39m /blog [2m163ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:39[22m [34m[200][39m /blog [2m156ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:40[22m [34m[200][39m /blog [2m163ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:41[22m [34m[200][39m /blog [2m154ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:41[22m [34m[200][39m /blog [2m157ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:42[22m [34m[200][39m /blog [2m197ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:43[22m [34m[200][39m /blog [2m207ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:44[22m [34m[200][39m /blog [2m267ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:45[22m [34m[200][39m /blog [2m232ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:46[22m [34m[200][39m /blog [2m238ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:47[22m [34m[200][39m /blog [2m168ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:47[22m [34m[200][39m /blog [2m149ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:48[22m [34m[200][39m /blog [2m153ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:49[22m [34m[200][39m /blog [2m185ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:50[22m [34m[200][39m /blog [2m230ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:50[22m [34m[200][39m /blog [2m232ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:51[22m [34m[200][39m /blog [2m236ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:53[22m [34m[200][39m /blog [2m275ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:53[22m [34m[200][39m /blog [2m154ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:54[22m [34m[200][39m /blog [2m147ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:55[22m [34m[200][39m /blog [2m161ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:56[22m [34m[200][39m /blog [2m264ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:56[22m [34m[200][39m /blog [2m160ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:57[22m [34m[200][39m /blog [2m154ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:58[22m [34m[200][39m /blog [2m155ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:59[22m [34m[200][39m /blog [2m252ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:07:59[22m [34m[200][39m /blog [2m169ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:00[22m [34m[200][39m /blog [2m247ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:01[22m [34m[200][39m /blog [2m158ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:02[22m [34m[200][39m /blog [2m181ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:03[22m [34m[200][39m /blog [2m259ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:03[22m [34m[200][39m /blog [2m171ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:04[22m [34m[200][39m /blog [2m261ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:05[22m [34m[200][39m /blog [2m346ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:06[22m [34m[200][39m /blog [2m155ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:07[22m [34m[200][39m /blog [2m163ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:07[22m [34m[200][39m /blog [2m151ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:08[22m [34m[200][39m /blog [2m155ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:09[22m [34m[200][39m /blog [2m232ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:10[22m [34m[200][39m /blog [2m216ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:11[22m [34m[200][39m /blog [2m298ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:12[22m [34m[200][39m /blog [2m190ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:13[22m [34m[200][39m /blog [2m277ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:14[22m [34m[200][39m /blog [2m236ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:15[22m [34m[200][39m /blog [2m272ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:16[22m [34m[200][39m /blog [2m279ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:17[22m [34m[200][39m /blog [2m28ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:18[22m [34m[200][39m /blog [2m188ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:19[22m [34m[200][39m /blog [2m197ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:19[22m [34m[200][39m /blog [2m144ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:20[22m [34m[200][39m /blog [2m157ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:21[22m [34m[200][39m /blog [2m197ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:22[22m [34m[200][39m /blog [2m227ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:22[22m [34m[200][39m /blog [2m107ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:23[22m [34m[200][39m /blog [2m131ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:24[22m [34m[200][39m /blog [2m151ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:24[22m [34m[200][39m /blog [2m151ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:25[22m [34m[200][39m /blog [2m174ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:26[22m [34m[200][39m /blog [2m154ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:27[22m [34m[200][39m /blog [2m242ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:08:28[22m [34m[200][39m /blog [2m241ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:25[22m [34m[200][39m /blog [2m20ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:26[22m [34m[200][39m /blog [2m211ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:27[22m [34m[200][39m /blog [2m176ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:27[22m [34m[200][39m /blog [2m158ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:28[22m [34m[200][39m /blog [2m233ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:29[22m [34m[200][39m /blog [2m158ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:30[22m [34m[200][39m /blog [2m241ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:46[22m [34m[200][39m /blog/step-by-step-goals-financial-freedom [2m83ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:47[22m [34m[200][39m /blog/step-by-step-goals-financial-freedom [2m95ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:48[22m [34m[200][39m /blog/step-by-step-goals-financial-freedom [2m81ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:49[22m [34m[200][39m /blog/step-by-step-goals-financial-freedom [2m45ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:50[22m [34m[200][39m /blog/step-by-step-goals-financial-freedom [2m73ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:51[22m [34m[200][39m /blog/step-by-step-goals-financial-freedom [2m65ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:09:51[22m [34m[200][39m /blog/step-by-step-goals-financial-freedom [2m47ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:10:53[22m [34m[200][39m /blog [2m30ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:10:59[22m [34m[200][39m /blog [2m185ms[22m
+[2m23:10:59[22m [34m[200][39m /blog [2m87ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:00[22m [34m[200][39m /blog [2m182ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:11:01[22m [34m[200][39m /blog [2m236ms[22m
+[2m23:11:01[22m [34m[200][39m /blog [2m111ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:02[22m [34m[200][39m /blog [2m306ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:04[22m [34m[200][39m /blog [2m296ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:05[22m [34m[200][39m /blog [2m283ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:06[22m [34m[200][39m /blog [2m350ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:07[22m [34m[200][39m /blog [2m298ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:08[22m [34m[200][39m /blog [2m312ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:09[22m [34m[200][39m /blog [2m219ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:10[22m [34m[200][39m /blog [2m239ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:11[22m [34m[200][39m /blog [2m202ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:13[22m [34m[200][39m /blog [2m48ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:14[22m [34m[200][39m /blog [2m256ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:15[22m [34m[200][39m /blog [2m215ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:16[22m [34m[200][39m /blog [2m347ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:17[22m [34m[200][39m /blog [2m199ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:18[22m [34m[200][39m /blog [2m264ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:20[22m [34m[200][39m /blog [2m274ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:21[22m [34m[200][39m /blog [2m44ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:11:29[22m [34m[watch][39m src/pages/blog.astro
+[vite] program reload
+[2m23:11:30[22m [34m[200][39m /blog [2m593ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:11:32[22m [34m[200][39m /blog [2m91ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:11:37[22m [34m[watch][39m src/pages/blog.astro
+[vite] program reload
+[2m23:11:38[22m [34m[200][39m /blog [2m640ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:11:40[22m [34m[200][39m /blog [2m53ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:11:54[22m [34m[200][39m /blog [2m17ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:12:03[22m [34m[200][39m /blog [2m51ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:12:05[22m [34m[200][39m /blog [2m27ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:12:06[22m [34m[200][39m /blog [2m140ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:12:12[22m [34m[200][39m /blog [2m42ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:12:14[22m [34m[200][39m /blog [2m34ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:33[22m [34m[200][39m /blog [2m13ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:34[22m [34m[200][39m /blog [2m62ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:35[22m [34m[200][39m /blog [2m84ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:36[22m [34m[200][39m /blog [2m58ms[22m
+[vite] program reload
+[2m23:12:37[22m [34m[200][39m /blog [2m43ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:12:37[22m [34m[200][39m /blog [2m52ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:38[22m [34m[200][39m /blog [2m36ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:38[22m [34m[200][39m /blog [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:39[22m [34m[200][39m /blog [2m55ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:40[22m [34m[200][39m /blog [2m31ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:41[22m [34m[200][39m /blog [2m83ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:41[22m [34m[200][39m /blog [2m56ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:42[22m [34m[200][39m /blog [2m82ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:43[22m [34m[200][39m /blog [2m54ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:44[22m [34m[200][39m /blog [2m60ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:44[22m [34m[200][39m /blog [2m62ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:45[22m [34m[200][39m /blog [2m93ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:46[22m [34m[200][39m /blog [2m60ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:12:47[22m [34m[200][39m /blog [2m53ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:13:00[22m [34m[200][39m /blog [2m22ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:13:05[22m [34m[200][39m /blog [2m95ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:13:07[22m [34m[200][39m /blog [2m45ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:19[22m [34m[200][39m /blog/track-expenses-with-investments [2m32ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:20[22m [34m[200][39m /blog/track-expenses-with-investments [2m50ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:20[22m [34m[200][39m /blog/track-expenses-with-investments [2m36ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:22[22m [34m[200][39m /blog/track-expenses-with-investments [2m38ms[22m
+[vite] program reload
+[2m23:13:22[22m [34m[watch][39m src/pages/blog.astro
+[2m23:13:23[22m [34m[200][39m /blog/track-expenses-with-investments [2m97ms[22m
+[2m23:13:23[22m [34m[200][39m /blog/track-expenses-with-investments [2m97ms[22m
+[2m23:13:23[22m [34m[200][39m /blog/track-expenses-with-investments [2m5ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:23[22m [34m[200][39m /blog/track-expenses-with-investments [2m20ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:13:25[22m [34m[200][39m /blog/track-expenses-with-investments [2m171ms[22m
+[2m23:13:25[22m [34m[200][39m /blog/track-expenses-with-investments [2m58ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:25[22m [34m[200][39m /blog/track-expenses-with-investments [2m29ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:26[22m [34m[200][39m /blog/track-expenses-with-investments [2m80ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:27[22m [34m[200][39m /blog/track-expenses-with-investments [2m65ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:28[22m [34m[200][39m /blog/track-expenses-with-investments [2m63ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:29[22m [34m[200][39m /blog/track-expenses-with-investments [2m58ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:30[22m [34m[200][39m /blog/track-expenses-with-investments [2m62ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:31[22m [34m[200][39m /blog/track-expenses-with-investments [2m98ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:13:37[22m [34m[200][39m /blog/track-expenses-with-investments [2m184ms[22m
+[2m23:13:37[22m [34m[200][39m /blog/track-expenses-with-investments [2m74ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:38[22m [34m[200][39m /blog/track-expenses-with-investments [2m69ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:38[22m [34m[200][39m /blog/track-expenses-with-investments [2m39ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:13:46[22m [34m[200][39m /blog/track-expenses-with-investments [2m253ms[22m
+[2m23:13:46[22m [34m[200][39m /blog/track-expenses-with-investments [2m99ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:47[22m [34m[200][39m /blog/track-expenses-with-investments [2m56ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:13:48[22m [34m[200][39m /blog/track-expenses-with-investments [2m255ms[22m
+[2m23:13:48[22m [34m[200][39m /blog/track-expenses-with-investments [2m98ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:13:55[22m [34m[200][39m /blog/track-expenses-with-investments [2m161ms[22m
+[2m23:13:55[22m [34m[200][39m /blog/track-expenses-with-investments [2m72ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:56[22m [34m[200][39m /blog/track-expenses-with-investments [2m51ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:13:56[22m [34m[200][39m /blog/track-expenses-with-investments [2m43ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:14:02[22m [34m[200][39m /blog/track-expenses-with-investments [2m155ms[22m
+[2m23:14:02[22m [34m[200][39m /blog/track-expenses-with-investments [2m69ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:14:03[22m [34m[200][39m /blog/track-expenses-with-investments [2m38ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:14:04[22m [34m[200][39m /blog [2m649ms[22m
+[2m23:14:04[22m [34m[200][39m /blog [2m512ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:14:05[22m [34m[200][39m /blog [2m58ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:14:06[22m [34m[200][39m /blog [2m59ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:14:07[22m [34m[200][39m /blog [2m43ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:14:09[22m [34m[200][39m /blog [2m35ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:14:20[22m [34m[200][39m /blog [2m29ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:14:29[22m [34m[200][39m /blog [2m35ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:14:32[22m [34m[200][39m /blog [2m84ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:14:34[22m [34m[200][39m /blog [2m43ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:14:38[22m [34m[200][39m /blog [2m56ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:36[22m [34m[200][39m /blog [2m19ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:36[22m [34m[200][39m /blog [2m64ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:37[22m [34m[200][39m /blog [2m59ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:38[22m [34m[200][39m /blog [2m72ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:39[22m [34m[200][39m /blog [2m45ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:40[22m [34m[200][39m /blog [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:40[22m [34m[200][39m /blog [2m76ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:41[22m [34m[200][39m /blog [2m36ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:42[22m [34m[200][39m /blog [2m56ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:42[22m [34m[200][39m /blog [2m58ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:44[22m [34m[200][39m /blog [2m29ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:44[22m [34m[200][39m /blog [2m58ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:45[22m [34m[200][39m /blog [2m57ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:46[22m [34m[200][39m /blog [2m87ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:47[22m [34m[200][39m /blog [2m92ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:48[22m [34m[200][39m /blog [2m68ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:49[22m [34m[200][39m /blog [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:49[22m [34m[200][39m /blog [2m48ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:50[22m [34m[200][39m /blog [2m73ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:51[22m [34m[200][39m /blog [2m55ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:51[22m [34m[200][39m /blog [2m53ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:52[22m [34m[200][39m /blog [2m50ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:53[22m [34m[200][39m /blog [2m44ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:54[22m [34m[200][39m /blog [2m63ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:55[22m [34m[200][39m /blog [2m56ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:55[22m [34m[200][39m /blog [2m73ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:56[22m [34m[200][39m /blog [2m68ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:57[22m [34m[200][39m /blog [2m69ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:58[22m [34m[200][39m /blog [2m59ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:59[22m [34m[200][39m /blog [2m53ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:15:59[22m [34m[200][39m /blog [2m57ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:00[22m [34m[200][39m /blog [2m54ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:01[22m [34m[200][39m /blog [2m84ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:02[22m [34m[200][39m /blog [2m92ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:03[22m [34m[200][39m /blog [2m56ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:04[22m [34m[200][39m /blog [2m63ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:04[22m [34m[200][39m /blog [2m71ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:05[22m [34m[200][39m /blog [2m51ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:06[22m [34m[200][39m /blog [2m58ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:07[22m [34m[200][39m /blog [2m76ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:08[22m [34m[200][39m /blog [2m80ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:09[22m [34m[200][39m /blog [2m86ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:10[22m [34m[200][39m /blog [2m94ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:11[22m [34m[200][39m /blog [2m55ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:12[22m [34m[200][39m /blog [2m50ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:12[22m [34m[200][39m /blog [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:13[22m [34m[200][39m /blog [2m92ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:14[22m [34m[200][39m /blog [2m51ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:15[22m [34m[200][39m /blog [2m80ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:16[22m [34m[200][39m /blog [2m80ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:17[22m [34m[200][39m /blog [2m97ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:18[22m [34m[200][39m /blog [2m81ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:19[22m [34m[200][39m /blog [2m91ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:16:20[22m [34m[200][39m /blog [2m41ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:17:04[22m [34m[200][39m /blog [2m37ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:17:25[22m [34m[200][39m /blog [2m307ms[22m
+[2m23:17:25[22m [34m[200][39m /blog [2m126ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:26[22m [34m[200][39m /blog [2m60ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:27[22m [34m[200][39m /blog [2m69ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:28[22m [34m[200][39m /blog [2m83ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:29[22m [34m[200][39m /blog [2m50ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:30[22m [34m[200][39m /blog [2m56ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:30[22m [34m[200][39m /blog [2m60ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:31[22m [34m[200][39m /blog [2m53ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:32[22m [34m[200][39m /blog [2m48ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:32[22m [34m[200][39m /blog [2m50ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:33[22m [34m[200][39m /blog [2m54ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:34[22m [34m[200][39m /blog [2m60ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:35[22m [34m[200][39m /blog [2m71ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:36[22m [34m[200][39m /blog [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:37[22m [34m[200][39m /blog [2m80ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:37[22m [34m[200][39m /blog [2m47ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:38[22m [34m[200][39m /blog [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:39[22m [34m[200][39m /blog [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:39[22m [34m[200][39m /blog [2m91ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:40[22m [34m[200][39m /blog [2m60ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:41[22m [34m[200][39m /blog [2m52ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:42[22m [34m[200][39m /blog [2m56ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:43[22m [34m[200][39m /blog [2m47ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:43[22m [34m[200][39m /blog [2m55ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:44[22m [34m[200][39m /blog [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:45[22m [34m[200][39m /blog [2m55ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:45[22m [34m[200][39m /blog [2m55ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:46[22m [34m[200][39m /blog [2m93ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:47[22m [34m[200][39m /blog [2m77ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:48[22m [34m[200][39m /blog [2m80ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:49[22m [34m[200][39m /blog [2m53ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:50[22m [34m[200][39m /blog [2m74ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:51[22m [34m[200][39m /blog [2m76ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:52[22m [34m[200][39m /blog [2m57ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:53[22m [34m[200][39m /blog [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:53[22m [34m[200][39m /blog [2m74ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:54[22m [34m[200][39m /blog [2m62ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:17:55[22m [34m[200][39m /blog [2m64ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:34[22m [34m[200][39m /blog [2m19ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:35[22m [34m[200][39m /blog [2m68ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:36[22m [34m[200][39m /blog [2m73ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:37[22m [34m[200][39m /blog [2m80ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:38[22m [34m[200][39m /blog [2m66ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:39[22m [34m[200][39m /blog [2m52ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:40[22m [34m[200][39m /blog [2m24ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:40[22m [34m[200][39m /blog [2m46ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:41[22m [34m[200][39m /blog [2m76ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:42[22m [34m[200][39m /blog [2m77ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:43[22m [34m[200][39m /blog [2m57ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:44[22m [34m[200][39m /blog [2m75ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:45[22m [34m[200][39m /blog [2m74ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:46[22m [34m[200][39m /blog [2m32ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:47[22m [34m[200][39m /blog [2m73ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:48[22m [34m[200][39m /blog [2m54ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:48[22m [34m[200][39m /blog [2m59ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:49[22m [34m[200][39m /blog [2m59ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:50[22m [34m[200][39m /blog [2m85ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:51[22m [34m[200][39m /blog [2m45ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:51[22m [34m[200][39m /blog [2m55ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:52[22m [34m[200][39m /blog [2m46ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:53[22m [34m[200][39m /blog [2m47ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:54[22m [34m[200][39m /blog [2m81ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:54[22m [34m[200][39m /blog [2m50ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:55[22m [34m[200][39m /blog [2m69ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:56[22m [34m[200][39m /blog [2m81ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:57[22m [34m[200][39m /blog [2m43ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:58[22m [34m[200][39m /blog [2m88ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:18:59[22m [34m[200][39m /blog [2m70ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:00[22m [34m[200][39m /blog [2m34ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:00[22m [34m[200][39m /blog [2m52ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:01[22m [34m[200][39m /blog [2m38ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:01[22m [34m[200][39m /blog [2m46ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:02[22m [34m[200][39m /blog [2m65ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:03[22m [34m[200][39m /blog [2m42ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:04[22m [34m[200][39m /blog [2m51ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:04[22m [34m[200][39m /blog [2m37ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:05[22m [34m[200][39m /blog [2m71ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:06[22m [34m[200][39m /blog [2m66ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:07[22m [34m[200][39m /blog [2m61ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:08[22m [34m[200][39m /blog [2m55ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:08[22m [34m[200][39m /blog [2m74ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:09[22m [34m[200][39m /blog [2m30ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:10[22m [34m[200][39m /blog [2m52ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:11[22m [34m[200][39m /blog [2m85ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:12[22m [34m[200][39m /blog [2m81ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:13[22m [34m[200][39m /blog [2m40ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:13[22m [34m[200][39m /blog [2m63ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:14[22m [34m[200][39m /blog [2m40ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:15[22m [34m[200][39m /blog [2m60ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:16[22m [34m[200][39m /blog [2m50ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:16[22m [34m[200][39m /blog [2m41ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:17[22m [34m[200][39m /blog [2m75ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:18[22m [34m[200][39m /blog [2m46ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:19[22m [34m[200][39m /blog [2m37ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:20[22m [34m[200][39m /blog [2m80ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:21[22m [34m[200][39m /blog [2m79ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:22[22m [34m[200][39m /blog [2m41ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:23[22m [34m[200][39m /blog [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:24[22m [34m[200][39m /blog [2m81ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:24[22m [34m[200][39m /blog [2m30ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:25[22m [34m[200][39m /blog [2m31ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:25[22m [34m[200][39m /blog [2m38ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:26[22m [34m[200][39m /blog [2m70ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:27[22m [34m[200][39m /blog [2m75ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:28[22m [34m[200][39m /blog [2m48ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:19:30[22m [34m[200][39m /blog [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:21:31[22m [34m[200][39m /blog [2m51ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:21:36[22m [34m[200][39m /blog [2m223ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:21:38[22m [34m[200][39m /blog [2m27ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:21:46[22m [34m[200][39m /blog [2m54ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:21:48[22m [34m[200][39m /blog [2m50ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:21:56[22m [34m[200][39m /blog [2m24ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:22:03[22m [34m[200][39m /blog [2m33ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:22:05[22m [34m[200][39m /blog [2m28ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:22:11[22m [34m[200][39m /blog [2m20ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:22:14[22m [34m[200][39m /blog [2m46ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:22:21[22m [34m[200][39m /blog [2m29ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:22:58[22m [34m[200][39m /blog [2m68ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:23:14[22m [34m[200][39m /blog [2m21ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:23:22[22m [34m[200][39m /blog [2m41ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:23:24[22m [34m[200][39m /blog [2m118ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:23:25[22m [34m[200][39m /blog [2m31ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:23:27[22m [34m[200][39m /blog [2m44ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:23:33[22m [34m[200][39m /blog [2m17ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:23:34[22m [34m[200][39m /blog [2m45ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:23:36[22m [34m[200][39m /blog [2m15ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:23:37[22m [34m[200][39m /blog [2m37ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:23:37[22m [34m[200][39m /blog [2m31ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:23:38[22m [34m[200][39m /blog [2m63ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:23:39[22m [34m[200][39m /blog [2m42ms[22m
+[vite] program reload
+[2m23:23:40[22m [34m[watch][39m src/pages/blog.astro
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:23:41[22m [34m[200][39m /blog [2m1223ms[22m
+[2m23:23:41[22m [34m[200][39m /blog [2m1223ms[22m
+[2m23:23:41[22m [34m[200][39m /blog [2m838ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:23:43[22m [34m[200][39m /blog [2m29ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:23:47[22m [34m[watch][39m src/pages/blog.astro
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:23:48[22m [34m[200][39m /blog [2m612ms[22m
+[2m23:23:48[22m [34m[200][39m /blog [2m548ms[22m
+[2m23:23:48[22m [34m[200][39m /blog [2m472ms[22m
+[2m23:23:49[22m [34m[200][39m /blog [2m129ms[22m
+[2m23:23:49[22m [34m[200][39m /blog [2m35ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:23:50[22m [34m[200][39m /blog [2m174ms[22m
+[2m23:23:50[22m [34m[200][39m /blog [2m107ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:23:51[22m [34m[200][39m /blog [2m55ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:23:52[22m [34m[200][39m /blog [2m83ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:23:53[22m [34m[200][39m /blog [2m101ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:23:54[22m [34m[200][39m /blog [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:23:57[22m [34m[200][39m /blog [2m58ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:24:11[22m [34m[200][39m /blog [2m163ms[22m
+[2m23:24:11[22m [34m[200][39m /blog [2m65ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:24:12[22m [34m[200][39m /blog [2m62ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:24:13[22m [34m[200][39m /blog [2m55ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:24:14[22m [34m[200][39m /blog [2m75ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:24:15[22m [34m[200][39m /blog [2m60ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:24:16[22m [34m[200][39m /blog [2m56ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:24:17[22m [34m[200][39m /blog [2m63ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:24:18[22m [34m[200][39m /blog [2m58ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:24:19[22m [34m[200][39m /blog [2m96ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:24:20[22m [34m[200][39m /blog [2m43ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:24:21[22m [34m[200][39m /blog [2m29ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:24:24[22m [34m[200][39m /blog [2m303ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:24:26[22m [34m[200][39m /blog [2m45ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:24:29[22m [34m[200][39m /blog [2m51ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:24:34[22m [34m[200][39m /blog [2m44ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:26:12[22m [34m[200][39m /blog [2m58ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:26:17[22m [34m[watch][39m src/pages/blog.astro
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:26:19[22m [34m[200][39m /blog [2m1034ms[22m
+[2m23:26:19[22m [34m[200][39m /blog [2m94ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:26:21[22m [34m[200][39m /blog [2m21ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:26:21[22m [34m[200][39m /blog [2m45ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:26:22[22m [34m[200][39m /blog [2m80ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:26:23[22m [34m[200][39m /blog [2m37ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:26:25[22m [34m[200][39m /blog [2m41ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:26:26[22m [34m[200][39m /blog [2m71ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:26:46[22m [34m[200][39m /blog [2m16ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:26:47[22m [34m[200][39m /blog [2m51ms[22m
+[vite] program reload
+[2m23:26:48[22m [34m[200][39m /blog [2m91ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m23:26:49[22m [34m[200][39m /blog [2m76ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:26:50[22m [34m[200][39m /blog [2m53ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:26:51[22m [34m[200][39m /blog [2m59ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:26:52[22m [34m[200][39m /blog [2m82ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:26:53[22m [34m[200][39m /blog [2m71ms[22m
+[vite] program reload
+[vite] program reload
+[2m23:26:54[22m [34m[200][39m /blog [2m43ms[22m
+[vite] program reload

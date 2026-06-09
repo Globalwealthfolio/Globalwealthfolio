@@ -1,31 +1,69 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import PageHeader from "../components/PageHeader.astro";
 ---
 
-<Layout title="Blog — Global Wealth Portfolio">
+<Layout
+  title="Blog — Global Wealth Portfolio | Investment, Expense, and Goal Tracking Guides"
+  description="Read expert guides on portfolio management, expense tracking, goal planning, and achieving financial freedom. Practical advice for global investors."
+>
   <section class="container-page page-section pt-3xl pb-2xl">
-    <PageHeader
-      title="Blog"
-      description="Capture your investment thesis, monthly reflections, or a long-form note for yourself. Posts live in your browser — private, exportable, and ready to read on every visit."
-      primaryAction={{ label: "+ New post", id: "add-blog" }}
-      filters={[
-        {
-          id: "status",
-          label: "Status",
-          options: [
-            { value: "published", label: "Published" },
-            { value: "draft", label: "Drafts" },
-            { value: "all", label: "All" },
-          ],
-        },
-        {
-          id: "tag",
-          label: "Tag",
-          options: [{ value: "all", label: "All Tags" }],
-        },
-      ]}
-    />
+    <p class="text-caption-mono text-gold mb-xs">Blog</p>
+    <h1 class="text-display-lg mb-md">Guides &amp; articles for smarter financial tracking.</h1>
+    <p class="text-body-lg text-body max-w-2xl mb-4xl leading-relaxed">
+      Practical advice on portfolio management, expense tracking, goal planning,
+      and building lasting financial freedom — written for global investors.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+      <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
+        <span class="badge badge-gain w-fit">Featured</span>
+        <h3 class="text-display-sm text-ink">How to Use This Portfolio Manager</h3>
+        <p class="text-body-md text-body leading-relaxed">A complete walkthrough — from importing your first investment to tracking expenses, setting goals, and monitoring benchmarks.</p>
+        <div class="flex items-center justify-between mt-auto pt-sm border-t border-hairline">
+          <span class="text-caption text-mute">Jun 9, 2026 · 6 min read</span>
+          <a href="/blog/how-to-use-this-portfolio-manager" class="text-body-sm text-link hover:underline">Read more →</a>
+        </div>
+      </article>
+      <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
+        <span class="badge badge-gain w-fit">Featured</span>
+        <h3 class="text-display-sm text-ink">Tracking Expenses Along With Investments</h3>
+        <p class="text-body-md text-body leading-relaxed">Why tracking both sides of your financial life gives you a complete picture and keeps your financial future safe.</p>
+        <div class="flex items-center justify-between mt-auto pt-sm border-t border-hairline">
+          <span class="text-caption text-mute">Jun 9, 2026 · 5 min read</span>
+          <a href="/blog/track-expenses-with-investments" class="text-body-sm text-link hover:underline">Read more →</a>
+        </div>
+      </article>
+      <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
+        <span class="badge badge-gain w-fit">Featured</span>
+        <h3 class="text-display-sm text-ink">Step-by-Step Goals for Financial Freedom</h3>
+        <p class="text-body-md text-body leading-relaxed">How breaking your financial goals into actionable steps with tracking and projections leads to lasting financial freedom.</p>
+        <div class="flex items-center justify-between mt-auto pt-sm border-t border-hairline">
+          <span class="text-caption text-mute">Jun 9, 2026 · 6 min read</span>
+          <a href="/blog/step-by-step-goals-financial-freedom" class="text-body-sm text-link hover:underline">Read more →</a>
+        </div>
+      </article>
+      <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
+        <span class="badge badge-gain w-fit">Featured</span>
+        <h3 class="text-display-sm text-ink">Financial Freedom Is Not a Luxury</h3>
+        <p class="text-body-md text-body leading-relaxed">Financial freedom is the foundation for a life lived on your own terms — and it is more accessible than you think.</p>
+        <div class="flex items-center justify-between mt-auto pt-sm border-t border-hairline">
+          <span class="text-caption text-mute">Jun 9, 2026 · 5 min read</span>
+          <a href="/blog/financial-freedom-necessity" class="text-body-sm text-link hover:underline">Read more →</a>
+        </div>
+      </article>
+    </div>
+
+    <hr class="border-hairline my-4xl" />
+
+    <!-- Your posts -->
+    <div class="mb-md">
+      <p class="text-caption-mono text-body mb-xs">Your posts</p>
+      <h2 class="text-display-md">Write your own journal.</h2>
+    </div>
+    <p class="text-body-md text-body mb-2xl">
+      Capture your investment thesis, monthly reflections, or a long-form note for yourself.
+      Posts live in your browser — private, exportable, and ready to read on every visit.
+    </p>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-2xl">
       <div class="card">
