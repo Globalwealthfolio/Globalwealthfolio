@@ -247,14 +247,14 @@ function renderTable() {
       const amountPrefix = e.type === "income" ? "+" : "−";
       return `
         <tr class="border-t border-hairline hover:bg-canvas-soft">
-          <td class="py-sm px-md text-mute">${idx + 1}</td>
+          <td class="py-sm px-md text-mute hide-mobile">${idx + 1}</td>
           <td class="py-sm px-md"><span class="badge ${typeBadgeCls}">${e.type === "income" ? "Income" : "Expense"}</span></td>
           <td class="py-sm px-md"><div class="text-body-sm-strong text-ink">${esc(e.description)}</div></td>
-          <td class="py-sm px-md"><span class="badge">${e.category}</span></td>
-          <td class="py-sm px-md text-body">${e.date}</td>
+          <td class="py-sm px-md hide-tablet"><span class="badge">${e.category}</span></td>
+          <td class="py-sm px-md text-body hide-tablet">${e.date}</td>
           <td class="py-sm px-md text-right text-body-sm-strong ${amountCls}">${amountPrefix}${fmt(e.amount)}</td>
-          <td class="py-sm px-md"><span class="badge ${recurringCls}">${recurringLabel}</span></td>
-          <td class="py-sm px-md text-body max-w-[14ch] truncate" title="${esc(e.notes ?? "")}">${esc(e.notes ?? "")}</td>
+          <td class="py-sm px-md hide-mobile"><span class="badge ${recurringCls}">${recurringLabel}</span></td>
+          <td class="py-sm px-md text-body max-w-[14ch] truncate hide-mobile" title="${esc(e.notes ?? "")}">${esc(e.notes ?? "")}</td>
           <td class="py-sm px-md text-right">
             <button class="btn-ghost" data-edit="${e.id}" type="button">Edit</button>
             <button class="btn-ghost text-loss" data-delete="${e.id}" type="button">Delete</button>
@@ -396,6 +396,10 @@ function renderCharts() {
             indexAxis: "y",
             responsive: true,
             maintainAspectRatio: false,
+            interaction: {
+              mode: "index",
+              intersect: true,
+            },
             plugins: {
               legend: { display: false },
               tooltip: {

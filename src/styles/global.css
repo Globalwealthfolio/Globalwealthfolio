@@ -213,6 +213,7 @@
     line-height: 1.5;
     font-feature-settings: "ss01", "ss02", "cv11";
     transition: background-color 200ms ease, color 200ms ease;
+    overflow-x: hidden;
   }
 
   ::selection {
@@ -464,6 +465,61 @@
 
 /* ── Utilities Layer ─────────────────────────────────────────── */
 @layer utilities {
+  /* ── Responsive helpers ────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .chart-sm { height: 11rem !important; }
+    .chart-doughnut-sm { width: 8rem !important; height: 8rem !important; }
+    .cashflow-sm { height: 8rem !important; }
+
+    /* Stat values: slightly smaller on mobile */
+    .stat-value { font-size: 1.25rem !important; line-height: 1.4 !important; }
+    .page-section { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+
+    /* Table column hiding on mobile */
+    table[data-table] th.hide-mobile,
+    table[data-table] td.hide-mobile { display: none !important; }
+
+    /* Smaller table cells */
+    table[data-table] th,
+    table[data-table] td { padding: 0.5rem 0.5rem !important; font-size: 0.75rem !important; }
+
+    /* Progress bar column width reset */
+    table[data-table] th.w-48,
+    table[data-table] td.w-48 { width: 6rem !important; }
+    table[data-table] th.w-32,
+    table[data-table] td.w-32 { width: 5rem !important; }
+
+    /* Smaller card padding */
+    .card { padding: 0.75rem !important; }
+    .card-elevated { padding: 1rem !important; }
+    .card-soft { padding: 0.75rem !important; }
+
+    /* Compact filter bars */
+    .filter-bar .select,
+    .filter-bar .input { height: 28px !important; font-size: 11px !important; }
+    .filter-bar .btn-ghost { height: 28px !important; padding: 0 6px !important; font-size: 11px !important; }
+
+    /* Smaller heading spacings */
+    .mb-2xl { margin-bottom: 1rem !important; }
+
+    /* Tighter form spacing on mobile */
+    .space-y-md > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem !important; }
+  }
+
+  /* Touch-friendly minimum tap targets */
+  @media (pointer: coarse) {
+    .btn-ghost, .btn-icon, button, [role="button"], .tab-pill { min-height: 40px; }
+    input, select, textarea { font-size: 16px !important; }
+  }
+
+  @media (min-width: 641px) and (max-width: 768px) {
+    .chart-sm { height: 14rem !important; }
+    .chart-doughnut-sm { width: 10rem !important; height: 10rem !important; }
+    .cashflow-sm { height: 10rem !important; }
+    table[data-table] th.hide-tablet,
+    table[data-table] td.hide-tablet { display: none !important; }
+  }
+
   .bg-canvas { background: var(--color-canvas); }
   .bg-canvas-soft { background: var(--color-canvas-soft); }
   .bg-canvas-soft-2 { background: var(--color-canvas-soft-2); }

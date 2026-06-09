@@ -7,7 +7,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
 ---
 
 <Layout title="Dashboard — Global Wealth Portfolio">
-  <section class="container-page pt-3xl pb-2xl">
+  <section class="container-page page-section pt-3xl pb-2xl">
     <!-- First-run empty state banner -->
     <div id="first-run-banner" class="hidden card-elevated bg-gradient-finance border border-gold/30 p-lg mb-2xl">
       <div class="flex flex-col md:flex-row items-start md:items-center gap-md">
@@ -23,34 +23,34 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
       </div>
     </div>
 
-    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-md mb-2xl">
-      <div class="flex-1 min-w-0 max-w-3xl">
-        <p class="text-caption-mono text-gold mb-xs">Overview</p>
-        <h1 class="text-display-lg">Dashboard</h1>
-        <p class="text-body-md text-body mt-sm leading-relaxed" data-greeting>Welcome back. A single view of how your money is doing today &mdash; total value, goal progress, active EMIs, and monthly cash flow.</p>
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-md mb-2xl">
+        <div class="flex-1 min-w-0 max-w-3xl">
+          <p class="text-caption-mono text-gold mb-xs">Overview</p>
+          <h1 class="text-display-lg max-sm:text-display-md">Dashboard</h1>
+          <p class="text-body-md text-body mt-sm leading-relaxed max-sm:text-body-sm" data-greeting>Welcome back. A single view of how your money is doing today &mdash; total value, goal progress, active EMIs, and monthly cash flow.</p>
+        </div>
+        <div class="flex gap-sm flex-wrap shrink-0">
+          <DateRangeFilter id="dash-range" defaultPreset="all" showLabel={false} />
+          <Button href="/import" variant="secondary" size="sm">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            Import
+          </Button>
+          <Button id="quick-add-investment" variant="primary" size="sm">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add investment
+          </Button>
+        </div>
       </div>
-      <div class="flex gap-sm flex-wrap shrink-0">
-        <DateRangeFilter id="dash-range" defaultPreset="all" showLabel={false} />
-        <Button href="/import" variant="secondary" size="sm">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
-          Import
-        </Button>
-        <Button id="quick-add-investment" variant="primary" size="sm">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          Add investment
-        </Button>
-      </div>
-    </div>
 
     <!-- Stat grid -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-md mb-2xl">
+    <div class="grid grid-cols-2 max-sm:grid-cols-2 md:grid-cols-4 gap-sm max-sm:gap-2 mb-2xl">
       <StatCard label="Total Portfolio" value="₹0" icon="coin" accent="gold" stat="total" />
       <StatCard label="This Month · Net" value="₹0" icon="trend" stat="net-month" labelId="dash-net-month-label" />
       <StatCard label="Net Worth" value="₹0" icon="shield" stat="networth" />
@@ -61,16 +61,16 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-md mb-2xl">
       <!-- Portfolio chart -->
       <div class="card lg:col-span-2">
-        <div class="flex items-center justify-between mb-md">
-          <h2 class="text-display-sm">Portfolio Growth</h2>
-          <div class="flex gap-1">
-            <button class="btn-ghost" data-range="1M" type="button">1M</button>
-            <button class="btn-ghost" data-range="6M" type="button">6M</button>
-            <button class="btn-ghost bg-canvas-soft-2 text-ink" data-range="1Y" type="button">1Y</button>
-            <button class="btn-ghost" data-range="All" type="button">All</button>
+        <div class="flex items-center justify-between mb-md gap-sm flex-wrap">
+          <h2 class="text-display-sm max-sm:text-sm max-sm:font-semibold">Portfolio Growth</h2>
+          <div class="flex gap-0.5">
+            <button class="btn-ghost max-sm:text-caption max-sm:px-1.5 max-sm:h-7" data-range="1M" type="button">1M</button>
+            <button class="btn-ghost max-sm:text-caption max-sm:px-1.5 max-sm:h-7" data-range="6M" type="button">6M</button>
+            <button class="btn-ghost bg-canvas-soft-2 text-ink max-sm:text-caption max-sm:px-1.5 max-sm:h-7" data-range="1Y" type="button">1Y</button>
+            <button class="btn-ghost max-sm:text-caption max-sm:px-1.5 max-sm:h-7" data-range="All" type="button">All</button>
           </div>
         </div>
-        <div class="h-64 relative" id="portfolio-chart">
+        <div class="h-48 max-sm:chart-sm relative" id="portfolio-chart">
           <canvas id="growthChart"></canvas>
         </div>
       </div>
@@ -79,11 +79,11 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
       <div class="card">
         <h2 class="text-display-sm mb-md">Asset Allocation</h2>
         <div class="flex items-center justify-center my-lg">
-          <div class="relative w-44 h-44">
+          <div class="relative w-36 h-36 max-sm:chart-doughnut-sm">
             <canvas id="allocationChart"></canvas>
             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <p class="text-caption-mono text-body">Total</p>
-              <p class="text-display-sm" data-stat="alloc-total">₹0</p>
+              <p class="text-body-sm-strong max-sm:text-caption" data-stat="alloc-total">₹0</p>
             </div>
           </div>
         </div>
@@ -151,7 +151,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
           <h2 class="text-display-sm">Monthly Cash Flow</h2>
           <a href="/expenses" class="text-body-sm text-link hover:underline">Manage →</a>
         </div>
-        <div id="cashflow" class="h-44">
+        <div id="cashflow" class="h-36 max-sm:cashflow-sm">
           <canvas id="cashflowChart"></canvas>
         </div>
       </div>
@@ -172,7 +172,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
           <label class="label" for="qa-name">Asset name *</label>
           <input class="input" type="text" id="qa-name" name="name" required placeholder="e.g. Reliance Industries" />
         </div>
-        <div class="grid grid-cols-2 gap-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>
             <label class="label" for="qa-type">Type *</label>
             <select class="select" id="qa-type" name="type" required>
@@ -195,7 +195,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
             <input class="input" type="date" id="qa-date" name="date" required />
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>
             <label class="label" for="qa-amount">Invested *</label>
             <input class="input" type="number" id="qa-amount" name="amount" min="0" step="any" required />

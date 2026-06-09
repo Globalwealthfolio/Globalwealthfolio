@@ -26,10 +26,10 @@ function render() {
       const dateStr = `${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
       return `
         <tr class="border-t border-hairline hover:bg-canvas-soft">
-          <td class="py-sm px-md text-caption text-mute font-mono whitespace-nowrap">${dateStr}</td>
-          <td class="py-sm px-md"><span class="badge ${actionColor(e.action)}">${e.action}</span></td>
-          <td class="py-sm px-md"><span class="badge">${e.entity}</span></td>
-          <td class="py-sm px-md text-body">${esc(e.description)}</td>
+          <td class="py-sm px-md text-caption text-mute font-mono whitespace-nowrap max-sm:text-[10px]">${dateStr}</td>
+          <td class="py-sm px-md"><span class="badge max-sm:text-[10px] ${actionColor(e.action)}">${e.action}</span></td>
+          <td class="py-sm px-md hide-mobile"><span class="badge">${e.entity}</span></td>
+          <td class="py-sm px-md text-body max-sm:text-xs">${esc(e.description)}</td>
         </tr>`;
     })
     .join("");

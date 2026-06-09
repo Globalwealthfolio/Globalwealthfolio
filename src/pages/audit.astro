@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Audit Trail — Global Wealth Portfolio">
-  <section class="container-page pt-3xl pb-2xl">
+  <section class="container-page page-section pt-3xl pb-2xl">
     <div class="mb-2xl max-w-3xl">
       <p class="text-caption-mono text-gold mb-xs">Audit Trail</p>
       <h1 class="text-display-lg">Activity log</h1>
@@ -20,12 +20,12 @@ import Layout from "../layouts/Layout.astro";
         <button id="clear-log" class="btn-ghost text-loss" type="button">Clear log</button>
       </div>
       <div class="max-h-[60vh] overflow-y-auto scroll-thin">
-        <table class="w-full text-body-sm">
+        <table class="w-full text-body-sm" data-table="audit">
           <thead class="sticky top-0 bg-canvas-soft-2 z-10">
             <tr class="text-left text-caption-mono text-body">
-              <th class="font-medium py-sm px-md w-44">When</th>
+              <th class="font-medium py-sm px-md w-44 max-sm:w-28">When</th>
               <th class="font-medium py-sm px-md w-24">Action</th>
-              <th class="font-medium py-sm px-md w-28">Entity</th>
+              <th class="font-medium py-sm px-md w-28 hide-mobile">Entity</th>
               <th class="font-medium py-sm px-md">Description</th>
             </tr>
           </thead>

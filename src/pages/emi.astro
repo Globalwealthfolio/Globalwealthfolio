@@ -5,7 +5,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
 ---
 
 <Layout title="EMI Tracker — Global Wealth Portfolio">
-  <section class="container-page pt-3xl pb-2xl">
+  <section class="container-page page-section pt-3xl pb-2xl">
     <PageHeader
       title="EMI Tracker"
       description="Track home, car, personal, and education loans side by side. Watch principal shrink over time."
@@ -55,29 +55,29 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
       </div>
     </div>
 
-    <div class="card p-0 overflow-hidden">
-      <div class="overflow-x-auto scroll-thin">
-        <table class="w-full text-body-sm">
-          <thead>
-            <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
-              <th class="font-medium py-sm px-md">#</th>
-              <th class="font-medium py-sm px-md">Loan</th>
-              <th class="font-medium py-sm px-md">Type</th>
-              <th class="font-medium py-sm px-md text-right">Principle Paid</th>
-              <th class="font-medium py-sm px-md text-right">EMI</th>
-              <th class="font-medium py-sm px-md text-right">Rate</th>
-              <th class="font-medium py-sm px-md text-right">Tenure</th>
-              <th class="font-medium py-sm px-md">Start</th>
-              <th class="font-medium py-sm px-md text-right">Outstanding</th>
-              <th class="font-medium py-sm px-md w-32">Progress</th>
-              <th class="font-medium py-sm px-md text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="emi-tbody">
-            <tr><td colspan="11" class="text-center py-5xl text-body">Loading…</td></tr>
-          </tbody>
-        </table>
-      </div>
+      <div class="card p-0 overflow-hidden">
+        <div class="overflow-x-auto scroll-thin">
+          <table class="w-full text-body-sm" data-table="emi">
+            <thead>
+              <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
+                <th class="font-medium py-sm px-md hide-mobile">#</th>
+                <th class="font-medium py-sm px-md">Loan</th>
+                <th class="font-medium py-sm px-md hide-mobile">Type</th>
+                <th class="font-medium py-sm px-md text-right hide-tablet">Principal</th>
+                <th class="font-medium py-sm px-md text-right">EMI</th>
+                <th class="font-medium py-sm px-md text-right hide-mobile">Rate</th>
+                <th class="font-medium py-sm px-md text-right hide-mobile">Tenure</th>
+                <th class="font-medium py-sm px-md hide-mobile">Start</th>
+                <th class="font-medium py-sm px-md text-right">Outstanding</th>
+                <th class="font-medium py-sm px-md w-32 max-sm:w-20">Progress</th>
+                <th class="font-medium py-sm px-md text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="emi-tbody">
+              <tr><td colspan="11" class="text-center py-5xl text-body">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
     </div>
   </section>
 
@@ -95,7 +95,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
           <label class="label" for="emi-name">Loan Name *</label>
           <input class="input" type="text" id="emi-name" name="name" required />
         </div>
-        <div class="grid grid-cols-2 gap-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>
             <label class="label" for="emi-type">Type *</label>
             <select class="select" id="emi-type" name="type" required>
@@ -114,7 +114,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
             <input class="input" type="date" id="emi-start" name="startDate" required />
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>
             <label class="label" for="emi-principal">Principal *</label>
             <input class="input" type="number" id="emi-principal" name="principal" min="0" step="any" required />

@@ -5,7 +5,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
 ---
 
 <Layout title="Goals — Global Wealth Portfolio">
-  <section class="container-page pt-3xl pb-2xl">
+  <section class="container-page page-section pt-3xl pb-2xl">
     <PageHeader
       title="Goals"
       description="Set retirement, home, or education targets with deadlines. Project what your monthly SIP could grow into."
@@ -94,16 +94,16 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
     <!-- Goals table -->
     <div class="card p-0 overflow-hidden">
       <div class="overflow-x-auto scroll-thin">
-        <table class="w-full text-body-sm">
+        <table class="w-full text-body-sm" data-table="goals">
           <thead>
             <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
               <th class="font-medium py-sm px-md">Goal</th>
-              <th class="font-medium py-sm px-md">Type</th>
+              <th class="font-medium py-sm px-md hide-tablet">Type</th>
               <th class="font-medium py-sm px-md text-right">Target</th>
-              <th class="font-medium py-sm px-md">Deadline</th>
+              <th class="font-medium py-sm px-md hide-mobile">Deadline</th>
               <th class="font-medium py-sm px-md text-right">Current</th>
-              <th class="font-medium py-sm px-md w-48">Progress</th>
-              <th class="font-medium py-sm px-md">Time to complete</th>
+              <th class="font-medium py-sm px-md w-48 max-sm:w-32">Progress</th>
+              <th class="font-medium py-sm px-md hide-mobile">Time to complete</th>
               <th class="font-medium py-sm px-md text-right">Actions</th>
             </tr>
           </thead>
@@ -131,7 +131,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
           <label class="label" for="goal-name">Goal Name *</label>
           <input class="input" type="text" id="goal-name" name="name" required />
         </div>
-        <div class="grid grid-cols-2 gap-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>
             <label class="label" for="goal-type">Type *</label>
             <select class="select" id="goal-type" name="type" required>
@@ -148,7 +148,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
             <input class="input" type="text" id="goal-custom" name="customLabel" />
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>
             <label class="label" for="goal-target">Target Amount *</label>
             <input class="input" type="number" id="goal-target" name="target" min="0" step="any" required />

@@ -5,7 +5,7 @@ const initialServerData = await fetchLiveBenchmarks();
 ---
 
 <Layout title="Benchmarks — Global Wealth Portfolio">
-  <section class="container-page pt-3xl pb-2xl">
+  <section class="container-page page-section pt-3xl pb-2xl">
     <div class="mb-2xl max-w-3xl">
       <p class="text-caption-mono text-gold mb-xs">Benchmarks</p>
       <h1 class="text-display-lg">Compare your portfolio to the market.</h1>
@@ -41,15 +41,15 @@ const initialServerData = await fetchLiveBenchmarks();
         </div>
       </div>
       <div class="card-soft p-0 overflow-hidden">
-        <table class="w-full text-body-sm">
+        <table class="w-full text-body-sm" data-table="benchmarks">
           <thead>
             <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
               <th class="font-medium py-sm px-md">Series</th>
               <th class="font-medium py-sm px-md text-right">1M</th>
               <th class="font-medium py-sm px-md text-right">6M</th>
               <th class="font-medium py-sm px-md text-right">1Y</th>
-              <th class="font-medium py-sm px-md text-right">3Y CAGR</th>
-              <th class="font-medium py-sm px-md text-right">5Y CAGR</th>
+              <th class="font-medium py-sm px-md text-right hide-tablet">3Y CAGR</th>
+              <th class="font-medium py-sm px-md text-right hide-tablet">5Y CAGR</th>
             </tr>
           </thead>
           <tbody id="bench-tbody">
@@ -67,7 +67,7 @@ const initialServerData = await fetchLiveBenchmarks();
     <!-- Performance vs benchmarks chart -->
     <div class="card-elevated">
       <h2 class="text-display-sm mb-md">Performance comparison</h2>
-      <div class="h-72">
+      <div class="h-56 max-sm:chart-sm">
         <canvas id="benchChart"></canvas>
       </div>
     </div>

@@ -4,7 +4,7 @@ import PageHeader from "../components/PageHeader.astro";
 ---
 
 <Layout title="Blog — Global Wealth Portfolio">
-  <section class="container-page pt-3xl pb-2xl">
+  <section class="container-page page-section pt-3xl pb-2xl">
     <PageHeader
       title="Blog"
       description="Capture your investment thesis, monthly reflections, or a long-form note for yourself. Posts live in your browser — private, exportable, and ready to read on every visit."
@@ -87,7 +87,7 @@ import PageHeader from "../components/PageHeader.astro";
             placeholder="A short summary shown on the list view"
           />
         </div>
-        <div class="grid grid-cols-2 gap-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>
             <label class="label" for="blog-author">Author</label>
             <input class="input" type="text" id="blog-author" name="authorName" placeholder="Your name" />

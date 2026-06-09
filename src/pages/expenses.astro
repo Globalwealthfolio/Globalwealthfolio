@@ -5,7 +5,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
 ---
 
 <Layout title="Expenses — Global Wealth Portfolio">
-  <section class="container-page pt-3xl pb-2xl">
+  <section class="container-page page-section pt-3xl pb-2xl">
     <!-- First-run empty state banner -->
     <div id="exp-empty-banner" class="hidden card-elevated bg-gradient-finance border border-gold/30 p-lg mb-2xl">
       <div class="flex flex-col md:flex-row items-start md:items-center gap-md">
@@ -107,42 +107,42 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-md mb-2xl">
       <div class="card">
         <h2 class="text-display-sm mb-md">Spending by category</h2>
-        <div class="h-64">
-          <canvas id="categoryChart"></canvas>
-        </div>
+          <div class="h-48 max-sm:chart-sm">
+            <canvas id="categoryChart"></canvas>
+          </div>
       </div>
       <div class="card">
         <h2 class="text-display-sm mb-md">Monthly trend</h2>
-        <div class="h-64">
-          <canvas id="trendChart"></canvas>
-        </div>
+          <div class="h-48 max-sm:chart-sm">
+            <canvas id="trendChart"></canvas>
+          </div>
       </div>
     </div>
 
     <!-- Table -->
-    <div class="card p-0 overflow-hidden">
-      <div class="overflow-x-auto scroll-thin">
-        <table class="w-full text-body-sm">
-          <thead>
-            <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
-              <th class="font-medium py-sm px-md">#</th>
-              <th class="font-medium py-sm px-md">Type</th>
-              <th class="font-medium py-sm px-md">Description</th>
-              <th class="font-medium py-sm px-md">Category</th>
-              <th class="font-medium py-sm px-md">Date</th>
-              <th class="font-medium py-sm px-md text-right">Amount</th>
-              <th class="font-medium py-sm px-md">Recurring</th>
-              <th class="font-medium py-sm px-md">Notes</th>
-              <th class="font-medium py-sm px-md text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="expenses-tbody">
-            <tr>
-              <td colspan="9" class="text-center py-5xl">Loading…</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <div class="card p-0 overflow-hidden">
+        <div class="overflow-x-auto scroll-thin">
+          <table class="w-full text-body-sm" data-table="expenses">
+            <thead>
+              <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
+                <th class="font-medium py-sm px-md hide-mobile">#</th>
+                <th class="font-medium py-sm px-md">Type</th>
+                <th class="font-medium py-sm px-md">Description</th>
+                <th class="font-medium py-sm px-md hide-tablet">Category</th>
+                <th class="font-medium py-sm px-md hide-tablet">Date</th>
+                <th class="font-medium py-sm px-md text-right">Amount</th>
+                <th class="font-medium py-sm px-md hide-mobile">Recurring</th>
+                <th class="font-medium py-sm px-md hide-mobile">Notes</th>
+                <th class="font-medium py-sm px-md text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="expenses-tbody">
+              <tr>
+                <td colspan="9" class="text-center py-5xl">Loading…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
     </div>
   </section>
 
@@ -180,7 +180,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
           <label class="label" for="exp-desc">Description *</label>
           <input class="input" type="text" id="exp-desc" name="description" required />
         </div>
-        <div class="grid grid-cols-2 gap-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>
             <label class="label" for="exp-category">Category *</label>
             <select class="select" id="exp-category" name="category" required>
@@ -213,7 +213,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
             <input class="input" type="date" id="exp-date" name="date" required />
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>
             <label class="label" for="exp-amount">Amount *</label>
             <input class="input" type="number" id="exp-amount" name="amount" min="0" step="any" required />
@@ -228,7 +228,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
             </select>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>
             <label class="label" for="exp-from">From</label>
             <input class="input" type="date" id="exp-from" name="recurringFrom" />

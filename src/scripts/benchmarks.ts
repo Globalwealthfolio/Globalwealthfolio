@@ -108,8 +108,8 @@ function renderTable() {
         <td class="py-sm px-md text-right ${stats.oneMonth >= 0 ? "text-gain" : "text-loss"}">${stats.oneMonth >= 0 ? "+" : ""}${stats.oneMonth.toFixed(1)}%</td>
         <td class="py-sm px-md text-right ${stats.sixMonth >= 0 ? "text-gain" : "text-loss"}">${stats.sixMonth >= 0 ? "+" : ""}${stats.sixMonth.toFixed(1)}%</td>
         <td class="py-sm px-md text-right ${stats.oneYear >= 0 ? "text-gain" : "text-loss"}">${stats.oneYear >= 0 ? "+" : ""}${stats.oneYear.toFixed(1)}%</td>
-        <td class="py-sm px-md text-right ${stats.threeYear >= 0 ? "text-gain" : "text-loss"}">${stats.threeYear >= 0 ? "+" : ""}${stats.threeYear.toFixed(1)}%</td>
-        <td class="py-sm px-md text-right ${stats.fiveYear >= 0 ? "text-gain" : "text-loss"}">${stats.fiveYear >= 0 ? "+" : ""}${stats.fiveYear.toFixed(1)}%</td>
+        <td class="py-sm px-md text-right ${stats.threeYear >= 0 ? "text-gain" : "text-loss"} hide-tablet">${stats.threeYear >= 0 ? "+" : ""}${stats.threeYear.toFixed(1)}%</td>
+        <td class="py-sm px-md text-right ${stats.fiveYear >= 0 ? "text-gain" : "text-loss"} hide-tablet">${stats.fiveYear >= 0 ? "+" : ""}${stats.fiveYear.toFixed(1)}%</td>
       </tr>`
     : "";
 
@@ -119,13 +119,13 @@ function renderTable() {
       <tr class="border-t border-hairline hover:bg-canvas-soft">
         <td class="py-sm px-md text-body">
           <span class="text-ink font-medium">${esc(b.name)}</span>
-          <span class="ml-1 text-caption text-mute">${b.region}</span>
+          <span class="ml-1 text-caption text-mute hide-mobile">${b.region}</span>
         </td>
         <td class="py-sm px-md text-right ${b.oneMonth >= 0 ? "text-gain" : "text-loss"}">${b.oneMonth >= 0 ? "+" : ""}${b.oneMonth.toFixed(1)}%</td>
         <td class="py-sm px-md text-right ${b.sixMonth >= 0 ? "text-gain" : "text-loss"}">${b.sixMonth >= 0 ? "+" : ""}${b.sixMonth.toFixed(1)}%</td>
         <td class="py-sm px-md text-right ${b.oneYear >= 0 ? "text-gain" : "text-loss"}">${b.oneYear >= 0 ? "+" : ""}${b.oneYear.toFixed(1)}%</td>
-        <td class="py-sm px-md text-right ${b.threeYear >= 0 ? "text-gain" : "text-loss"}">${b.threeYear >= 0 ? "+" : ""}${b.threeYear.toFixed(1)}%</td>
-        <td class="py-sm px-md text-right ${b.fiveYear >= 0 ? "text-gain" : "text-loss"}">${b.fiveYear >= 0 ? "+" : ""}${b.fiveYear.toFixed(1)}%</td>
+        <td class="py-sm px-md text-right ${b.threeYear >= 0 ? "text-gain" : "text-loss"} hide-tablet">${b.threeYear >= 0 ? "+" : ""}${b.threeYear.toFixed(1)}%</td>
+        <td class="py-sm px-md text-right ${b.fiveYear >= 0 ? "text-gain" : "text-loss"} hide-tablet">${b.fiveYear >= 0 ? "+" : ""}${b.fiveYear.toFixed(1)}%</td>
       </tr>`,
     )
     .join("");

@@ -168,11 +168,11 @@ function renderTable() {
             <div class="text-body-sm-strong text-ink">${esc(g.name)}</div>
             ${g.customLabel ? `<div class="text-caption text-mute">${esc(g.customLabel)}</div>` : ""}
           </td>
-          <td class="py-sm px-md"><span class="badge">${g.type}</span></td>
+          <td class="py-sm px-md hide-tablet"><span class="badge">${g.type}</span></td>
           <td class="py-sm px-md text-right text-body-sm-strong">${fmt(g.target)}</td>
-          <td class="py-sm px-md text-body">${g.deadline ?? "—"}</td>
+          <td class="py-sm px-md text-body hide-mobile">${g.deadline ?? "—"}</td>
           <td class="py-sm px-md text-right">${fmt(g.current)}</td>
-          <td class="py-sm px-md">
+          <td class="py-sm px-md max-sm:px-1">
             <div class="flex items-center gap-xs">
               <div class="flex-1 h-1.5 bg-canvas-soft-2 rounded-full overflow-hidden">
                 <div class="h-full ${onTrack ? "bg-gain" : "bg-gradient-gain"}" style="width: ${pct.toFixed(1)}%"></div>
@@ -180,7 +180,7 @@ function renderTable() {
               <span class="text-caption text-body whitespace-nowrap">${pct.toFixed(0)}%</span>
             </div>
           </td>
-          <td class="py-sm px-md">
+          <td class="py-sm px-md hide-mobile">
             <div class="text-body-sm-strong ${etaCls}">${etaLabel}</div>
             ${linked.length > 0 ? `<div class="text-caption text-mute">${linked.length} linked</div>` : ""}
           </td>

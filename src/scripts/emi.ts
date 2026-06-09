@@ -177,16 +177,16 @@ function renderTable() {
       const pct = e.principal > 0 ? (paidPrincipal / e.principal) * 100 : 0;
       return `
         <tr class="border-t border-hairline hover:bg-canvas-soft">
-          <td class="py-sm px-md text-mute">${idx + 1}</td>
+          <td class="py-sm px-md text-mute hide-mobile">${idx + 1}</td>
           <td class="py-sm px-md text-body-sm-strong text-ink">${esc(e.name)}</td>
-          <td class="py-sm px-md"><span class="badge">${e.type}</span></td>
-          <td class="py-sm px-md text-right text-gain">${fmt(paidPrincipal)}</td>
+          <td class="py-sm px-md hide-mobile"><span class="badge">${e.type}</span></td>
+          <td class="py-sm px-md text-right text-gain hide-tablet">${fmt(paidPrincipal)}</td>
           <td class="py-sm px-md text-right">${fmt(e.emi)}</td>
-          <td class="py-sm px-md text-right">${e.rate.toFixed(2)}%</td>
-          <td class="py-sm px-md text-right">${e.tenure} mo</td>
-          <td class="py-sm px-md text-body">${e.startDate}</td>
+          <td class="py-sm px-md text-right hide-mobile">${e.rate.toFixed(2)}%</td>
+          <td class="py-sm px-md text-right hide-mobile">${e.tenure} mo</td>
+          <td class="py-sm px-md text-body hide-mobile">${e.startDate}</td>
           <td class="py-sm px-md text-right">${fmt(e.outstanding)}</td>
-          <td class="py-sm px-md">
+          <td class="py-sm px-md max-sm:px-1">
             <div class="flex items-center gap-xs">
               <div class="flex-1 h-1.5 bg-canvas-soft-2 rounded-full overflow-hidden">
                 <div class="h-full bg-gradient-gain" style="width: ${pct.toFixed(1)}%"></div>

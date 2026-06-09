@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Import — Global Wealth Portfolio">
-  <section class="container-page pt-3xl pb-2xl">
+  <section class="container-page page-section pt-3xl pb-2xl">
     <div class="mb-2xl max-w-3xl">
       <p class="text-caption-mono text-gold mb-xs">Import</p>
       <h1 class="text-display-lg">Bring your data in.</h1>
@@ -14,17 +14,17 @@ import Layout from "../layouts/Layout.astro";
     </div>
 
     <!-- Method tabs -->
-    <div role="tablist" class="flex flex-wrap gap-1 p-1 bg-canvas-soft-2 rounded-full mb-2xl max-w-2xl">
-      <button role="tab" aria-selected="true" data-tab="file" class="tab-pill flex-1">
+    <div role="tablist" class="flex max-sm:overflow-x-auto max-sm:gap-0 gap-1 p-1 bg-canvas-soft-2 rounded-full mb-2xl max-w-2xl max-sm:rounded-md max-sm:pb-0">
+      <button role="tab" aria-selected="true" data-tab="file" class="tab-pill flex-1 max-sm:flex-none max-sm:whitespace-nowrap max-sm:px-3 max-sm:text-xs">
         Excel / CSV
       </button>
-      <button role="tab" aria-selected="false" data-tab="pdf" class="tab-pill flex-1">
+      <button role="tab" aria-selected="false" data-tab="pdf" class="tab-pill flex-1 max-sm:flex-none max-sm:whitespace-nowrap max-sm:px-3 max-sm:text-xs">
         PDF
       </button>
-      <button role="tab" aria-selected="false" data-tab="image" class="tab-pill flex-1">
+      <button role="tab" aria-selected="false" data-tab="image" class="tab-pill flex-1 max-sm:flex-none max-sm:whitespace-nowrap max-sm:px-3 max-sm:text-xs">
         Statement image
       </button>
-      <button role="tab" aria-selected="false" data-tab="json" class="tab-pill flex-1">
+      <button role="tab" aria-selected="false" data-tab="json" class="tab-pill flex-1 max-sm:flex-none max-sm:whitespace-nowrap max-sm:px-3 max-sm:text-xs">
         JSON backup
       </button>
     </div>

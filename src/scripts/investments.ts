@@ -222,21 +222,21 @@ function renderTable() {
       }
       return `
         <tr class="border-t border-hairline hover:bg-canvas-soft">
-          <td class="py-sm px-md text-mute">${idx + 1}</td>
+          <td class="py-sm px-md text-mute hide-mobile">${idx + 1}</td>
           <td class="py-sm px-md">
             <div class="text-body-sm-strong text-ink">${esc(i.name)}</div>
           </td>
-          <td class="py-sm px-md"><span class="badge">${i.type}</span></td>
-          <td class="py-sm px-md text-body">${esc(goalName)}</td>
-          <td class="py-sm px-md text-body">${i.date}</td>
+          <td class="py-sm px-md hide-tablet"><span class="badge">${i.type}</span></td>
+          <td class="py-sm px-md text-body hide-mobile">${esc(goalName)}</td>
+          <td class="py-sm px-md text-body hide-tablet">${i.date}</td>
           <td class="py-sm px-md text-right">${fmt(i.amount)}</td>
           <td class="py-sm px-md text-right">${fmt(i.currentValue)}</td>
-          <td class="py-sm px-md text-right ${gain >= 0 ? "text-gain" : "text-loss"}">${gain >= 0 ? "+" : ""}${fmt(gain)} (${pct.toFixed(1)}%)</td>
-          <td class="py-sm px-md">
+          <td class="py-sm px-md text-right ${gain >= 0 ? "text-gain" : "text-loss"} hide-tablet">${gain >= 0 ? "+" : ""}${fmt(gain)} (${pct.toFixed(1)}%)</td>
+          <td class="py-sm px-md hide-mobile">
             <span class="badge ${i.risk <= 3 ? "badge-gain" : i.risk >= 7 ? "badge-loss" : ""}">${riskLevelLabel(i.risk)} ${i.risk}</span>
           </td>
-          <td class="py-sm px-md">${etaCell}</td>
-          <td class="py-sm px-md text-body max-w-[12ch] truncate" title="${esc(i.notes ?? "")}">${esc(i.notes ?? "")}</td>
+          <td class="py-sm px-md hide-mobile">${etaCell}</td>
+          <td class="py-sm px-md text-body max-w-[12ch] truncate hide-mobile" title="${esc(i.notes ?? "")}">${esc(i.notes ?? "")}</td>
           <td class="py-sm px-md text-right">
             <button class="btn-ghost" data-edit="${i.id}" type="button" aria-label="Edit">Edit</button>
             <button class="btn-ghost text-loss" data-delete="${i.id}" type="button" aria-label="Delete">Delete</button>

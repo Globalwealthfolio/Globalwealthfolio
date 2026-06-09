@@ -5,7 +5,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
 ---
 
 <Layout title="Investments — Global Wealth Portfolio">
-  <section class="container-page pt-3xl pb-2xl">
+  <section class="container-page page-section pt-3xl pb-2xl">
     <PageHeader
       title="Investments"
       description="All your assets, returns, and allocations in one place. Filter by type, goal, or risk profile."
@@ -74,34 +74,34 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
     </div>
 
     <!-- Table -->
-    <div class="card p-0 overflow-hidden">
-      <div class="overflow-x-auto scroll-thin">
-        <table class="w-full text-body-sm">
-          <thead>
-            <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
-              <th class="font-medium py-sm px-md">#</th>
-              <th class="font-medium py-sm px-md">Asset</th>
-              <th class="font-medium py-sm px-md">Type</th>
-              <th class="font-medium py-sm px-md">Goal</th>
-              <th class="font-medium py-sm px-md">Date</th>
-              <th class="font-medium py-sm px-md text-right">Invested</th>
-              <th class="font-medium py-sm px-md text-right">Current</th>
-              <th class="font-medium py-sm px-md text-right">Gain</th>
-              <th class="font-medium py-sm px-md">Risk</th>
-              <th class="font-medium py-sm px-md">Time to Goal</th>
-              <th class="font-medium py-sm px-md">Notes</th>
-              <th class="font-medium py-sm px-md text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="investments-tbody">
-            <tr>
-              <td colspan="12" class="text-center py-5xl">
-                <p class="text-body-md text-body">Loading…</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <div class="card p-0 overflow-hidden">
+        <div class="overflow-x-auto scroll-thin">
+          <table class="w-full text-body-sm" data-table="investments">
+            <thead>
+              <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
+                <th class="font-medium py-sm px-md hide-mobile">#</th>
+                <th class="font-medium py-sm px-md">Asset</th>
+                <th class="font-medium py-sm px-md hide-tablet">Type</th>
+                <th class="font-medium py-sm px-md hide-mobile">Goal</th>
+                <th class="font-medium py-sm px-md hide-tablet">Date</th>
+                <th class="font-medium py-sm px-md text-right">Invested</th>
+                <th class="font-medium py-sm px-md text-right">Current</th>
+                <th class="font-medium py-sm px-md text-right hide-tablet">Gain</th>
+                <th class="font-medium py-sm px-md hide-mobile">Risk</th>
+                <th class="font-medium py-sm px-md hide-mobile">Time to Goal</th>
+                <th class="font-medium py-sm px-md hide-mobile">Notes</th>
+                <th class="font-medium py-sm px-md text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="investments-tbody">
+              <tr>
+                <td colspan="12" class="text-center py-5xl">
+                  <p class="text-body-md text-body">Loading…</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
     </div>
   </section>
 
@@ -120,7 +120,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
           <label class="label" for="inv-name">Asset Name *</label>
           <input class="input" type="text" id="inv-name" name="name" required placeholder="e.g. Reliance Industries" />
         </div>
-        <div class="grid grid-cols-2 gap-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>
             <label class="label" for="inv-type">Type *</label>
             <select class="select" id="inv-type" name="type" required>
@@ -143,7 +143,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
             <input class="input" type="date" id="inv-date" name="date" required />
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>
             <label class="label" for="inv-amount">Invested *</label>
             <input class="input" type="number" id="inv-amount" name="amount" min="0" step="any" required />
