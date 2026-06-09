@@ -2847,3 +2847,227 @@ Error: Failed to load url astro:server-app.js (resolved id: astro:server-app.js)
 [vite] program reload
 [2m17:10:09[22m [34m[200][39m /dashboard [2m104ms[22m
 [vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:10:13[22m [34m[200][39m /dashboard [2m96ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:10:29[22m [34m[200][39m /dashboard [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:10:32[22m [34m[200][39m /dashboard [2m42ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:10:35[22m [34m[200][39m /dashboard [2m41ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:10:37[22m [34m[200][39m /dashboard [2m49ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:10:42[22m [34m[200][39m /dashboard [2m216ms[22m
+[2m17:10:42[22m [34m[200][39m /dashboard [2m105ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:10:43[22m [34m[200][39m /dashboard [2m147ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:10:44[22m [34m[200][39m /dashboard [2m58ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:51:03[22m [34m[watch][39m /src/styles/global.css
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:52:27[22m [34m[watch][39m src/layouts/Layout.astro
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:53:11[22m [34m[200][39m /dashboard [2m505ms[22m
+[vite] program reload
+[2m17:53:11[22m [34m[200][39m /dashboard [2m302ms[22m
+[2m17:53:11[22m [34m[200][39m /dashboard [2m149ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:53:13[22m [34m[200][39m /dashboard [2m21ms[22m
+[2m17:53:13[22m [33m[404][39m /favicon.svg [2m1ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:53:13[22m [33m[404][39m /favicon.svg [2m1ms[22m
+[2m17:53:16[22m [34m[200][39m /dashboard [2m22ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:53:25[22m [34m[200][39m /dashboard [2m237ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:53:40[22m [34m[200][39m /dashboard [2m60ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:54:14[22m [34m[200][39m /investments [2m34ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:54:26[22m [34m[200][39m /expenses [2m55ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:54:56[22m [34m[200][39m /benchmarks [2m890ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:55:00[22m [34m[200][39m /dashboard [2m18ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:55:06[22m [34m[200][39m /import [2m32ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:55:09[22m [34m[vite][39m [32m✨ new dependencies optimized: [33mpdfjs-dist, tesseract.js, xlsx[32m[39m
+[2m17:55:09[22m [34m[vite][39m [32m✨ optimized dependencies changed. reloading[39m
+[2m17:55:09[22m [34m[200][39m /import [2m20ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:55:38[22m [34m[200][39m /dashboard [2m22ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:56:40[22m [34m[200][39m /expenses [2m18ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:57:14[22m [34m[200][39m /dashboard [2m19ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:57:22[22m [34m[200][39m /dashboard [2m45ms[22m
+[vite] program reload
+[vite] program reload
+[2m17:57:23[22m [34m[200][39m /dashboard [2m43ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:57:27[22m [34m[200][39m /dashboard [2m24ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:57:32[22m [34m[200][39m /dashboard [2m30ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:57:38[22m [34m[200][39m /dashboard [2m46ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:57:43[22m [34m[200][39m /dashboard [2m24ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:57:48[22m [34m[200][39m /dashboard [2m89ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:57:54[22m [34m[200][39m /dashboard [2m44ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:57:58[22m [34m[200][39m /dashboard [2m23ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:58:03[22m [34m[200][39m /dashboard [2m63ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:58:05[22m [34m[200][39m /dashboard [2m53ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m17:58:07[22m [34m[200][39m /dashboard [2m57ms[22m
