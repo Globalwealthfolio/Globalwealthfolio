@@ -1,0 +1,27 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  title="404 — Page Not Found | Global Wealth Portfolio"
+  description="The page you are looking for does not exist. Return to Global Wealth Portfolio."
+>
+  <section class="container-page page-section min-h-[60vh] flex flex-col items-center justify-center text-center">
+    <span class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-canvas shadow-level-2 mb-xl" aria-hidden="true">
+      <svg class="w-8 h-8 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="15" y1="9" x2="9" y2="15"/>
+        <line x1="9" y1="9" x2="15" y2="15"/>
+      </svg>
+    </span>
+    <p class="text-caption-mono text-gold mb-xs">404</p>
+    <h1 class="text-display-lg mb-sm">Page not found</h1>
+    <p class="text-body-md text-body mb-xl max-w-md">
+      The page you are looking for does not exist or has been moved.
+    </p>
+    <div class="flex items-center gap-sm">
+      <a href="/" class="btn-primary">Home</a>
+      <a href="/dashboard" class="btn-secondary">Dashboard</a>
+    </div>
+  </section>
+</Layout>

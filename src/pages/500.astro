@@ -1,0 +1,27 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  title="500 — Server Error | Global Wealth Portfolio"
+  description="Something went wrong on our end. Please try again."
+>
+  <section class="container-page page-section min-h-[60vh] flex flex-col items-center justify-center text-center">
+    <span class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-canvas shadow-level-2 mb-xl" aria-hidden="true">
+      <svg class="w-8 h-8 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </span>
+    <p class="text-caption-mono text-gold mb-xs">500</p>
+    <h1 class="text-display-lg mb-sm">Something went wrong</h1>
+    <p class="text-body-md text-body mb-xl max-w-md">
+      An unexpected error occurred. Please try refreshing the page or come back later.
+    </p>
+    <div class="flex items-center gap-sm">
+      <a href="/" class="btn-primary">Home</a>
+      <a href="/dashboard" class="btn-secondary">Dashboard</a>
+    </div>
+  </section>
+</Layout>
