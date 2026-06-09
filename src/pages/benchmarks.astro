@@ -1,5 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { fetchLiveBenchmarks } from "../lib/benchmarks-api";
+const initialServerData = await fetchLiveBenchmarks();
 ---
 
 <Layout title="Benchmarks — Global Wealth Portfolio">
@@ -14,6 +16,11 @@ import Layout from "../layouts/Layout.astro";
         cached snapshot, and finally to representative long-term figures.
       </p>
     </div>
+
+    <!-- Server-side data for immediate use (fetched at build time) -->
+    <script define:vars={{ initialServerData }} is:inline>
+      window.__BENCHMARK_INITIAL_DATA__ = initialServerData;
+    </script>
 
     <!-- Your portfolio vs benchmarks -->
     <div class="card-elevated mb-2xl">

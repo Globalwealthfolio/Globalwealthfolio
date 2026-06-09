@@ -262,7 +262,8 @@ function renderGrowthChart() {
           backgroundColor: series.isEmpty ? "transparent" : gradient,
           borderWidth: 2,
           pointRadius: 0,
-          pointHoverRadius: 4,
+          pointHitRadius: 8,
+          pointHoverRadius: 5,
           pointHoverBackgroundColor: lineColor,
           tension: 0.3,
           fill: !series.isEmpty,
@@ -272,9 +273,14 @@ function renderGrowthChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: {
+        mode: "index",
+        intersect: false,
+      },
       plugins: {
         legend: { display: false },
         tooltip: {
+          enabled: true,
           ...chartTooltip(),
           callbacks: {
             label: (item) => fmt(item.parsed.y, getCurrency()),
@@ -337,9 +343,14 @@ function renderAllocChart() {
       cutout: "70%",
       responsive: true,
       maintainAspectRatio: true,
+      interaction: {
+        mode: "index",
+        intersect: false,
+      },
       plugins: {
         legend: { display: false },
         tooltip: {
+          enabled: true,
           ...chartTooltip(),
           titleFont: { family: CHART_FONT_FAMILY, size: 12, weight: 600 },
           bodyFont: { family: CHART_FONT_FAMILY, size: 12, weight: 500 },
@@ -483,6 +494,10 @@ function renderCashflowChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: {
+        mode: "index",
+        intersect: false,
+      },
       plugins: {
         legend: {
           display: true,
@@ -490,6 +505,7 @@ function renderCashflowChart() {
           labels: { color: getCssVar("--color-body"), boxWidth: 8, font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 } },
         },
         tooltip: {
+          enabled: true,
           ...chartTooltip(),
           titleFont: { family: CHART_FONT_FAMILY, size: 12, weight: 600 },
           bodyFont: { family: CHART_FONT_FAMILY, size: 12, weight: 500 },

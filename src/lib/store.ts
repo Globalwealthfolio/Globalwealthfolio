@@ -23,14 +23,19 @@ function migrate(parsed: Partial<AppData> | null): AppData {
   const merged: AppData = {
     ...base,
     ...parsed,
+    investments: Array.isArray(parsed.investments) ? parsed.investments : [],
+    goals: Array.isArray(parsed.goals) ? parsed.goals : [],
+    emis: Array.isArray(parsed.emis) ? parsed.emis : [],
+    expenses: Array.isArray(parsed.expenses) ? parsed.expenses : [],
+    blog: Array.isArray(parsed.blog) ? parsed.blog : [],
+    auditLog: Array.isArray(parsed.auditLog) ? parsed.auditLog : [],
     preferences: { ...base.preferences, ...(parsed.preferences ?? {}) },
   };
-  // Default missing `type` on existing expenses
-  merged.expenses = (merged.expenses ?? []).map((e: Partial<Expense> & { type?: "income" | "expense"; category?: string }) => ({
+  // Ensure every expense has a valid type field
+  merged.expenses = merged.expenses.map((e: Partial<Expense> & { type?: "income" | "expense"; category?: string }) => ({
     ...(e as Expense),
     type: e.type ?? (e.category && isIncomeCategory(e.category as never) ? "income" : "expense"),
   }));
-  merged.blog = merged.blog ?? [];
   merged.version = SCHEMA_VERSION;
   return merged;
 }

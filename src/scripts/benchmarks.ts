@@ -180,12 +180,17 @@ function renderChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: {
+        mode: "index",
+        intersect: false,
+      },
       plugins: {
         legend: {
           position: "bottom",
           labels: { boxWidth: 8, font: { family: CHART_FONT_FAMILY, size: 11, weight: 500 } },
         },
         tooltip: {
+          enabled: true,
           ...chartTooltip(),
           titleFont: { family: CHART_FONT_FAMILY, size: 12, weight: 600 },
           bodyFont: { family: CHART_FONT_FAMILY, size: 12, weight: 500 },
@@ -212,7 +217,11 @@ function renderChart() {
 
 function renderAll() {
   renderTable();
-  renderChart();
+  try {
+    renderChart();
+  } catch (e) {
+    console.warn("[benchmarks] Chart render failed, table still available.", e);
+  }
 }
 
 async function loadBenchmarks(force = false) {
@@ -238,6 +247,22 @@ document.getElementById("refresh-benchmarks")?.addEventListener("click", () => {
 
 subscribe(renderAll);
 
-benchmarks = [...BENCHMARKS];
-renderAll();
+function loadInitialData() {
+  try {
+    const win = window as unknown as { __BENCHMARK_INITIAL_DATA__?: { benchmarks: Benchmark[]; live: boolean; fetchedAt: number } };
+    if (win.__BENCHMARK_INITIAL_DATA__?.benchmarks?.length > 0) {
+      benchmarks = win.__BENCHMARK_INITIAL_DATA__.benchmarks;
+      isLive = win.__BENCHMARK_INITIAL_DATA__.live === true;
+      fetchedAt = win.__BENCHMARK_INITIAL_DATA__.fetchedAt ?? null;
+      renderAll();
+      return;
+    }
+  } catch (e) {
+    console.warn("[benchmarks] Failed to parse server data, using fallback.", e);
+  }
+  benchmarks = [...BENCHMARKS];
+  renderAll();
+}
+
+loadInitialData();
 loadBenchmarks();

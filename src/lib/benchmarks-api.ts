@@ -49,8 +49,9 @@ const TICKERS: Record<string, TickerConfig> = {
 };
 
 const PROXIES = [
-  (u: string) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
   (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  (u: string) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+  (u: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
 ];
 
 const FETCH_TIMEOUT_MS = 8000; // 8 seconds per attempt
