@@ -71,9 +71,9 @@ const initialServerData = await fetchLiveBenchmarks();
         <canvas id="benchChart"></canvas>
       </div>
     </div>
+    <!-- Page-level script bundle -->
+    <script>
+      import "../scripts/benchmarks.ts";
+    </script>
   </section>
 </Layout>
-
-<script>
-  import "../scripts/benchmarks.ts";
-</script>

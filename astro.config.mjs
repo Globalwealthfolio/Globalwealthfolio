@@ -6,6 +6,7 @@ export default defineConfig({
   site: 'https://globalwealthfolio.com',
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: { exclude: ['astro'] },
   },
   server: {
     host: true,

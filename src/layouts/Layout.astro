@@ -6,14 +6,18 @@ import Footer from "../components/Footer.astro";
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  keywords?: string;
   noFooter?: boolean;
   noNav?: boolean;
   fullBleed?: boolean;
 }
 
 const {
-  title = "Global Wealth Portfolio — Track investments, expenses & net worth",
-  description = "A free, private, multi-currency investment & expense portfolio dashboard. Import Excel sheets, scan bank statements, and track goals in 10+ languages.",
+  title = "Global Wealth Portfolio — Free Investment Portfolio Manager & Expense Tracker | AI-Powered",
+  description = "Global Wealth Portfolio is a free, private AI investment portfolio manager and expense tracker. Track global investments, crypto, US stocks, and build your wealth portfolio with multi-currency support, OCR bank scanning, and AI-powered portfolio management — all 100% local on your device.",
+  image = "/og-image.png",
+  keywords = "investment portfolio, investment portfolio manager, investment tracker, portfolio manager, expense tracker, investment portfolio management, wealth generation, wealth portfolio, global investment, crypto investment tracker, US investment tracker, investment dashboard, AI investment portfolio, AI investment tracker",
   noFooter = false,
   noNav = false,
   fullBleed = false,
@@ -33,12 +37,19 @@ const {
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <link rel="canonical" href="https://globalwealthfolio.com" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://globalwealthfolio.com" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:image" content={`https://globalwealthfolio.com${image}`} />
+    <meta property="og:image:alt" content="Global Wealth Portfolio — Investment Portfolio Manager Dashboard" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="Global Wealth Portfolio" />
 
     <!-- Twitter -->
@@ -46,6 +57,8 @@ const {
     <meta property="twitter:url" content="https://globalwealthfolio.com" />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={`https://globalwealthfolio.com${image}`} />
+    <meta property="twitter:site" content="@globalwealthfolio" />
 
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -61,6 +74,37 @@ const {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Global Wealth Portfolio",
+        "url": "https://globalwealthfolio.com",
+        "description": "Free, private AI investment portfolio manager and expense tracker. Track global investments, crypto, US stocks, and build your wealth portfolio with multi-currency support, OCR bank scanning, and AI-powered portfolio management.",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "Investment portfolio management",
+          "Expense tracking",
+          "Multi-currency support (30+ currencies)",
+          "Bank statement OCR scanning",
+          "AI-powered transaction categorization",
+          "Goal and retirement planning",
+          "Crypto investment tracking",
+          "US investment tracking",
+          "Net worth tracking",
+          "Portfolio benchmarking"
+        ]
+      }
+    </script>
 
     <!-- Block FOUC: apply theme + class before paint -->
     <script is:inline>

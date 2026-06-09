@@ -78,10 +78,8 @@ export function applyChartDefaults(): void {
   Chart.defaults.layout.padding = 4;
 
   // Animation polish
-  Chart.defaults.animation = {
-    duration: 350,
-    easing: "easeOutQuart",
-  };
+  Chart.defaults.animation.duration = 350;
+  Chart.defaults.animation.easing = "easeOutQuart";
 }
 
 /** Read a CSS variable from :root with a sensible fallback. */

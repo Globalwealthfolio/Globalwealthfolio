@@ -8,10 +8,12 @@ import {
   LinearScale,
   Tooltip,
   Legend,
+  PointElement,
+  ArcElement,
 } from "chart.js";
 import { fetchLiveBenchmarks, clearBenchmarkCache } from "../lib/benchmarks-api";
 
-Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend, PointElement, ArcElement);
 import { applyChartDefaults, CHART_FONT_FAMILY } from "./chart-defaults";
 applyChartDefaults();
 
