@@ -46,9 +46,39 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://globalwealthfolio.com/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://globalwealthfolio.com/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://globalwealthfolio.com/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://globalwealthfolio.com/blog/how-to-use-this-portfolio-manager</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://globalwealthfolio.com/blog/track-expenses-with-investments</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://globalwealthfolio.com/blog/financial-freedom-necessity</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://globalwealthfolio.com/blog/step-by-step-goals-financial-freedom</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://globalwealthfolio.com/settings</loc>
