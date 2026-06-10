@@ -5998,3 +5998,97 @@ Error: Failed to load url astro:server-app.js (resolved id: astro:server-app.js)
 [vite] program reload
 [2m18:54:30[22m [34m[200][39m /dashboard [2m12ms[22m
 [vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m18:55:07[22m [34m[200][39m /dashboard [2m12ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m18:55:20[22m [34m[200][39m /dashboard [2m104ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:09:13[22m [34m[200][39m /dashboard [2m64ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:09:19[22m [34m[200][39m /dashboard [2m52ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:09:20[22m [34m[200][39m /dashboard [2m357ms[22m
+[vite] program reload
+[vite] program reload
+[2m19:09:21[22m [34m[200][39m /dashboard [2m47ms[22m
+[vite] program reload
+[vite] program reload
+[2m19:09:22[22m [34m[200][39m /dashboard [2m28ms[22m
+[vite] program reload
+[vite] program reload
+[2m19:09:23[22m [34m[200][39m /dashboard [2m46ms[22m
+[vite] program reload
+[vite] program reload
+[2m19:09:24[22m [34m[200][39m /dashboard [2m37ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:09:25[22m [34m[200][39m /dashboard [2m413ms[22m
+[vite] program reload
+[vite] program reload
+[2m19:09:26[22m [34m[200][39m /dashboard [2m238ms[22m
+[vite] program reload
+[vite] program reload
+[2m19:09:27[22m [34m[200][39m /dashboard [2m50ms[22m
+[vite] program reload
+[vite] program reload
+[2m19:09:28[22m [34m[200][39m /dashboard [2m326ms[22m
+[vite] program reload
+[vite] program reload
+[2m19:09:29[22m [34m[200][39m /dashboard [2m270ms[22m
+[vite] program reload
+[vite] program reload
+[2m19:09:30[22m [34m[200][39m /dashboard [2m48ms[22m
+[2m19:09:30[22m [34m[watch][39m src/layouts/Layout.astro
+[vite] program reload
+[vite] program reload
+[2m19:09:31[22m [34m[200][39m /dashboard [2m354ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:09:32[22m [34m[200][39m /dashboard [2m264ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:09:33[22m [34m[200][39m /dashboard [2m285ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:09:37[22m [34m[200][39m /dashboard [2m216ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:09:39[22m [34m[200][39m /dashboard [2m464ms[22m
+[2m19:09:39[22m [34m[200][39m /dashboard [2m39ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:13:01[22m [34m[200][39m /dashboard [2m539ms[22m
+[2m19:13:02[22m [34m[200][39m /dashboard [2m56ms[22m
+[vite] program reload
