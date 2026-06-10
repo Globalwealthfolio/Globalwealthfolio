@@ -6092,3 +6092,108 @@ Error: Failed to load url astro:server-app.js (resolved id: astro:server-app.js)
 [2m19:13:01[22m [34m[200][39m /dashboard [2m539ms[22m
 [2m19:13:02[22m [34m[200][39m /dashboard [2m56ms[22m
 [vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:13:08[22m [34m[200][39m /dashboard [2m55ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:13:20[22m [34m[200][39m /dashboard [2m18ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:14:03[22m [34m[200][39m /dashboard [2m41ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:14:08[22m [34m[200][39m /dashboard [2m35ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:14:09[22m [34m[200][39m /dashboard [2m209ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:14:12[22m [34m[200][39m /dashboard [2m39ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:14:14[22m [34m[200][39m /dashboard [2m23ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:14:16[22m [34m[200][39m /dashboard [2m394ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:14:33[22m [34m[200][39m /dashboard [2m75ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:14:39[22m [34m[200][39m /dashboard [2m42ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:14:40[22m [34m[200][39m /dashboard [2m393ms[22m
+[2m19:14:41[22m [34m[200][39m /dashboard [2m46ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:14:46[22m [34m[200][39m /dashboard [2m40ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:14:47[22m [34m[200][39m /dashboard [2m331ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:15:17[22m [34m[200][39m /dashboard [2m303ms[22m
+[vite] program reload
+[vite] program reload
+[2m19:15:19[22m Configuration file updated. Restarting...
+[vite] program reload
+[vite] program reload
+[2m19:15:20[22m [34m[200][39m /dashboard [2m270ms[22m
+[vite] program reload
+[vite] connected.
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:15:22[22m [34m[200][39m /dashboard [2m216ms[22m
+[2m19:15:22[22m [34m[200][39m /dashboard [2m25ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:15:23[22m [34m[200][39m /dashboard [2m195ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:15:26[22m [34m[200][39m /dashboard [2m51ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m19:15:29[22m [34m[200][39m /dashboard [2m493ms[22m
+[2m19:15:29[22m [34m[200][39m /dashboard [2m48ms[22m
+[2m19:15:29[22m [34m[vite][39m Re-optimizing dependencies because lockfile has changed
+[2m19:15:29[22m [34m[vite][39m server restarted.
+[2m19:19:21[22m Configuration file updated. Restarting...
+[vite] connected.
+[2m19:19:24[22m [34m[vite][39m server restarted.
