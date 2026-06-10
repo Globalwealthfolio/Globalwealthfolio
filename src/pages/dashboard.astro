@@ -39,13 +39,19 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
             </svg>
             Import
           </Button>
-          <Button id="quick-add-investment" variant="primary" size="sm">
+          <button id="quick-add-investment" class="btn-primary" style="height: 32px; padding: 0 12px; font-size: 13px;" type="button">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
             Add investment
-          </Button>
+          </button>
+          <button id="open-projection" class="btn-secondary" style="height: 32px; padding: 0 12px; font-size: 13px;" type="button">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+            Projection
+          </button>
         </div>
       </div>
 
@@ -157,6 +163,40 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
       </div>
     </div>
   </section>
+
+  <!-- Projection modal -->
+  <dialog id="projection-modal" class="rounded-lg p-0 max-w-lg w-full shadow-level-5 backdrop:bg-black/30">
+    <form id="projection-form" method="dialog" class="p-lg">
+      <div class="flex items-center justify-between mb-md">
+        <h2 class="text-display-sm">Portfolio Projection</h2>
+        <button type="button" data-close-projection class="btn-icon" aria-label="Close">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <p class="text-body-sm text-body mb-lg">Project your current portfolio value into the future based on expected returns and inflation.</p>
+      <div class="space-y-md">
+        <div>
+          <label class="label" for="proj-return">Expected Annual Return (%)</label>
+          <input class="input" type="number" id="proj-return" value="12" min="0" max="100" step="0.1" />
+        </div>
+        <div>
+          <label class="label" for="proj-years">Period (Years)</label>
+          <input class="input" type="number" id="proj-years" value="10" min="1" max="100" step="1" />
+        </div>
+        <div>
+          <label class="label" for="proj-inflation">Inflation Rate (%)</label>
+          <input class="input" type="number" id="proj-inflation" value="7" min="0" max="100" step="0.1" />
+        </div>
+      </div>
+      <div class="hairline my-lg"></div>
+      <div id="projection-results" class="space-y-md">
+        <!-- Populated dynamically -->
+      </div>
+      <div class="flex justify-end gap-sm mt-lg">
+        <button type="button" data-close-projection class="btn-secondary">Close</button>
+      </div>
+    </form>
+  </dialog>
 
   <!-- Quick add investment modal -->
   <dialog id="quick-add-modal" class="rounded-lg p-0 max-w-md w-full shadow-level-5 backdrop:bg-black/30">

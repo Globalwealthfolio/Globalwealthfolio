@@ -885,6 +885,84 @@ form?.addEventListener("submit", (e) => {
   modal?.close();
 });
 
+/* ── Projection modal ──────────────────────────────────────── */
+const projModal = document.getElementById("projection-modal") as HTMLDialogElement | null;
+const openProjBtn = document.getElementById("open-projection");
+
+function renderProjection() {
+  const data = loadData();
+  const currency = getCurrency();
+  const portfolioValue = totalCurrent(data.investments);
+
+  const returnEl = document.getElementById("proj-return") as HTMLInputElement | null;
+  const yearsEl = document.getElementById("proj-years") as HTMLInputElement | null;
+  const inflationEl = document.getElementById("proj-inflation") as HTMLInputElement | null;
+  const resultsEl = document.getElementById("projection-results");
+  if (!returnEl || !yearsEl || !inflationEl || !resultsEl) return;
+
+  const annualReturn = Number(returnEl.value) || 0;
+  const years = Number(yearsEl.value) || 0;
+  const inflation = Number(inflationEl.value) || 0;
+
+  if (portfolioValue <= 0) {
+    resultsEl.innerHTML = `<p class="text-body-sm text-body text-center py-lg">Add investments to see your portfolio projection.</p>`;
+    return;
+  }
+
+  const nominalFV = portfolioValue * Math.pow(1 + annualReturn / 100, years);
+  const realFV = nominalFV / Math.pow(1 + inflation / 100, years);
+  const gain = nominalFV - portfolioValue;
+  const realGain = realFV - portfolioValue;
+  const totalInvested = portfolioValue; // Using current as base
+
+  resultsEl.innerHTML = `
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-md">
+      <div class="card-soft text-center py-md">
+        <p class="text-caption-mono text-body mb-xs">Current Portfolio</p>
+        <p class="text-body-sm-strong text-ink">${fmt(portfolioValue, currency, true)}</p>
+      </div>
+      <div class="card-soft text-center py-md ring-gold">
+        <p class="text-caption-mono text-gold mb-xs">Projected Value</p>
+        <p class="text-display-sm text-gradient-gold">${fmt(nominalFV, currency, true)}</p>
+        <p class="text-caption text-body mt-xs">+${fmt(gain, currency, true)} (${annualReturn}% p.a.)</p>
+      </div>
+      <div class="card-soft text-center py-md">
+        <p class="text-caption-mono text-body mb-xs">Inflation-Adjusted</p>
+        <p class="text-body-sm-strong text-gain">${fmt(realFV, currency, true)}</p>
+        <p class="text-caption text-body mt-xs">${realGain >= 0 ? "+" : ""}${fmt(realGain, currency, true)} (${inflation}% inflation)</p>
+      </div>
+    </div>
+    <div class="card-soft p-md">
+      <div class="flex items-center justify-between text-body-sm">
+        <span class="text-body">Nominal growth</span>
+        <span class="text-ink">${fmt(nominalFV - portfolioValue, currency, true)}</span>
+      </div>
+      <div class="flex items-center justify-between text-body-sm mt-xs">
+        <span class="text-body">Inflation erosion</span>
+        <span class="text-loss">${fmt(nominalFV - realFV, currency, true)}</span>
+      </div>
+      <div class="hairline my-sm"></div>
+      <div class="flex items-center justify-between text-body-sm-strong">
+        <span class="text-ink">Real purchasing power after ${years} yr</span>
+        <span class="text-gain">${fmt(realFV, currency, true)}</span>
+      </div>
+    </div>`;
+}
+
+openProjBtn?.addEventListener("click", () => {
+  if (!projModal) return;
+  projModal.showModal();
+  renderProjection();
+});
+
+document.querySelectorAll("[data-close-projection]").forEach((btn) => {
+  btn.addEventListener("click", () => projModal?.close());
+});
+
+document.getElementById("proj-return")?.addEventListener("input", renderProjection);
+document.getElementById("proj-years")?.addEventListener("input", renderProjection);
+document.getElementById("proj-inflation")?.addEventListener("input", renderProjection);
+
 /* ── Range buttons ─────────────────────────────────────────── */
 document.querySelectorAll<HTMLButtonElement>("[data-range]").forEach((btn) => {
   btn.addEventListener("click", () => {
