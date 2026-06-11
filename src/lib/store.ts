@@ -93,6 +93,23 @@ function emit(data: AppData) {
   listeners.forEach((l) => l(data));
 }
 
+// Invalidate cache when data changes in another tab
+if (isBrowser()) {
+  window.addEventListener("storage", (e) => {
+    if (!e.key || e.key === STORAGE_KEY) {
+      cache = null;
+      emit(loadData());
+    }
+  });
+  // Handle bfcache restoration (browser back/forward cache)
+  window.addEventListener("pageshow", (e) => {
+    if (e.persisted) {
+      cache = null;
+      emit(loadData());
+    }
+  });
+}
+
 export function addAudit(
   entry: Omit<AppData["auditLog"][number], "id" | "timestamp">,
 ): void {

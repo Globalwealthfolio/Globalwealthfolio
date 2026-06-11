@@ -160,7 +160,7 @@ import Layout from "../layouts/Layout.astro";
         }
         <div class="flex items-center justify-between mt-md pt-sm border-t border-hairline">
           <span class="text-caption text-mute">${p.authorName ? `By ${esc(p.authorName)}` : ""}</span>
-          <span class="text-caption text-mute">${p.content.split(/\s+/).filter(Boolean).length} words</span>
+          <a href="/blog/view?slug=${encodeURIComponent(p.slug)}" class="text-body-sm text-link hover:underline">Read more →</a>
         </div>
       </article>`,
       )

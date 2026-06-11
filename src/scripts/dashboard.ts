@@ -992,11 +992,13 @@ window.addEventListener("gwp:daterange", syncLegacyMonthFromRange);
 
 /* ── First-run banner ─────────────────────────────────────── */
 const firstRunBanner = document.getElementById("first-run-banner") as HTMLElement | null;
-document.getElementById("seed-sample")?.addEventListener("click", () => {
+function handleSeedSample() {
   if (confirm("Load sample data? This will replace anything you've already entered.")) {
     seedSampleData();
   }
-});
+}
+document.getElementById("seed-sample")?.addEventListener("click", handleSeedSample);
+document.getElementById("seed-sample-persistent")?.addEventListener("click", handleSeedSample);
 function renderFirstRun() {
   if (!firstRunBanner) return;
   firstRunBanner.classList.toggle("hidden", hasAnyData());

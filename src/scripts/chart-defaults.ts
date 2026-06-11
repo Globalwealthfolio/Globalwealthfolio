@@ -61,7 +61,7 @@ export function applyChartDefaults(): void {
   // Per-element hover behavior so points/bars visibly react to the cursor.
   Chart.defaults.elements.point.hoverRadius = 5;
   Chart.defaults.elements.point.hoverBorderWidth = 2;
-  Chart.defaults.elements.bar.hoverBorderWidth = 0;
+  if (Chart.defaults.elements.bar) Chart.defaults.elements.bar.hoverBorderWidth = 0;
   Chart.defaults.elements.arc.hoverOffset = 8;
 
   // Legend defaults

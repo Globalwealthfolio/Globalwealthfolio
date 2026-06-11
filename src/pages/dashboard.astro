@@ -30,6 +30,7 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
           <p class="text-body-md text-body mt-sm leading-relaxed max-sm:text-body-sm" data-greeting>Welcome back. A single view of how your money is doing today &mdash; total value, goal progress, active EMIs, and monthly cash flow.</p>
         </div>
         <div class="flex gap-sm flex-wrap shrink-0">
+          <button id="seed-sample-persistent" class="btn-ghost" style="height: 32px; font-size: 13px;" type="button">Load sample data</button>
           <DateRangeFilter id="dash-range" defaultPreset="all" showLabel={false} />
           <Button href="/import" variant="secondary" size="sm">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

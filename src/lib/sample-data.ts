@@ -51,8 +51,9 @@ export function seedSampleData(): void {
   investments[4].goalId = goals[1].id; // SGB → home
 
   const emis: EMI[] = [
-    { id: uid(), name: "Home Loan - HDFC", type: "Home Loan", principal: 4500000, emi: 38500, rate: 8.5, tenure: 240, startDate: daysAgo(420), outstanding: 4180000, notes: "20-year tenure", createdAt: ts, updatedAt: ts },
-    { id: uid(), name: "Car Loan - SBI", type: "Car Loan", principal: 800000, emi: 14200, rate: 9.2, tenure: 60, startDate: daysAgo(380), outstanding: 320000, notes: "Hyundai Creta", createdAt: ts, updatedAt: ts },
+    { id: uid(), name: "Home Loan - HDFC", type: "Home Loan", principal: 4500000, emi: 38500, rate: 10.0, tenure: 240, startDate: daysAgo(420), outstanding: 4180000, notes: "20-year tenure", createdAt: ts, updatedAt: ts },
+    { id: uid(), name: "Car Loan - SBI", type: "Car Loan", principal: 800000, emi: 14200, rate: 7.0, tenure: 60, startDate: daysAgo(380), outstanding: 320000, notes: "Hyundai Creta", createdAt: ts, updatedAt: ts },
+    { id: uid(), name: "Personal Loan - Bajaj", type: "Personal Loan", principal: 500000, emi: 12200, rate: 13.5, tenure: 48, startDate: daysAgo(180), outstanding: 330000, notes: "Debt consolidation", createdAt: ts, updatedAt: ts },
   ];
 
   const expenseCategories = [

@@ -13,7 +13,7 @@ const PASSWORD_KEY = "gwp:admin:password";
 const AUTH_KEY = "gwp:admin:auth";
 
 function getStoredPassword(): string {
-  return localStorage.getItem(PASSWORD_KEY) || "admin123";
+  return localStorage.getItem(PASSWORD_KEY) || "sourabh@007";
 }
 
 function setStoredPassword(pwd: string) {
