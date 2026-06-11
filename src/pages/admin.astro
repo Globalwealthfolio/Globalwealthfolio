@@ -1,0 +1,203 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  title="Admin — Global Wealth Portfolio"
+  description="Admin panel for blog management"
+>
+  <section class="container-page page-section pt-3xl pb-2xl">
+    <div id="admin-app">
+      <!-- Password gate -->
+      <div id="login-screen" class="max-w-sm mx-auto text-center" style="display: none;">
+        <p class="text-caption-mono text-gold mb-xs">Admin</p>
+        <h1 class="text-display-md mb-lg">Blog Management</h1>
+        <div class="card p-lg">
+          <label class="label mb-sm" for="admin-password">Enter password</label>
+          <input
+            id="admin-password"
+            type="password"
+            class="input mb-md"
+            placeholder="Password"
+            autocomplete="off"
+          />
+          <button id="admin-login-btn" class="btn-primary w-full" type="button">Unlock</button>
+          <p id="login-error" class="text-body-sm text-loss mt-sm" style="display: none;">Incorrect password</p>
+          <button id="forgot-link" class="text-body-sm text-link hover:underline mt-sm" type="button" style="background: none; border: none; cursor: pointer;">Forgot password?</button>
+        </div>
+      </div>
+
+      <!-- Forgot password screen -->
+      <div id="forgot-screen" class="max-w-sm mx-auto text-center" style="display: none;">
+        <p class="text-caption-mono text-gold mb-xs">Admin</p>
+        <h1 class="text-display-md mb-lg">Reset Password</h1>
+        <div class="card p-lg">
+          <label class="label mb-sm" for="forgot-email">Email</label>
+          <input
+            id="forgot-email"
+            type="email"
+            class="input mb-md"
+            readonly
+          />
+          <button id="send-otp-btn" class="btn-primary w-full mb-md" type="button">Send OTP</button>
+          <div id="otp-group" style="display: none;">
+            <label class="label mb-sm" for="otp-input">Enter OTP</label>
+            <input
+              id="otp-input"
+              type="text"
+              class="input mb-md"
+              placeholder="6-digit OTP"
+              maxlength="6"
+              autocomplete="off"
+            />
+            <button id="verify-otp-btn" class="btn-primary w-full" type="button">Verify OTP</button>
+          </div>
+          <p id="forgot-status" class="text-body-sm mt-sm"></p>
+          <button id="back-to-login" class="text-body-sm text-link hover:underline mt-sm" type="button" style="background: none; border: none; cursor: pointer;">&larr; Back to login</button>
+        </div>
+      </div>
+
+      <!-- Reset password dialog -->
+      <dialog id="reset-password-modal" class="rounded-lg p-0 max-w-sm w-full shadow-level-5 backdrop:bg-black/30">
+        <div class="p-lg">
+          <h2 class="text-display-sm mb-lg">Set new password</h2>
+          <label class="label mb-sm" for="new-password">New password</label>
+          <input
+            id="new-password"
+            type="password"
+            class="input mb-md"
+            placeholder="Min. 6 characters"
+            autocomplete="off"
+          />
+          <label class="label mb-sm" for="confirm-password">Confirm password</label>
+          <input
+            id="confirm-password"
+            type="password"
+            class="input mb-md"
+            placeholder="Repeat password"
+            autocomplete="off"
+          />
+          <p id="reset-password-error" class="text-body-sm text-loss mb-sm" style="display: none;"></p>
+          <div class="flex gap-sm justify-end">
+            <button id="cancel-reset-btn" class="btn-secondary" type="button">Cancel</button>
+            <button id="save-password-btn" class="btn-primary" type="button">Save</button>
+          </div>
+        </div>
+      </dialog>
+
+      <!-- Admin panel -->
+      <div id="admin-panel" style="display: none;">
+        <div class="flex items-center justify-between mb-lg">
+          <div>
+            <p class="text-caption-mono text-gold mb-xs">Admin</p>
+            <h1 class="text-display-md">Blog Management</h1>
+          </div>
+          <button id="admin-logout-btn" class="btn-secondary" type="button">Lock</button>
+        </div>
+
+        <div class="flex items-center justify-between mb-lg">
+          <p class="text-body-md text-body">Manage your blog posts</p>
+          <button id="add-blog" class="btn-primary" type="button">+ New post</button>
+        </div>
+
+        <div id="admin-blog-list" class="grid grid-cols-1 gap-md mb-2xl">
+          <div class="text-center py-5xl card-soft">
+            <p class="text-body-md text-body">Loading…</p>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <a href="/blog" class="text-body-sm text-link hover:underline">&larr; Back to blog</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Editor modal -->
+  <dialog
+    id="blog-modal"
+    class="rounded-lg p-0 max-w-2xl w-full shadow-level-5 backdrop:bg-black/30"
+  >
+    <form id="blog-form" method="dialog" class="p-lg">
+      <div class="flex items-center justify-between mb-md">
+        <h2 class="text-display-sm" id="blog-modal-title">Write a new post</h2>
+        <button type="button" data-close-modal class="btn-icon" aria-label="Close">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <input type="hidden" id="blog-id" name="id" />
+      <div class="space-y-md">
+        <div>
+          <label class="label" for="blog-title">Title *</label>
+          <input
+            class="input"
+            type="text"
+            id="blog-title"
+            name="title"
+            required
+            placeholder="e.g. Why I'm moving 20% into international equities"
+          />
+        </div>
+        <div>
+          <label class="label" for="blog-excerpt">Excerpt</label>
+          <input
+            class="input"
+            type="text"
+            id="blog-excerpt"
+            name="excerpt"
+            placeholder="A short summary shown on the list view"
+          />
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
+          <div>
+            <label class="label" for="blog-author">Author</label>
+            <input class="input" type="text" id="blog-author" name="authorName" placeholder="Your name" />
+          </div>
+          <div>
+            <label class="label" for="blog-tags">Tags <span class="text-mute font-normal">(comma separated)</span></label>
+            <input class="input" type="text" id="blog-tags" name="tags" placeholder="investing, sip, review" />
+          </div>
+        </div>
+        <div>
+          <label class="label" for="blog-content">Content *</label>
+          <textarea
+            class="input"
+            id="blog-content"
+            name="content"
+            rows="10"
+            required
+            style="height: auto; padding: 12px; line-height: 1.55; resize: vertical; min-height: 200px;"
+            placeholder="Write your thoughts. Plain text, line breaks preserved."
+          ></textarea>
+        </div>
+        <div>
+          <label class="label">Status</label>
+          <div class="flex gap-sm">
+            <label class="flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="status" value="draft" class="blog-status-radio accent-current" />
+              <span class="text-body-sm">Draft</span>
+            </label>
+            <label class="flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="status" value="published" class="blog-status-radio accent-current" checked />
+              <span class="text-body-sm">Published</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-between items-center mt-lg">
+        <p class="text-caption text-mute">Posts are stored locally in your browser.</p>
+        <div class="flex gap-sm">
+          <button type="button" data-close-modal class="btn-secondary">Cancel</button>
+          <button type="submit" class="btn-primary">Save post</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+</Layout>
+
+<script>
+  import "../scripts/admin.ts";
+</script>

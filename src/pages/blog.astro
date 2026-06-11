@@ -55,6 +55,20 @@ import Layout from "../layouts/Layout.astro";
 
     <hr class="border-hairline my-4xl" />
 
+    <!-- Admin blog posts -->
+    <div class="mb-md">
+      <p class="text-caption-mono text-gold mb-xs">Latest from the author</p>
+      <h2 class="text-display-md">Thoughts on investing &amp; finance.</h2>
+    </div>
+
+    <div id="admin-blog-list" class="grid grid-cols-1 md:grid-cols-2 gap-md mb-2xl">
+      <div class="md:col-span-2 text-center py-5xl card-soft">
+        <p class="text-body-md text-body">Loading…</p>
+      </div>
+    </div>
+
+    <hr class="border-hairline my-4xl" />
+
     <!-- About Me -->
     <div class="mb-4xl">
       <p class="text-caption-mono text-gold mb-xs">About Me</p>
@@ -98,170 +112,61 @@ import Layout from "../layouts/Layout.astro";
         </p>
       </div>
     </div>
-
-    <hr class="border-hairline my-4xl" />
-
-    <!-- Your posts -->
-    <div class="mb-md">
-      <p class="text-caption-mono text-body mb-xs">Your posts</p>
-      <h2 class="text-display-md">Write your own journal.</h2>
-    </div>
-    <p class="text-body-md text-body mb-2xl">
-      Capture your investment thesis, monthly reflections, or a long-form note for yourself.
-      Posts live in your browser — private, exportable, and ready to read on every visit.
-    </p>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-2xl">
-      <div class="card">
-        <p class="text-caption-mono text-body mb-xs">Total posts</p>
-        <p class="text-display-sm" data-stat="total">0</p>
-      </div>
-      <div class="card">
-        <p class="text-caption-mono text-body mb-xs">Published</p>
-        <p class="text-display-sm text-gain" data-stat="published">0</p>
-      </div>
-      <div class="card">
-        <p class="text-caption-mono text-body mb-xs">Drafts</p>
-        <p class="text-display-sm text-body" data-stat="drafts">0</p>
-      </div>
-    </div>
-
-    <!-- Filters -->
-    <div class="flex flex-wrap items-center gap-sm mb-md">
-      <select data-filter="status" class="input w-auto min-w-[140px]">
-        <option value="all">All posts</option>
-        <option value="published" selected>Published</option>
-        <option value="draft">Drafts</option>
-      </select>
-      <select data-filter="tag" class="input w-auto min-w-[140px]">
-        <option value="all">All Tags</option>
-      </select>
-      <input data-search type="search" class="input min-w-[200px] flex-1" placeholder="Search posts…" />
-      <button id="add-blog" class="btn-primary" type="button" style="margin-left: auto">+ Add post</button>
-    </div>
-
-    <div id="blog-list" class="grid grid-cols-1 md:grid-cols-2 gap-md mb-2xl">
-      <div class="md:col-span-2 text-center py-5xl card-soft">
-        <p class="text-body-md text-body">Loading…</p>
-      </div>
-    </div>
   </section>
-
-  <!-- Editor modal -->
-  <dialog
-    id="blog-modal"
-    class="rounded-lg p-0 max-w-2xl w-full shadow-level-5 backdrop:bg-black/30"
-  >
-    <form id="blog-form" method="dialog" class="p-lg">
-      <div class="flex items-center justify-between mb-md">
-        <h2 class="text-display-sm" id="blog-modal-title">Write a new post</h2>
-        <button type="button" data-close-modal class="btn-icon" aria-label="Close">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-      <input type="hidden" id="blog-id" name="id" />
-      <div class="space-y-md">
-        <div>
-          <label class="label" for="blog-title">Title *</label>
-          <input
-            class="input"
-            type="text"
-            id="blog-title"
-            name="title"
-            required
-            placeholder="e.g. Why I'm moving 20% into international equities"
-          />
-        </div>
-        <div>
-          <label class="label" for="blog-excerpt">Excerpt</label>
-          <input
-            class="input"
-            type="text"
-            id="blog-excerpt"
-            name="excerpt"
-            placeholder="A short summary shown on the list view"
-          />
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
-          <div>
-            <label class="label" for="blog-author">Author</label>
-            <input class="input" type="text" id="blog-author" name="authorName" placeholder="Your name" />
-          </div>
-          <div>
-            <label class="label" for="blog-tags">Tags <span class="text-mute font-normal">(comma separated)</span></label>
-            <input class="input" type="text" id="blog-tags" name="tags" placeholder="investing, sip, review" />
-          </div>
-        </div>
-        <div>
-          <label class="label" for="blog-content">Content *</label>
-          <textarea
-            class="input"
-            id="blog-content"
-            name="content"
-            rows="10"
-            required
-            style="height: auto; padding: 12px; line-height: 1.55; resize: vertical; min-height: 200px;"
-            placeholder="Write your thoughts. Plain text, line breaks preserved."
-          ></textarea>
-        </div>
-        <div>
-          <label class="label">Status</label>
-          <div class="flex gap-sm">
-            <label class="flex items-center gap-xs cursor-pointer">
-              <input type="radio" name="status" value="draft" class="blog-status-radio accent-current" />
-              <span class="text-body-sm">Draft</span>
-            </label>
-            <label class="flex items-center gap-xs cursor-pointer">
-              <input type="radio" name="status" value="published" class="blog-status-radio accent-current" checked />
-              <span class="text-body-sm">Published</span>
-            </label>
-          </div>
-        </div>
-      </div>
-      <div class="flex justify-between items-center mt-lg">
-        <p class="text-caption text-mute">Posts are stored locally in your browser.</p>
-        <div class="flex gap-sm">
-          <button type="button" data-close-modal class="btn-secondary">Cancel</button>
-          <button type="submit" class="btn-primary">Save post</button>
-        </div>
-      </div>
-    </form>
-  </dialog>
-
-  <!-- Reader modal -->
-  <dialog
-    id="reader-modal"
-    class="rounded-lg p-0 max-w-2xl w-full shadow-level-5 backdrop:bg-black/30"
-  >
-    <article class="p-lg">
-      <div class="flex items-center justify-between mb-md">
-        <span class="badge" data-reader-status>—</span>
-        <button type="button" data-close-reader class="btn-icon" aria-label="Close">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-      <h2 class="text-display-md text-ink mb-xs" data-reader-title>—</h2>
-      <p class="text-caption text-mute mb-md">
-        <span data-reader-author>—</span>
-        · <span data-reader-date>—</span>
-      </p>
-      <div class="flex flex-wrap gap-xs mb-md" data-reader-tags></div>
-      <p class="text-body-md text-body italic mb-lg" data-reader-excerpt></p>
-      <div class="text-body-md text-ink leading-relaxed whitespace-pre-line" data-reader-content></div>
-      <div class="flex justify-end gap-sm mt-lg">
-        <button type="button" class="btn-secondary" data-reader-edit>Edit</button>
-        <button type="button" class="btn-secondary" data-close-reader>Close</button>
-      </div>
-    </article>
-  </dialog>
 </Layout>
 
 <script>
-  import "../scripts/blog.ts";
+  import { loadData, subscribe } from "../lib/store";
+
+  function esc(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function formatDate(iso) {
+    try {
+      return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    } catch { return iso; }
+  }
+
+  function render() {
+    const list = document.getElementById("admin-blog-list");
+    if (!list) return;
+    const posts = loadData().blog
+      .filter((p) => p.status === "published")
+      .sort((a, b) => ((a.publishedAt ?? a.updatedAt) < (b.publishedAt ?? b.updatedAt) ? 1 : -1));
+
+    if (posts.length === 0) {
+      list.innerHTML = `<div class="md:col-span-2 text-center py-5xl card-soft"><p class="text-body-sm text-body">No posts yet. Check back soon!</p></div>`;
+      return;
+    }
+
+    list.innerHTML = posts
+      .map(
+        (p) => `
+      <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-caption text-mute">${formatDate(p.publishedAt ?? p.updatedAt)}</span>
+        </div>
+        <h3 class="text-display-sm text-ink">${esc(p.title)}</h3>
+        ${
+          p.excerpt
+            ? `<p class="text-body-md text-body line-clamp-2">${esc(p.excerpt)}</p>`
+            : `<p class="text-body-md text-body line-clamp-2">${esc(p.content.slice(0, 140))}${p.content.length > 140 ? "…" : ""}</p>`
+        }
+        ${
+          p.tags.length > 0
+            ? `<div class="flex flex-wrap gap-xs mt-xs">${p.tags.map((t) => `<span class="badge">${esc(t)}</span>`).join("")}</div>`
+            : ""
+        }
+        <div class="flex items-center justify-between mt-md pt-sm border-t border-hairline">
+          <span class="text-caption text-mute">${p.authorName ? `By ${esc(p.authorName)}` : ""}</span>
+          <span class="text-caption text-mute">${p.content.split(/\s+/).filter(Boolean).length} words</span>
+        </div>
+      </article>`,
+      )
+      .join("");
+  }
+
+  subscribe(render);
+  render();
 </script>
