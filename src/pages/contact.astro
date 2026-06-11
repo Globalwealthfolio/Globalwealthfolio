@@ -23,10 +23,14 @@ import Layout from "../layouts/Layout.astro";
           </svg>
           <h2 class="text-display-sm">Email</h2>
         </div>
-        <p class="text-body-sm text-body mb-sm">General inquiries &amp; support:</p>
-        <a href="mailto:hello@globalwealthfolio.com" class="text-body-md text-link hover:underline break-all">hello@globalwealthfolio.com</a>
-        <p class="text-body-sm text-body mt-md mb-sm">Privacy concerns:</p>
-        <a href="mailto:privacy@globalwealthfolio.com" class="text-body-md text-link hover:underline break-all">privacy@globalwealthfolio.com</a>
+        <button data-msg-btn class="text-body-md text-link hover:underline inline-flex items-center gap-1.5 cursor-pointer bg-transparent border-none p-0" aria-label="Message to Author">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          Message to Author
+        </button>
+
       </div>
 
       <div class="card-soft p-lg">
@@ -40,18 +44,6 @@ import Layout from "../layouts/Layout.astro";
         <a href="https://github.com/sourabh6303/globalwealthfolio" class="text-body-md text-link hover:underline break-all" rel="noopener" target="_blank">github.com/sourabh6303/globalwealthfolio</a>
       </div>
 
-      <div class="card-soft p-lg">
-        <div class="flex items-center gap-sm mb-sm">
-          <svg class="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="2" y1="12" x2="22" y2="12"></line>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-          </svg>
-          <h2 class="text-display-sm">Web</h2>
-        </div>
-        <p class="text-body-sm text-body mb-sm">Documentation &amp; changelog:</p>
-        <a href="/blog" class="text-body-md text-link hover:underline">/blog</a>
-      </div>
     </div>
 
     <h2 class="text-display-md mt-2xl mb-md">Frequently asked</h2>

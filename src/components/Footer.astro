@@ -116,12 +116,13 @@ const year = new Date().getFullYear();
               </a>
             </li>
             <li>
-              <a
-                href="mailto:hello@globalwealthfolio.com"
-                class="text-body-sm text-body hover:text-ink transition-colors break-all"
-              >
-                hello@globalwealthfolio.com
-              </a>
+              <button data-msg-btn class="text-body-sm text-body hover:text-ink transition-colors inline-flex items-center gap-1.5 cursor-pointer bg-transparent border-none p-0" aria-label="Message to Author">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                Message
+              </button>
             </li>
 
           </ul>
@@ -174,4 +175,81 @@ const year = new Date().getFullYear();
       </p>
     </div>
   </div>
+
+  <dialog id="msg-modal" class="rounded-xl border border-hairline bg-canvas p-2xl max-w-md w-full backdrop:bg-black/50">
+    <form id="msg-form" class="flex flex-col gap-lg">
+      <h3 class="text-display-sm text-ink">Message to Author</h3>
+      <div>
+        <label for="msg-email" class="text-body-sm text-body mb-xs block">Your email</label>
+        <input id="msg-email" type="email" required class="input w-full" placeholder="you@example.com" />
+      </div>
+      <div>
+        <label for="msg-text" class="text-body-sm text-body mb-xs block">Message</label>
+        <textarea id="msg-text" required class="input w-full min-h-[120px] resize-y" placeholder="Write your message..."></textarea>
+      </div>
+      <div id="msg-status" class="text-body-sm hidden"></div>
+      <div class="flex items-center justify-end gap-sm">
+        <button type="button" id="msg-cancel" class="btn-ghost">Cancel</button>
+        <button type="submit" id="msg-send" class="btn-primary">Send</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    import emailjs from "@emailjs/browser";
+
+    const EMAILJS_PUBLIC_KEY = "rvTqHL_4iAM_yuGAG";
+    const EMAILJS_SERVICE_ID = "service_csuyz5u";
+    const EMAILJS_TEMPLATE_ID = "template_eo2i5vi";
+
+    const modal = document.getElementById("msg-modal");
+    const form = document.getElementById("msg-form");
+    const emailInput = document.getElementById("msg-email");
+    const msgInput = document.getElementById("msg-text");
+    const statusEl = document.getElementById("msg-status");
+    const sendBtn = document.getElementById("msg-send");
+    const cancelBtn = document.getElementById("msg-cancel");
+
+    document.querySelectorAll("[data-msg-btn]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        emailInput.value = "";
+        msgInput.value = "";
+        statusEl.className = "text-body-sm hidden";
+        modal?.showModal();
+      });
+    });
+
+    cancelBtn?.addEventListener("click", () => modal?.close());
+
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!emailInput.value.trim() || !msgInput.value.trim()) return;
+      sendBtn.disabled = true;
+      sendBtn.textContent = "Sending...";
+      statusEl.className = "text-body-sm hidden";
+      try {
+        await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          {
+            from_email: emailInput.value.trim(),
+            message: msgInput.value.trim(),
+            subject: "From GlobalWealthFolio.com",
+            to_email: "sourabh6303@gmail.com",
+          },
+          EMAILJS_PUBLIC_KEY,
+        );
+        statusEl.textContent = "Message sent successfully!";
+        statusEl.className = "text-body-sm text-gain";
+        emailInput.value = "";
+        msgInput.value = "";
+      } catch {
+        statusEl.textContent = "Failed to send. Try again.";
+        statusEl.className = "text-body-sm text-loss";
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.textContent = "Send";
+      }
+    });
+  </script>
 </footer>
