@@ -14,10 +14,10 @@ interface Props {
 }
 
 const {
-  title = "Global Wealth Portfolio — Free Investment Portfolio Manager & Expense Tracker | AI-Powered",
-  description = "Global Wealth Portfolio is a free, private AI investment portfolio manager and expense tracker. Track global investments, crypto, US stocks, and build your wealth portfolio with multi-currency support, OCR bank scanning, and AI-powered portfolio management — all 100% local on your device.",
+  title = "Global Wealth Portfolio — Global Investment Portfolio Manager & Personal Finance Tracker | AI-Powered",
+  description = "Global Wealth Portfolio is the leading global investment portfolio manager and personal finance tracker. Track your global investment portfolio, manage expenses, plan debt payoff, teach kids finance, and build wealth across 30+ currencies with AI-powered tools — all 100% local and private.",
   image = "/og-image.png",
-  keywords = "investment portfolio, investment portfolio manager, investment tracker, portfolio manager, expense tracker, investment portfolio management, wealth generation, wealth portfolio, global investment, crypto investment tracker, US investment tracker, investment dashboard, AI investment portfolio, AI investment tracker",
+  keywords = "global investment portfolio, investment portfolio manager, investment tracker, portfolio manager, expense tracker, investment portfolio management, wealth generation, wealth portfolio, global investment, crypto investment tracker, US investment tracker, investment dashboard, AI investment portfolio, AI investment tracker, kids finance, finance for kids, financial parenting, debt-payoff planner, budgeting tool, personal finance tracker, personal finance",
   noFooter = false,
   noNav = false,
   fullBleed = false,
@@ -46,11 +46,21 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={`https://globalwealthfolio.com${image}`} />
-    <meta property="og:image:alt" content="Global Wealth Portfolio — Investment Portfolio Manager Dashboard" />
+    <meta property="og:image:alt" content="Global Wealth Portfolio — Global Investment Portfolio Manager & Personal Finance Tracker" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="Global Wealth Portfolio" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="article:tag" content="global investment portfolio" />
+    <meta property="article:tag" content="investment portfolio manager" />
+    <meta property="article:tag" content="personal finance tracker" />
+    <meta property="article:tag" content="budgeting tool" />
+    <meta property="article:tag" content="expense tracker" />
+    <meta property="article:tag" content="financial parenting" />
+    <meta property="article:tag" content="wealth generation" />
+    <meta property="article:tag" content="crypto investment tracker" />
+    <meta property="article:tag" content="AI investment tracker" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -58,7 +68,9 @@ const {
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={`https://globalwealthfolio.com${image}`} />
+    <meta property="twitter:image:alt" content="Global Wealth Portfolio — Global Investment Portfolio Manager & Personal Finance Tracker Dashboard" />
     <meta property="twitter:site" content="@globalwealthfolio" />
+    <meta property="twitter:domain" content="globalwealthfolio.com" />
 
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -82,7 +94,7 @@ const {
         "@type": "WebApplication",
         "name": "Global Wealth Portfolio",
         "url": "https://globalwealthfolio.com",
-        "description": "Free, private AI investment portfolio manager and expense tracker. Track global investments, crypto, US stocks, and build your wealth portfolio with multi-currency support, OCR bank scanning, and AI-powered portfolio management.",
+        "description": "Free, private global investment portfolio manager and personal finance tracker. Track your global investment portfolio, expenses, crypto, US stocks, and build wealth with multi-currency support, OCR bank scanning, and AI-powered tools.",
         "applicationCategory": "FinanceApplication",
         "operatingSystem": "All",
         "browserRequirements": "Requires JavaScript",
@@ -92,7 +104,10 @@ const {
           "priceCurrency": "USD"
         },
         "featureList": [
-          "Investment portfolio management",
+          "Global investment portfolio management",
+          "Personal finance tracking",
+          "Budgeting tool",
+          "Debt-payoff planning",
           "Expense tracking",
           "Multi-currency support (30+ currencies)",
           "Bank statement OCR scanning",
@@ -101,7 +116,8 @@ const {
           "Crypto investment tracking",
           "US investment tracking",
           "Net worth tracking",
-          "Portfolio benchmarking"
+          "Portfolio benchmarking",
+          "Kids finance education"
         ]
       }
     </script>
