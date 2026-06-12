@@ -10,7 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy": "wrangler pages deploy dist/"
+    "deploy": "npm run build && wrangler pages deploy dist/"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

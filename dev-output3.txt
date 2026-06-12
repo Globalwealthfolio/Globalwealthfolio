@@ -8627,3 +8627,513 @@ Error: Failed to load url astro:server-app.js (resolved id: astro:server-app.js)
 [2m16:05:09[22m [34m[200][39m /investments [2m49ms[22m
 [vite] program reload
 [vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:06:03[22m [34m[200][39m /investments [2m178ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:06:38[22m [34m[200][39m /investments [2m20ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:12[22m [34m[200][39m /investments [2m43ms[22m
+[vite] program reload
+[2m16:07:13[22m [34m[200][39m /investments [2m33ms[22m
+[vite] program reload
+[vite] program reload
+[2m16:07:15[22m Configuration file updated. Restarting...
+[vite] program reload
+[2m16:07:15[22m [34m[200][39m /investments [2m116ms[22m
+[vite] program reload
+[vite] program reload
+[vite] connected.
+[2m16:07:16[22m [34m[200][39m /investments [2m37ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:17[22m [34m[200][39m /investments [2m114ms[22m
+[vite] program reload
+[vite] program reload
+[2m16:07:18[22m [34m[200][39m /investments [2m199ms[22m
+[vite] program reload
+[vite] program reload
+[2m16:07:20[22m [34m[200][39m /investments [2m61ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:21[22m [34m[200][39m /investments [2m222ms[22m
+[vite] program reload
+[2m16:07:21[22m [34m[200][39m /investments [2m38ms[22m
+[vite] program reload
+[2m16:07:22[22m [34m[200][39m /investments [2m39ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:25[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[2m16:07:25[22m [34m[vite][39m server restarted.
+[vite] program reload
+[vite] An error happened during full reload
+Failed to load url astro:server-app.js (resolved id: astro:server-app.js). Does the file exist?
+Error: Failed to load url astro:server-app.js (resolved id: astro:server-app.js). Does the file exist?
+    at loadAndTransform (file:///D:/Sourabh/Work/Website%20Work/globalwealthfolio.com/node_modules/vite/dist/node/chunks/config.js:22739:33)
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:28[22m [34m[200][39m /investments [2m900ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:29[22m [34m[200][39m /investments [2m14ms[22m
+[vite] program reload
+[vite] program reload
+[2m16:07:30[22m [34m[vite][39m [32m✨ new dependencies optimized: [33m@emailjs/browser[32m[39m
+[2m16:07:30[22m [34m[vite][39m [32m✨ optimized dependencies changed. reloading[39m
+[vite] program reload
+[2m16:07:30[22m [34m[200][39m /investments [2m28ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:31[22m [34m[200][39m /investments [2m26ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:33[22m [34m[200][39m /investments [2m536ms[22m
+[2m16:07:33[22m [34m[200][39m /investments [2m27ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:34[22m [34m[200][39m /investments [2m175ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:35[22m [34m[200][39m /investments [2m257ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:37[22m [34m[200][39m /investments [2m336ms[22m
+[2m16:07:37[22m [34m[200][39m /investments [2m44ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:38[22m [34m[200][39m /investments [2m187ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:40[22m [34m[200][39m /investments [2m218ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:41[22m [34m[200][39m /investments [2m527ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:43[22m [34m[200][39m /investments [2m238ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:44[22m [34m[200][39m /investments [2m439ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:45[22m [34m[200][39m /investments [2m270ms[22m
+[2m16:07:45[22m [34m[200][39m /investments [2m44ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:46[22m [34m[200][39m /investments [2m281ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:47[22m [34m[200][39m /investments [2m143ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:48[22m [34m[200][39m /investments [2m23ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:50[22m [34m[200][39m /investments [2m25ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:51[22m [34m[200][39m /investments [2m255ms[22m
+[vite] program reload
+[vite] program reload
+[2m16:07:51[22m [34m[200][39m /investments [2m250ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:53[22m [34m[200][39m /investments [2m269ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:54[22m [34m[200][39m /investments [2m280ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:56[22m [34m[200][39m /investments [2m245ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:57[22m [34m[200][39m /investments [2m597ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:58[22m [34m[200][39m /investments [2m168ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:07:59[22m [34m[200][39m /investments [2m174ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:00[22m [34m[200][39m /investments [2m21ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:02[22m [34m[200][39m /investments [2m301ms[22m
+[2m16:08:02[22m [34m[200][39m /investments [2m32ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:03[22m [34m[200][39m /investments [2m259ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:05[22m [34m[200][39m /investments [2m201ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:05[22m [34m[200][39m /investments [2m20ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:07[22m [34m[200][39m /investments [2m441ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:08[22m [34m[200][39m /investments [2m35ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:10[22m [34m[200][39m /investments [2m334ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:10[22m [34m[200][39m /investments [2m347ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:11[22m [34m[200][39m /investments [2m511ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:13[22m [34m[200][39m /investments [2m264ms[22m
+[vite] program reload
+[vite] program reload
+[2m16:08:13[22m [34m[200][39m /investments [2m165ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:14[22m [34m[200][39m /investments [2m20ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:15[22m [34m[200][39m /investments [2m21ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:16[22m [34m[200][39m /investments [2m298ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:18[22m [34m[200][39m /investments [2m34ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:19[22m [34m[200][39m /investments [2m417ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:21[22m [34m[200][39m /investments [2m354ms[22m
+[vite] program reload
+[vite] program reload
+[2m16:08:21[22m [34m[200][39m /investments [2m262ms[22m
+[2m16:08:21[22m [34m[200][39m /investments [2m264ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:23[22m [34m[200][39m /investments [2m529ms[22m
+[2m16:08:23[22m [34m[200][39m /investments [2m29ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:25[22m [34m[200][39m /investments [2m667ms[22m
+[vite] program reload
+[vite] program reload
+[2m16:08:25[22m [34m[200][39m /investments [2m236ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:27[22m [34m[200][39m /investments [2m179ms[22m
+[2m16:08:27[22m [34m[200][39m /investments [2m33ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:28[22m [34m[200][39m /investments [2m189ms[22m
+[2m16:08:28[22m [34m[200][39m /investments [2m30ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:29[22m [34m[200][39m /investments [2m22ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:30[22m [34m[200][39m /investments [2m374ms[22m
+[vite] program reload
+[2m16:08:30[22m [34m[200][39m /investments [2m195ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:31[22m [34m[200][39m /investments [2m399ms[22m
+[2m16:08:31[22m [34m[200][39m /investments [2m224ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:32[22m [34m[200][39m /investments [2m246ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:33[22m [34m[200][39m /investments [2m234ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:34[22m [34m[200][39m /investments [2m238ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:36[22m [34m[200][39m /investments [2m455ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:37[22m [34m[200][39m /investments [2m29ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:38[22m [34m[200][39m /investments [2m29ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:38[22m [34m[200][39m /investments [2m31ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:39[22m [34m[200][39m /investments [2m29ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:41[22m [34m[200][39m /investments [2m238ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:42[22m [34m[200][39m /investments [2m261ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:44[22m [34m[200][39m /investments [2m248ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m16:08:45[22m [34m[200][39m /investments [2m173ms[22m
+[2m16:08:45[22m [34m[200][39m /investments [2m13ms[22m
+[vite] program reload
+[2m22:36:17[22m [34m[200][39m /investments [2m33ms[22m
+[2m22:36:18[22m [34m[200][39m /investments [2m7ms[22m
+[2m22:36:45[22m [34m[200][39m /investments [2m10ms[22m
+[2m22:36:47[22m [34m[200][39m /investments [2m7ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m22:36:52[22m [34m[200][39m / [2m223ms[22m
+[vite] program reload
+[vite] program reload
+[2m22:37:03[22m [34m[200][39m /dashboard [2m37ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[2m22:37:04[22m [34m[200][39m /dashboard [2m268ms[22m
+[2m22:37:04[22m [34m[200][39m /dashboard [2m172ms[22m
+[2m22:37:04[22m [34m[vite][39m [32m✨ new dependencies optimized: [33mchart.js[32m[39m
+[2m22:37:04[22m [34m[vite][39m [32m✨ optimized dependencies changed. reloading[39m
+[vite] program reload
+[vite] program reload
+[2m22:37:05[22m [34m[200][39m /dashboard [2m379ms[22m
+[2m22:37:05[22m [34m[200][39m /dashboard [2m221ms[22m
+[vite] program reload
+[vite] program reload
+[2m22:37:10[22m [34m[200][39m /emi [2m42ms[22m
+[vite] program reload
+[vite] program reload
+[2m22:37:10[22m [34m[200][39m /emi [2m93ms[22m
+[vite] program reload
+[vite] program reload
+[2m22:37:11[22m [34m[200][39m /emi [2m122ms[22m
+[vite] program reload
+[vite] program reload
+[2m22:37:14[22m [34m[200][39m /dashboard [2m12ms[22m
+[vite] program reload
+[vite] program reload
+[2m22:37:14[22m [34m[200][39m /dashboard [2m65ms[22m
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
+[vite] program reload
