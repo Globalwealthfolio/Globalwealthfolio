@@ -11,6 +11,7 @@ const ADMIN_EMAIL = "sourabh6303@gmail.com";
 // Password storage
 const PASSWORD_KEY = "gwp:admin:password";
 const AUTH_KEY = "gwp:admin:auth";
+const API_TOKEN_KEY = "gwp:admin:api-token";
 
 function getStoredPassword(): string {
   return localStorage.getItem(PASSWORD_KEY) || "sourabh@007";
@@ -56,6 +57,8 @@ const list = document.getElementById("admin-blog-list")!;
 const modal = document.getElementById("blog-modal") as HTMLDialogElement;
 const form = document.getElementById("blog-form") as HTMLFormElement;
 const modalTitle = document.getElementById("blog-modal-title");
+const apiTokenInput = document.getElementById("api-token") as HTMLInputElement;
+const apiSyncStatus = document.getElementById("api-sync-status")!;
 
 // --- Auth state ---
 let currentOTP = "";
@@ -78,6 +81,68 @@ if (checkAuth()) {
   showPanel();
 } else {
   showLogin();
+}
+
+// --- API sync ---
+function getApiToken(): string {
+  return localStorage.getItem(API_TOKEN_KEY) || "";
+}
+
+function setApiToken(token: string) {
+  localStorage.setItem(API_TOKEN_KEY, token);
+}
+
+async function syncPostToApi(post: import("../lib/types").BlogPost) {
+  const token = getApiToken();
+  if (!token) {
+    apiSyncStatus.textContent = "⚠ Set API token in Server sync settings";
+    return;
+  }
+  apiSyncStatus.textContent = "Syncing to server…";
+  try {
+    const res = await fetch("/api/blog", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Admin-Token": token },
+      body: JSON.stringify({ post }),
+    });
+    if (res.ok) {
+      apiSyncStatus.textContent = "✓ Synced to server";
+      apiSyncStatus.className = "text-caption text-gain";
+    } else if (res.status === 401) {
+      apiSyncStatus.textContent = "✗ Invalid API token";
+      apiSyncStatus.className = "text-caption text-loss";
+    } else {
+      const data = await res.json().catch(() => ({}));
+      apiSyncStatus.textContent = `✗ Sync failed: ${data.error || res.status}`;
+      apiSyncStatus.className = "text-caption text-loss";
+    }
+  } catch {
+    apiSyncStatus.textContent = "✗ Network error — check connection";
+    apiSyncStatus.className = "text-caption text-loss";
+  }
+}
+
+async function syncDeleteToApi(id: string) {
+  const token = getApiToken();
+  if (!token) return;
+  try {
+    await fetch(`/api/blog?id=${encodeURIComponent(id)}`, {
+      method: "DELETE",
+      headers: { "X-Admin-Token": token },
+    });
+  } catch {
+    // Silently fail — post still deleted locally
+  }
+}
+
+// --- API token input ---
+if (apiTokenInput) {
+  apiTokenInput.value = getApiToken();
+  apiTokenInput.addEventListener("change", () => {
+    setApiToken(apiTokenInput.value.trim());
+    apiSyncStatus.textContent = "Token saved";
+    apiSyncStatus.className = "text-caption text-gain";
+  });
 }
 
 // --- Login ---
@@ -324,6 +389,7 @@ form?.addEventListener("submit", (e) => {
       : `Added post: ${payload.title}`,
   });
   modal?.close();
+  syncPostToApi(payload);
 });
 
 // --- Render ---
@@ -399,6 +465,7 @@ function renderAll() {
         entityId: id,
         description: `Deleted post: ${post.title}`,
       });
+      syncDeleteToApi(id);
       renderAll();
     });
   });

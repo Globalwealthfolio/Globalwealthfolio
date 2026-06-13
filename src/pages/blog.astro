@@ -116,8 +116,6 @@ import Layout from "../layouts/Layout.astro";
 </Layout>
 
 <script>
-  import { loadData, subscribe } from "../lib/store";
-
   function esc(s) {
     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
@@ -128,45 +126,48 @@ import Layout from "../layouts/Layout.astro";
     } catch { return iso; }
   }
 
-  function render() {
+  async function loadPosts() {
     const list = document.getElementById("admin-blog-list");
     if (!list) return;
-    const posts = loadData().blog
-      .filter((p) => p.status === "published")
-      .sort((a, b) => ((a.publishedAt ?? a.updatedAt) < (b.publishedAt ?? b.updatedAt) ? 1 : -1));
+    try {
+      const res = await fetch("/api/blog");
+      const data = await res.json();
+      const posts = data.posts || [];
 
-    if (posts.length === 0) {
-      list.innerHTML = `<div class="md:col-span-2 text-center py-5xl card-soft"><p class="text-body-sm text-body">No posts yet. Check back soon!</p></div>`;
-      return;
+      if (posts.length === 0) {
+        list.innerHTML = `<div class="md:col-span-2 text-center py-5xl card-soft"><p class="text-body-sm text-body">No posts yet. Check back soon!</p></div>`;
+        return;
+      }
+
+      list.innerHTML = posts
+        .map(
+          (p) => `
+        <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-caption text-mute">${formatDate(p.publishedAt ?? p.updatedAt)}</span>
+          </div>
+          <h3 class="text-display-sm text-ink">${esc(p.title)}</h3>
+          ${
+            p.excerpt
+              ? `<p class="text-body-md text-body line-clamp-2">${esc(p.excerpt)}</p>`
+              : `<p class="text-body-md text-body line-clamp-2">${esc(p.content.slice(0, 140))}${p.content.length > 140 ? "…" : ""}</p>`
+          }
+          ${
+            p.tags.length > 0
+              ? `<div class="flex flex-wrap gap-xs mt-xs">${p.tags.map((t) => `<span class="badge">${esc(t)}</span>`).join("")}</div>`
+              : ""
+          }
+          <div class="flex items-center justify-between mt-md pt-sm border-t border-hairline">
+            <span class="text-caption text-mute">${p.authorName ? `By ${esc(p.authorName)}` : ""}</span>
+            <a href="/blog/view?slug=${encodeURIComponent(p.slug)}" class="text-body-sm text-link hover:underline">Read more →</a>
+          </div>
+        </article>`,
+        )
+        .join("");
+    } catch {
+      list.innerHTML = `<div class="md:col-span-2 text-center py-5xl card-soft"><p class="text-body-sm text-body">Failed to load posts. Try again later.</p></div>`;
     }
-
-    list.innerHTML = posts
-      .map(
-        (p) => `
-      <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
-        <div class="flex items-center justify-between">
-          <span class="text-caption text-mute">${formatDate(p.publishedAt ?? p.updatedAt)}</span>
-        </div>
-        <h3 class="text-display-sm text-ink">${esc(p.title)}</h3>
-        ${
-          p.excerpt
-            ? `<p class="text-body-md text-body line-clamp-2">${esc(p.excerpt)}</p>`
-            : `<p class="text-body-md text-body line-clamp-2">${esc(p.content.slice(0, 140))}${p.content.length > 140 ? "…" : ""}</p>`
-        }
-        ${
-          p.tags.length > 0
-            ? `<div class="flex flex-wrap gap-xs mt-xs">${p.tags.map((t) => `<span class="badge">${esc(t)}</span>`).join("")}</div>`
-            : ""
-        }
-        <div class="flex items-center justify-between mt-md pt-sm border-t border-hairline">
-          <span class="text-caption text-mute">${p.authorName ? `By ${esc(p.authorName)}` : ""}</span>
-          <a href="/blog/view?slug=${encodeURIComponent(p.slug)}" class="text-body-sm text-link hover:underline">Read more →</a>
-        </div>
-      </article>`,
-      )
-      .join("");
   }
 
-  subscribe(render);
-  render();
+  loadPosts();
 </script>

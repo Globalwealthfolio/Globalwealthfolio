@@ -15,8 +15,6 @@ import Layout from "../../layouts/Layout.astro";
 </Layout>
 
 <script>
-  import { loadData } from "../../lib/store";
-
   function esc(s) {
     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
@@ -26,26 +24,28 @@ import Layout from "../../layouts/Layout.astro";
     catch { return iso; }
   }
 
-  function renderPost(slug) {
+  async function renderPost(slug) {
     const container = document.getElementById("post-content");
     if (!container) return;
-    const post = loadData().blog.find((p) => p.slug === slug && p.status === "published");
-    if (!post) {
+    try {
+      const res = await fetch(`/api/blog?slug=${encodeURIComponent(slug)}`);
+      if (!res.ok) throw new Error("Not found");
+      const post = await res.json();
+      document.title = `${esc(post.title)} — Global Wealth Portfolio Blog`;
+      container.innerHTML = `
+        <p class="text-caption-mono text-gold mb-xs">Blog</p>
+        <h1 class="text-display-lg mb-md">${esc(post.title)}</h1>
+        <p class="text-caption text-mute mb-lg">${formatDate(post.publishedAt ?? post.updatedAt)}${post.authorName ? ` · By ${esc(post.authorName)}` : ""}</p>
+        <div class="prose-custom text-body-md text-body leading-relaxed space-y-md">${post.content.split("\n").filter(Boolean).map(line => line.trim().startsWith("<") ? line : `<p>${esc(line)}</p>`).join("\n")}</div>
+      `;
+    } catch {
       container.innerHTML = `
         <p class="text-caption-mono text-gold mb-xs">Blog</p>
         <h1 class="text-display-lg mb-md">Post not found</h1>
         <p class="text-body-md text-body">The blog post you're looking for could not be found.</p>
         <a href="/blog" class="inline-flex items-center gap-xs text-body-sm text-link hover:underline mt-lg">&larr; Back to blog</a>
       `;
-      return;
     }
-    document.title = `${esc(post.title)} — Global Wealth Portfolio Blog`;
-    container.innerHTML = `
-      <p class="text-caption-mono text-gold mb-xs">Blog</p>
-      <h1 class="text-display-lg mb-md">${esc(post.title)}</h1>
-      <p class="text-caption text-mute mb-lg">${formatDate(post.publishedAt ?? post.updatedAt)}${post.authorName ? ` · By ${esc(post.authorName)}` : ""}</p>
-      <div class="prose-custom text-body-md text-body leading-relaxed space-y-md">${post.content.split("\n").filter(Boolean).map(line => line.trim().startsWith("<") ? line : `<p>${esc(line)}</p>`).join("\n")}</div>
-    `;
   }
 
   const params = new URLSearchParams(window.location.search);

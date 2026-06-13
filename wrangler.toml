@@ -1,5 +1,13 @@
 name = "globalwealthfolio-com"
 pages_build_output_dir = "dist"
 
+[[kv_namespaces]]
+binding = "BLOG_KV"
+id = "1b31625a8264407abddc2c8cac7406ce"
+
 [env.production]
 name = "globalwealthfolio-com"
+
+[[env.production.kv_namespaces]]
+binding = "BLOG_KV"
+id = "1b31625a8264407abddc2c8cac7406ce"
