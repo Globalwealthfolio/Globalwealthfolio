@@ -108,15 +108,22 @@ import Layout from "../layouts/Layout.astro";
 
         <hr class="border-hairline my-4xl" />
 
-        <details class="text-body-sm text-body">
-          <summary class="cursor-pointer text-link hover:underline">Server sync settings</summary>
-          <div class="mt-md card p-md space-y-sm">
-            <label class="label" for="api-token">API Token</label>
-            <input id="api-token" type="password" class="input" placeholder="Enter the ADMIN_TOKEN value" />
-            <p class="text-caption text-mute">Set <code>ADMIN_TOKEN</code> in Cloudflare Pages dashboard → Settings → Environment variables. Enter the same value above.</p>
-            <p id="api-sync-status" class="text-caption text-mute"></p>
+        <!-- Server Sync -->
+        <div class="mb-md">
+          <p class="text-caption-mono text-gold mb-xs">Server Sync</p>
+          <h2 class="text-display-md">Sync posts to server.</h2>
+        </div>
+        <div class="card p-lg space-y-md max-w-lg">
+          <div>
+            <label class="label" for="api-token">Admin Token</label>
+            <input id="api-token" type="password" class="input" placeholder="Your secret admin token" />
+            <p class="text-caption text-mute mt-xs">Token used to authenticate with the server API.</p>
           </div>
-        </details>
+          <div class="flex items-center gap-sm">
+            <button id="resync-btn" class="btn-primary" type="button">Resync Posts</button>
+            <span id="api-sync-status" class="text-caption text-mute"></span>
+          </div>
+        </div>
 
         <div class="text-center">
           <a href="/blog" class="text-body-sm text-link hover:underline">&larr; Back to blog</a>

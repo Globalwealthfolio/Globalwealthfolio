@@ -92,50 +92,42 @@ function setApiToken(token: string) {
   localStorage.setItem(API_TOKEN_KEY, token);
 }
 
-async function syncPostToApi(post: import("../lib/types").BlogPost) {
+async function syncPost(post: import("../lib/types").BlogPost, statusEl: HTMLElement): Promise<boolean> {
   const token = getApiToken();
   if (!token) {
-    apiSyncStatus.textContent = "⚠ Set API token in Server sync settings";
-    return;
+    statusEl.textContent = "⚠ Set Admin Token first";
+    statusEl.className = "text-caption text-loss";
+    return false;
   }
-  apiSyncStatus.textContent = "Syncing to server…";
+  statusEl.textContent = "Syncing…";
+  statusEl.className = "text-caption text-mute";
   try {
-    const res = await fetch("/api/blog", {
+    const res = await fetch("/api/add-post", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "X-Admin-Token": token },
-      body: JSON.stringify({ post }),
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ id: post.id, title: post.title, content: post.content }),
     });
     if (res.ok) {
-      apiSyncStatus.textContent = "✓ Synced to server";
-      apiSyncStatus.className = "text-caption text-gain";
-    } else if (res.status === 401) {
-      apiSyncStatus.textContent = "✗ Invalid API token";
-      apiSyncStatus.className = "text-caption text-loss";
-    } else {
-      const data = await res.json().catch(() => ({}));
-      apiSyncStatus.textContent = `✗ Sync failed: ${data.error || res.status}`;
-      apiSyncStatus.className = "text-caption text-loss";
+      statusEl.textContent = "✓ Synced";
+      statusEl.className = "text-caption text-gain";
+      return true;
     }
+    const data = await res.json().catch(() => ({}));
+    statusEl.textContent = `✗ ${data.error || res.status}`;
+    statusEl.className = "text-caption text-loss";
+    return false;
   } catch {
-    apiSyncStatus.textContent = "✗ Network error — check connection";
-    apiSyncStatus.className = "text-caption text-loss";
+    statusEl.textContent = "✗ Network error";
+    statusEl.className = "text-caption text-loss";
+    return false;
   }
 }
 
-async function syncDeleteToApi(id: string) {
-  const token = getApiToken();
-  if (!token) return;
-  try {
-    await fetch(`/api/blog?id=${encodeURIComponent(id)}`, {
-      method: "DELETE",
-      headers: { "X-Admin-Token": token },
-    });
-  } catch {
-    // Silently fail — post still deleted locally
-  }
+async function syncPostToApi(post: import("../lib/types").BlogPost) {
+  await syncPost(post, apiSyncStatus);
 }
 
-// --- API token input ---
+// --- Admin Token input ---
 if (apiTokenInput) {
   apiTokenInput.value = getApiToken();
   apiTokenInput.addEventListener("change", () => {
@@ -144,6 +136,32 @@ if (apiTokenInput) {
     apiSyncStatus.className = "text-caption text-gain";
   });
 }
+
+// --- Resync button ---
+const resyncBtn = document.getElementById("resync-btn");
+resyncBtn?.addEventListener("click", async () => {
+  const posts = loadData().blog;
+  if (posts.length === 0) {
+    apiSyncStatus.textContent = "No posts to sync";
+    apiSyncStatus.className = "text-caption text-mute";
+    return;
+  }
+  apiSyncStatus.textContent = `Resyncing ${posts.length} posts…`;
+  apiSyncStatus.className = "text-caption text-mute";
+  let ok = 0, fail = 0;
+  for (const post of posts) {
+    const temp = document.createElement("span");
+    const success = await syncPost(post, temp);
+    if (success) ok++; else fail++;
+  }
+  if (fail === 0) {
+    apiSyncStatus.textContent = `✓ All ${ok} posts synced`;
+    apiSyncStatus.className = "text-caption text-gain";
+  } else {
+    apiSyncStatus.textContent = `✓ ${ok} synced, ✗ ${fail} failed`;
+    apiSyncStatus.className = "text-caption text-loss";
+  }
+});
 
 // --- Login ---
 loginBtn.addEventListener("click", () => {
@@ -465,7 +483,6 @@ function renderAll() {
         entityId: id,
         description: `Deleted post: ${post.title}`,
       });
-      syncDeleteToApi(id);
       renderAll();
     });
   });
