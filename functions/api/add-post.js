@@ -68,6 +68,28 @@ export async function onRequest(context) {
     }
 
     await env.BLOG_KV.put(KV_KEY, JSON.stringify(allPosts));
+
+    if (idx === -1) {
+      context.waitUntil((async () => {
+        try {
+          const origin = new URL(request.url).origin;
+          await fetch(`${origin}/api/notify-subscribers`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${env.ADMIN_TOKEN}`,
+            },
+            body: JSON.stringify({
+              post_title: post.title,
+              post_url: `${origin}/blog/view?slug=${post.slug}`,
+              post_excerpt: post.excerpt,
+              author_name: post.authorName,
+            }),
+          });
+        } catch (_) {}
+      })());
+    }
+
     return new Response(JSON.stringify({ success: true }), { headers: { ...headers, "Content-Type": "application/json" } });
   } catch (e) {
     return error(500, "Failed to save post");

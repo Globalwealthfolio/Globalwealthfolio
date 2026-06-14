@@ -67,6 +67,26 @@ import Layout from "../layouts/Layout.astro";
       </div>
     </div>
 
+    <!-- Newsletter subscription -->
+    <div class="card-soft p-xl mb-4xl">
+      <p class="text-caption-mono text-gold mb-xs">Newsletter</p>
+      <h2 class="text-display-md mb-sm">Stay updated</h2>
+      <p class="text-body-md text-body mb-md max-w-lg">
+        Get notified when new articles are published — no spam, unsubscribe anytime.
+      </p>
+      <form id="subscribe-form" class="flex flex-col sm:flex-row gap-sm max-w-md">
+        <input
+          type="email"
+          id="subscribe-email"
+          placeholder="your@email.com"
+          required
+          class="input flex-1"
+        />
+        <button type="submit" class="btn-primary">Subscribe</button>
+      </form>
+      <p id="subscribe-msg" class="text-body-sm mt-sm" style="display:none;"></p>
+    </div>
+
     <hr class="border-hairline my-4xl" />
 
     <!-- About Me -->
@@ -134,6 +154,15 @@ import Layout from "../layouts/Layout.astro";
     } catch { return iso; }
   }
 
+  function isNew(iso) {
+    try {
+      const then = new Date(iso);
+      const now = new Date();
+      const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+      return (now - then) < msPerWeek;
+    } catch { return false; }
+  }
+
   async function loadPosts() {
     const list = document.getElementById("admin-blog-list");
     if (!list) return;
@@ -154,7 +183,7 @@ import Layout from "../layouts/Layout.astro";
           <div class="flex items-center justify-between">
             <span class="text-caption text-mute">${formatDate(p.publishedAt ?? p.updatedAt)}</span>
           </div>
-          <h3 class="text-display-sm text-ink">${esc(p.title)}</h3>
+          <h3 class="text-display-sm text-ink">${esc(p.title)}${isNew(p.publishedAt ?? p.updatedAt) ? '<sup class="text-caption-mono text-gain font-medium" style="font-size:0.6em;top:-0.5em;margin-left:4px;">New</sup>' : ""}</h3>
           ${
             p.excerpt
               ? `<p class="text-body-md text-body line-clamp-2">${esc(p.excerpt)}</p>`
@@ -178,4 +207,34 @@ import Layout from "../layouts/Layout.astro";
   }
 
   loadPosts();
+
+  // Newsletter subscription
+  const subForm = document.getElementById("subscribe-form");
+  const subEmail = document.getElementById("subscribe-email");
+  const subMsg = document.getElementById("subscribe-msg");
+  subForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = subEmail.value.trim();
+    const btn = subForm.querySelector("button");
+    btn.disabled = true;
+    btn.textContent = "Subscribing\u2026";
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      subMsg.className = "text-body-sm mt-sm " + (res.ok ? "text-gain" : "text-loss");
+      subMsg.textContent = data.message || data.error || "Done.";
+      subMsg.style.display = "block";
+      if (res.ok) subEmail.value = "";
+    } catch {
+      subMsg.className = "text-body-sm mt-sm text-loss";
+      subMsg.textContent = "Network error. Try again.";
+      subMsg.style.display = "block";
+    }
+    btn.disabled = false;
+    btn.textContent = "Subscribe";
+  });
 </script>

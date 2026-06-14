@@ -269,4 +269,26 @@ const isActive = (href: string) => {
     mobileMenu?.classList.toggle("hidden");
     mobileToggle.setAttribute("aria-expanded", String(!isOpen));
   });
+
+  // "New" badge on Blog nav link
+  (async () => {
+    try {
+      const res = await fetch("/api/blog");
+      const data = await res.json();
+      const posts = data.posts || [];
+      const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+      const hasNew = posts.some((p) => {
+        const d = new Date(p.publishedAt ?? p.updatedAt);
+        return Date.now() - d < msPerWeek;
+      });
+      if (hasNew) {
+        document.querySelectorAll('a[href="/blog"]').forEach((el) => {
+          const sup = document.createElement("sup");
+          sup.textContent = "New";
+          sup.style.cssText = "font-size:0.6em;color:#10b981;margin-left:3px;position:relative;top:-0.5em;font-weight:500;";
+          el.appendChild(sup);
+        });
+      }
+    } catch {}
+  })();
 </script>

@@ -5,9 +5,17 @@ pages_build_output_dir = "dist"
 binding = "BLOG_KV"
 id = "1b31625a8264407abddc2c8cac7406ce"
 
+[[kv_namespaces]]
+binding = "SUBSCRIBERS"
+id = "8426990d17254c21b3bc6045e41e147f"
+
 [env.production]
 name = "globalwealthfolio-com"
 
 [[env.production.kv_namespaces]]
 binding = "BLOG_KV"
 id = "1b31625a8264407abddc2c8cac7406ce"
+
+[[env.production.kv_namespaces]]
+binding = "SUBSCRIBERS"
+id = "8426990d17254c21b3bc6045e41e147f"

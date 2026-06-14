@@ -105,7 +105,7 @@ async function syncPost(post: import("../lib/types").BlogPost, statusEl: HTMLEle
     const res = await fetch("/api/add-post", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ id: post.id, title: post.title, content: post.content }),
+      body: JSON.stringify({ id: post.id, title: post.title, content: post.content, excerpt: post.excerpt, tags: post.tags, authorName: post.authorName }),
     });
     if (res.ok) {
       statusEl.textContent = "✓ Synced";
@@ -130,10 +130,8 @@ async function syncPostToApi(post: import("../lib/types").BlogPost) {
 // --- Admin Token input ---
 if (apiTokenInput) {
   apiTokenInput.value = getApiToken();
-  apiTokenInput.addEventListener("change", () => {
+  apiTokenInput.addEventListener("input", () => {
     setApiToken(apiTokenInput.value.trim());
-    apiSyncStatus.textContent = "Token saved";
-    apiSyncStatus.className = "text-caption text-gain";
   });
 }
 
