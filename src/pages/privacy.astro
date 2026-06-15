@@ -2,46 +2,145 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="Privacy — Global Wealth Portfolio" description="Your data stays on your device. We don't collect anything.">
+<Layout title="Privacy — Global Wealth Portfolio" description="How we handle your data, security measures, and your rights under DPDPA, GDPR, and CCPA.">
   <section class="container-page page-section pt-3xl pb-2xl max-w-3xl">
-    <p class="text-caption-mono text-body mb-xs">Privacy</p>
-    <h1 class="text-display-lg mb-lg">Your data stays on your device.</h1>
+    <p class="text-caption-mono text-gold mb-xs">Privacy &amp; Security</p>
+    <h1 class="text-display-lg mb-lg">Your data stays yours.</h1>
     <p class="text-body-md text-body mb-md">
-      Global Wealth Portfolio is built on a simple principle: <strong>your financial data is yours</strong>.
-      The entire app runs in your browser. We don't have servers storing your
-      investments, expenses, or goals. We don't use analytics that can identify you.
+      Global Wealth Portfolio is designed with <strong>privacy by design</strong> and
+      <strong>security by default</strong>. This policy describes how we protect your
+      data and your rights under <strong>DPDPA (India)</strong>,
+      <strong>GDPR (EU/UK)</strong>, and <strong>CCPA (California)</strong>.
     </p>
-    <h2 class="text-display-md mt-2xl mb-md">What we don't collect</h2>
+
+    <h2 class="text-display-md mt-2xl mb-md">1. Data controller &amp; contact</h2>
+    <p class="text-body-md text-body mb-md">
+      Global Wealth Portfolio operates as a data controller. For any privacy-related
+      requests or concerns:
+    </p>
+    <p class="text-body-md text-body mb-md">
+      Use the contact form on our website. Response time: within 30 days (DPDPA &amp; GDPR compliant).
+    </p>
+
+    <h2 class="text-display-md mt-2xl mb-md">2. Data collection &amp; purpose</h2>
+    <p class="text-body-md text-body mb-md">
+      We collect the minimum data necessary for the service to function:
+    </p>
     <ul class="list-disc pl-lg space-y-xs text-body-md text-body mb-md">
-      <li>Your investment holdings</li>
-      <li>Your expense records</li>
-      <li>Your financial goals</li>
-      <li>Your EMI / loan information</li>
-      <li>Your uploaded bank statements (they never leave your device — OCR runs locally)</li>
-      <li>Your name, email, or any personal identifier</li>
+      <li><strong>Financial data</strong> (investments, expenses, goals, EMI) — stored in your browser's <code>localStorage</code> for offline use. Never sent to our servers.</li>
+      <li><strong>Blog subscribers</strong> — email address only, stored in encrypted Cloudflare KV, used solely to send new-post notifications. Consent obtained at time of subscription. Unsubscribe one-click at any time.</li>
+      <li><strong>Usage analytics</strong> — anonymized page view data via Google Analytics (G-J020W8NDX9). No personally identifiable information is collected. You may opt out via browser privacy settings.</li>
+      <li><strong>Advertising</strong> — contextual ads via Google AdSense. No targeted advertising based on your financial data.</li>
     </ul>
-    <h2 class="text-display-md mt-2xl mb-md">How your data is stored</h2>
+
+    <h2 class="text-display-md mt-2xl mb-md">3. Security measures</h2>
+    <div class="space-y-md text-body-md text-body mb-md">
+      <div class="card-soft p-md">
+        <p class="text-body-sm-strong text-ink mb-xs">🔒 HTTPS with TLS 1.3</p>
+        <p>All data in transit is encrypted using TLS 1.3 via Cloudflare's edge network. HSTS is enforced (<code>max-age=63072000; includeSubDomains; preload</code>).</p>
+      </div>
+      <div class="card-soft p-md">
+        <p class="text-body-sm-strong text-ink mb-xs">🔐 AES-256-GCM encryption at rest</p>
+        <p>You can optionally encrypt all localStorage data with AES-256-GCM using a passphrase (Settings → Encryption). Key derivation uses PBKDF2 with 600,000 iterations. The passphrase is never stored — data remains encrypted at rest until you unlock it in a session.</p>
+      </div>
+      <div class="card-soft p-md">
+        <p class="text-body-sm-strong text-ink mb-xs">🛡️ Access controls &amp; audit logs</p>
+        <p>All data changes are recorded in an append-only audit log with timestamps and action descriptions. The admin panel is protected by a passphrase with optional OTP-based password reset via EmailJS.</p>
+      </div>
+      <div class="card-soft p-md">
+        <p class="text-body-sm-strong text-ink mb-xs">📦 Encrypted server storage</p>
+        <p>Server-side data (blog posts, subscriber emails) is stored in Cloudflare KV, which encrypts all data at rest using AES-256. Admin API endpoints require a Bearer token (<code>ADMIN_TOKEN</code>).</p>
+      </div>
+      <div class="card-soft p-md">
+        <p class="text-body-sm-strong text-ink mb-xs">🧹 Local processing</p>
+        <p>Bank statement OCR (Tesseract.js) and PDF import run entirely in your browser. Uploaded files are never transmitted to any server and are discarded after processing.</p>
+      </div>
+    </div>
+
+    <h2 class="text-display-md mt-2xl mb-md">4. Your rights (DPDPA / GDPR / CCPA)</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-body-md text-body border-collapse">
+        <thead>
+          <tr class="border-b border-hairline">
+            <th class="text-left py-sm pr-md font-medium text-ink">Right</th>
+            <th class="text-left py-sm font-medium text-ink">How to exercise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-hairline">
+            <td class="py-sm pr-md">Access / data portability</td>
+            <td class="py-sm">Settings → Import/Export → Export JSON</td>
+          </tr>
+          <tr class="border-b border-hairline">
+            <td class="py-sm pr-md">Rectification</td>
+            <td class="py-sm">Edit data directly in the app (all changes are local)</td>
+          </tr>
+          <tr class="border-b border-hairline">
+            <td class="py-sm pr-md">Deletion (right to be forgotten)</td>
+            <td class="py-sm">Settings → Reset all data (local). Unsubscribe link in every email (server).</td>
+          </tr>
+          <tr class="border-b border-hairline">
+            <td class="py-sm pr-md">Withdraw consent</td>
+            <td class="py-sm">Click unsubscribe in any newsletter email, or delete your data via Settings</td>
+          </tr>
+          <tr class="border-b border-hairline">
+            <td class="py-sm pr-md">Opt out of sale (CCPA)</td>
+            <td class="py-sm">We do not sell your personal information. No action needed.</td>
+          </tr>
+          <tr>
+            <td class="py-sm pr-md">Lodge a complaint</td>
+            <td class="py-sm">Contact us via the website contact form</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="text-display-md mt-2xl mb-md">5. Consent &amp; lawful basis</h2>
     <p class="text-body-md text-body mb-md">
-      All your portfolio data is stored in your browser's <code>localStorage</code>.
-      It never leaves your device. If you clear your browser data, your portfolio
-      will be lost — please use the JSON export feature regularly to back up.
+      We process data on the following lawful bases under GDPR:
     </p>
-    <h2 class="text-display-md mt-2xl mb-md">Bank statement OCR</h2>
+    <ul class="list-disc pl-lg space-y-xs text-body-md text-body mb-md">
+      <li><strong>Consent</strong> — newsletter subscriptions (explicit opt-in, verifiable, withdrawable)</li>
+      <li><strong>Legitimate interest</strong> — anonymized analytics to improve the service</li>
+      <li><strong>Performance of a contract</strong> — core app functionality (financial tracking)</li>
+    </ul>
     <p class="text-body-md text-body mb-md">
-      When you upload a bank statement image, the OCR (text recognition) runs
-      entirely in your browser using Tesseract.js. The image is never uploaded
-      to any server. After the OCR finishes, you can delete the image from your
-      device — the parsed text and transactions are stored only in your browser.
+      Under DPDPA, consent is obtained through explicit action (typing your email and clicking Subscribe). Consent logs are maintained in the audit trail.
     </p>
-    <h2 class="text-display-md mt-2xl mb-md">Third-party services</h2>
+
+    <h2 class="text-display-md mt-2xl mb-md">6. Data retention</h2>
     <p class="text-body-md text-body mb-md">
-      The app loads fonts from Google Fonts and uses no other third-party
-      tracking, advertising, or analytics services. The only network requests
-      are to load the app itself.
+      Local data persists until you clear your browser data or use "Reset all data".
+      Subscriber emails are retained until the subscriber unsubscribes (DELETE request)
+      or requests removal. Analytics data is retained per Google's data retention policy (26 months).
     </p>
-    <h2 class="text-display-md mt-2xl mb-md">Contact</h2>
+
+    <h2 class="text-display-md mt-2xl mb-md">7. Third-party services</h2>
+    <ul class="list-disc pl-lg space-y-xs text-body-md text-body mb-md">
+      <li><strong>Cloudflare</strong> (CDN, DNS, KV storage, edge network) — <a href="https://www.cloudflare.com/privacypolicy/" class="text-link hover:underline" target="_blank" rel="noopener">Privacy Policy</a></li>
+      <li><strong>Google Analytics</strong> (anonymized page views) — <a href="https://policies.google.com/privacy" class="text-link hover:underline" target="_blank" rel="noopener">Privacy Policy</a></li>
+      <li><strong>Google AdSense</strong> (contextual ads) — <a href="https://policies.google.com/privacy" class="text-link hover:underline" target="_blank" rel="noopener">Privacy Policy</a></li>
+      <li><strong>Google Fonts</strong> (typography) — <a href="https://policies.google.com/privacy" class="text-link hover:underline" target="_blank" rel="noopener">Privacy Policy</a></li>
+      <li><strong>Resend</strong> (newsletter email delivery) — <a href="https://resend.com/privacy" class="text-link hover:underline" target="_blank" rel="noopener">Privacy Policy</a></li>
+    </ul>
+
+    <h2 class="text-display-md mt-2xl mb-md">8. International transfers</h2>
+    <p class="text-body-md text-body mb-md">
+      Data may be processed on Cloudflare's global edge network (GDPR-compliant Standard Contractual Clauses in place).
+      Local data stays on your device and never crosses your browser's origin.
+    </p>
+
+    <h2 class="text-display-md mt-2xl mb-md">9. Policy updates</h2>
+    <p class="text-body-md text-body mb-md">
+      This policy was last updated on June 15, 2026. Changes will be posted here.
+      For significant changes, returning users will see a notice on the dashboard.
+    </p>
+
+    <h2 class="text-display-md mt-2xl mb-md">Contact &amp; DPO</h2>
     <p class="text-body-md text-body">
-      Questions? <a href="mailto:sourabh6303@gmail.com" class="text-link hover:underline inline-flex items-center gap-1" aria-label="Send email">Email us</a>
+      Data Protection Officer: Sourabhsingh Rajput<br />
+      Use the contact form on the website.<br />
+      Response within 30 days as required by DPDPA &amp; GDPR.
     </p>
   </section>
 </Layout>

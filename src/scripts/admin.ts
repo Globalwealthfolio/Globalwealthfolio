@@ -6,7 +6,15 @@ import type { BlogPost } from "../lib/types";
 const EMAILJS_PUBLIC_KEY = "rvTqHL_4iAM_yuGAG";
 const EMAILJS_SERVICE_ID = "service_csuyz5u";
 const EMAILJS_TEMPLATE_ID = "template_7mmdpca";
-const ADMIN_EMAIL = "sourabh6303@gmail.com";
+const ADMIN_EMAIL_KEY = "gwp:admin:email";
+
+function getAdminEmail(): string {
+  return localStorage.getItem(ADMIN_EMAIL_KEY) || "";
+}
+
+function setAdminEmail(email: string) {
+  localStorage.setItem(ADMIN_EMAIL_KEY, email);
+}
 
 // Password storage
 const PASSWORD_KEY = "gwp:admin:password";
@@ -187,7 +195,8 @@ forgotLink.addEventListener("click", () => {
   loginScreen.style.display = "none";
   forgotScreen.style.display = "block";
   otpGroup.style.display = "none";
-  forgotEmail.value = ADMIN_EMAIL;
+  forgotEmail.value = getAdminEmail();
+  forgotEmail.readOnly = false;
   forgotStatus.textContent = "";
   forgotStatus.className = "text-body-sm mt-sm";
   otpInput.value = "";
@@ -199,7 +208,14 @@ backToLogin.addEventListener("click", () => {
 });
 
 sendOtpBtn.addEventListener("click", async () => {
-  currentOTP = Math.floor(100000 + Math.random() * 900000).toString();
+  const email = forgotEmail.value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    forgotStatus.textContent = "Enter a valid email address.";
+    forgotStatus.className = "text-body-sm text-loss mt-sm";
+    return;
+  }
+  setAdminEmail(email);
+  currentOTP = crypto.randomUUID().replace(/\D/g, "").slice(0, 6);
   otpExpiry = Date.now() + 5 * 60 * 1000;
   sendOtpBtn.disabled = true;
   sendOtpBtn.textContent = "Sending...";
@@ -208,12 +224,13 @@ sendOtpBtn.addEventListener("click", async () => {
     await emailjs.send(
       EMAILJS_SERVICE_ID,
       EMAILJS_TEMPLATE_ID,
-      { otp: currentOTP, email: ADMIN_EMAIL, expiry: "5 minutes" },
+      { otp: currentOTP, email, expiry: "5 minutes" },
       EMAILJS_PUBLIC_KEY,
     );
     forgotStatus.textContent = "OTP sent to your email.";
     forgotStatus.className = "text-body-sm text-gain mt-sm";
     otpGroup.style.display = "block";
+    forgotEmail.readOnly = true;
   } catch {
     forgotStatus.textContent = "Failed to send OTP. Try again.";
     forgotStatus.className = "text-body-sm text-loss mt-sm";
