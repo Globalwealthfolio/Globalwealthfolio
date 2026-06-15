@@ -7,7 +7,7 @@
 
 import { updateData, addAudit, uid, nowISO, type Investment } from "../lib/store";
 import { parseSpreadsheet, autoMapColumns, buildEntities, importJSON, exportJSON, exportCSV, downloadFile, type ParsedSheet } from "../lib/import-export";
-import { ocrImage, transactionsToExpenses, type ParsedTransaction } from "../lib/ocr";
+import { ocrImage, terminateOCR, transactionsToExpenses, type ParsedTransaction } from "../lib/ocr";
 import { importPdf, parseHoldings, type ParsedHolding, type PdfMode } from "../lib/pdf-import";
 
 /* ── Tabs ──────────────────────────────────────────────────── */
@@ -416,6 +416,8 @@ document.getElementById("ocr-discard")?.addEventListener("click", () => {
   imgPreviewWrap?.classList.add("hidden");
   ocrResult?.classList.add("hidden");
   if (imgInput) imgInput.value = "";
+  if (imgPreview) URL.revokeObjectURL(imgPreview.src);
+  terminateOCR();
 });
 
 document.getElementById("ocr-import")?.addEventListener("click", () => {
@@ -440,6 +442,8 @@ document.getElementById("ocr-import")?.addEventListener("click", () => {
   imgPreviewWrap?.classList.add("hidden");
   ocrResult?.classList.add("hidden");
   if (imgInput) imgInput.value = "";
+  if (imgPreview) URL.revokeObjectURL(imgPreview.src);
+  terminateOCR();
 });
 
 /* ═════════════════════════════════════════════════════════════
