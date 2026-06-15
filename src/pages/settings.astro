@@ -107,11 +107,44 @@ const languageList = Object.entries(languages).map(([code, meta]) => ({
         </div>
         <p class="text-caption text-mute">Resetting clears all investments, expenses, goals, EMIs, and the audit log from this device.</p>
       </div>
+
+      <!-- Encryption -->
+      <div class="card" id="encryption-card">
+        <h2 class="text-display-sm mb-sm">Encryption</h2>
+        <p class="text-body-sm text-body mb-md" id="encryption-status">Data is stored as plaintext in your browser.</p>
+        <div class="flex flex-wrap gap-sm">
+          <button id="set-passphrase-btn" type="button" class="btn-primary">Set Passphrase</button>
+          <button id="lock-data-btn" type="button" class="btn-secondary" style="display:none;">Lock Now</button>
+        </div>
+        <p class="text-caption text-mute mt-sm">AES-256-GCM encryption. Passphrase is never stored — enter it each session to unlock.</p>
+      </div>
     </div>
 
     <p class="text-caption text-mute text-center mt-4xl">All settings auto-save.</p>
   </section>
 </Layout>
+
+<dialog id="passphrase-modal" class="rounded-lg p-0 max-w-sm w-full shadow-level-5 backdrop:bg-black/30">
+  <div class="p-lg">
+    <h2 class="text-display-sm mb-sm" id="passphrase-modal-title">Set encryption passphrase</h2>
+    <p class="text-body-sm text-body mb-md">Choose a strong passphrase. You'll need it each time you visit to unlock your data.</p>
+    <div class="space-y-md">
+      <div>
+        <label class="label" for="new-passphrase">Passphrase</label>
+        <input id="new-passphrase" type="password" class="input" placeholder="Min. 8 characters" autocomplete="off" />
+      </div>
+      <div>
+        <label class="label" for="confirm-passphrase">Confirm passphrase</label>
+        <input id="confirm-passphrase" type="password" class="input" placeholder="Repeat passphrase" autocomplete="off" />
+      </div>
+    </div>
+    <p id="passphrase-error" class="text-body-sm text-loss mt-sm" style="display:none;"></p>
+    <div class="flex gap-sm justify-end mt-lg">
+      <button id="cancel-passphrase-btn" class="btn-secondary" type="button">Cancel</button>
+      <button id="save-passphrase-btn" class="btn-primary" type="button">Enable Encryption</button>
+    </div>
+  </div>
+</dialog>
 
 <style>
   .theme-btn {

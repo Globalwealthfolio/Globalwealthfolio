@@ -53,15 +53,6 @@ const {
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="Global Wealth Portfolio" />
     <meta property="og:image:type" content="image/png" />
-    <meta property="article:tag" content="global investment portfolio" />
-    <meta property="article:tag" content="investment portfolio manager" />
-    <meta property="article:tag" content="personal finance tracker" />
-    <meta property="article:tag" content="budgeting tool" />
-    <meta property="article:tag" content="expense tracker" />
-    <meta property="article:tag" content="financial parenting" />
-    <meta property="article:tag" content="wealth generation" />
-    <meta property="article:tag" content="crypto investment tracker" />
-    <meta property="article:tag" content="AI investment tracker" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -136,30 +127,68 @@ const {
     <script is:inline>
       (function () {
         try {
-          const k = "gwp:data:v1";
-          const raw = localStorage.getItem(k);
-          let theme = "system";
+          var k = "gwp:data:v1";
+          var raw = localStorage.getItem(k);
+          var theme = "system";
           if (raw) {
-            const d = JSON.parse(raw);
-            theme = d?.preferences?.theme ?? "system";
+            try {
+              var d = JSON.parse(raw);
+              if (d && d.preferences) {
+                theme = d.preferences.theme || "system";
+              }
+            } catch (_) {}
           }
-          const sysDark =
+          var sysDark =
             window.matchMedia &&
             window.matchMedia("(prefers-color-scheme: dark)").matches;
-          const dark = theme === "dark" || (theme === "system" && sysDark);
+          var dark = theme === "dark" || (theme === "system" && sysDark);
           if (dark) document.documentElement.classList.add("dark");
           document.documentElement.dataset.theme = dark ? "dark" : "light";
-          const lang = raw
-            ? JSON.parse(raw)?.preferences?.language ?? "en"
-            : (navigator.language || "en").split("-")[0];
+          var lang = "en";
+          if (raw) {
+            try {
+              var d2 = JSON.parse(raw);
+              if (d2 && d2.preferences) {
+                lang = d2.preferences.language || "en";
+              }
+            } catch (_) {}
+          } else {
+            lang = (navigator.language || "en").split("-")[0];
+          }
           document.documentElement.lang = lang;
-        } catch (_) {
-          // noop
-        }
+        } catch (_) {}
+      })();
+    </script>
+
+    <!-- Detect encrypted data early -->
+    <script is:inline>
+      (function () {
+        try {
+          var k = "gwp:data:v1";
+          var raw = localStorage.getItem(k);
+          if (!raw) return;
+          var p = JSON.parse(raw);
+          if (p && p.encrypted === true && typeof p.data === "string") {
+            document.documentElement.dataset.locked = "1";
+          }
+        } catch (_) {}
       })();
     </script>
   </head>
   <body class="min-h-screen bg-canvas-soft text-ink antialiased">
+    <!-- Encryption passphrase dialog -->
+    <div id="crypto-overlay" class="fixed inset-0 z-[100] bg-canvas items-center justify-center" style="display:none;">
+      <div class="card p-xl max-w-sm w-full mx-4 text-center">
+        <p class="text-caption-mono text-gold mb-xs">Encrypted</p>
+        <h2 class="text-display-md mb-sm">Data Locked</h2>
+        <p class="text-body-md text-body mb-md">Your data is encrypted with AES-256-GCM. Enter your passphrase to unlock.</p>
+        <input id="crypto-passphrase" type="password" class="input mb-md" placeholder="Passphrase" autocomplete="off" />
+        <p id="crypto-error" class="text-body-sm text-loss mb-sm" style="display:none;">Incorrect passphrase</p>
+        <button id="crypto-unlock-btn" class="btn-primary w-full" type="button">Unlock</button>
+        <p class="text-caption text-mute mt-md">Data is encrypted at rest. Passphrase is never stored.</p>
+      </div>
+    </div>
+
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 btn-secondary"
@@ -172,7 +201,50 @@ const {
     </main>
     {!noFooter && <Footer />}
 
-    <!-- App store: must run after DOM is ready -->
+    <!-- Encryption unlock handler -->
+    <script>
+      import { unlock, needsPassphrase, loadData } from "../lib/store";
+
+      const overlay = document.getElementById("crypto-overlay");
+      const input = document.getElementById("crypto-passphrase") as HTMLInputElement;
+      const btn = document.getElementById("crypto-unlock-btn");
+      const err = document.getElementById("crypto-error");
+
+      if (overlay && needsPassphrase()) {
+        overlay.style.display = "flex";
+        const main = document.getElementById("main");
+        if (main) main.style.display = "none";
+
+        btn?.addEventListener("click", async () => {
+          const pass = input?.value.trim();
+          if (!pass) return;
+          btn.textContent = "Unlocking…";
+          (btn as HTMLButtonElement).disabled = true;
+          err.style.display = "none";
+          const ok = await unlock(pass);
+          if (ok) {
+            overlay.style.display = "none";
+            if (main) main.style.display = "";
+            input.value = "";
+            loadData();
+          } else {
+            err.style.display = "block";
+            btn.textContent = "Unlock";
+            (btn as HTMLButtonElement).disabled = false;
+            input.value = "";
+            input.focus();
+          }
+        });
+
+        input?.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") btn?.click();
+        });
+
+        input.focus();
+      }
+    </script>
+
+    <!-- App store -->
     <script>
       import "../scripts/app-store.ts";
     </script>
