@@ -25,7 +25,7 @@ import {
   type Investment,
   type AssetType,
 } from "../lib/types";
-import { formatCurrency, type CurrencyCode } from "../lib/currency";
+import { formatCurrency, currencies, fetchExchangeRates, getCachedConversionRate, type CurrencyCode } from "../lib/currency";
 import { hasAnyData, seedSampleData } from "../lib/sample-data";
 import { getDateRange, isInRange, type DateRange } from "./date-range-filter";
 
@@ -89,6 +89,42 @@ function setGreeting(prefs: { language: string; currency: string }) {
 /* ── Format helpers ────────────────────────────────────────── */
 function fmt(value: number, currency: CurrencyCode, compact = false): string {
   return formatCurrency(value, currency, { compact, decimals: compact ? 1 : 0 });
+}
+
+/* ── Currency Conversion Helpers ──────────────────────────── */
+let ratesLoaded = false;
+
+function toMainCurrency(inv: Investment): number {
+  if (!inv.currency || inv.currency === getCurrency()) return inv.currentValue;
+  const rate = getCachedConversionRate(inv.currency as CurrencyCode, getCurrency());
+  if (rate == null) return inv.currentValue;
+  return inv.currentValue * rate;
+}
+
+function toMainCurrencyAmount(inv: Investment): number {
+  if (!inv.currency || inv.currency === getCurrency()) return inv.amount;
+  const rate = getCachedConversionRate(inv.currency as CurrencyCode, getCurrency());
+  if (rate == null) return inv.amount;
+  return inv.amount * rate;
+}
+
+function totalCurrentConverted(invs: Investment[]): number {
+  return invs.reduce((sum, i) => sum + toMainCurrency(i), 0);
+}
+
+function totalInvestedConverted(invs: Investment[]): number {
+  return invs.reduce((sum, i) => sum + toMainCurrencyAmount(i), 0);
+}
+
+async function preloadRates() {
+  const data = loadData();
+  const mainCurrency = getCurrency();
+  const usedCurrencies = new Set(data.investments.map((i) => i.currency).filter(Boolean) as CurrencyCode[]);
+  try { await fetchExchangeRates(mainCurrency); } catch {}
+  for (const c of usedCurrencies) {
+    try { await fetchExchangeRates(c); } catch {}
+  }
+  ratesLoaded = true;
 }
 
 /* ── Charts ────────────────────────────────────────────────── */
@@ -216,9 +252,9 @@ function buildGrowthSeries(investments: Investment[], rangeMonths: number | "all
   while (cursor <= endCursor) {
     labels.push(cursor.toLocaleString("en", { month: "short" }));
     const point = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0);
-    const pointValue = investments
-      .filter((i) => new Date(i.date) <= point)
-      .reduce((sum, i) => sum + i.currentValue, 0);
+      const pointValue = investments
+        .filter((i) => new Date(i.date) <= point)
+        .reduce((sum, i) => sum + toMainCurrency(i), 0);
     data.push(pointValue);
     cursor.setMonth(cursor.getMonth() + 1);
   }
@@ -355,7 +391,7 @@ function renderAllocChart() {
           titleFont: { family: CHART_FONT_FAMILY, size: 12, weight: 600 },
           bodyFont: { family: CHART_FONT_FAMILY, size: 12, weight: 500 },
           callbacks: {
-            label: (item) => `${item.label}: ${(item.parsed / totalCurrent(data.investments) * 100).toFixed(1)}%`,
+            label: (item) => `${item.label}: ${(item.parsed / totalCurrentConverted(data.investments) * 100).toFixed(1)}%`,
           },
         },
       },
@@ -382,7 +418,7 @@ function renderAllocChart() {
             .join("");
   }
   const totalEl = document.querySelector("[data-stat='alloc-total']") as HTMLElement | null;
-  if (totalEl) totalEl.textContent = fmt(totalCurrent(data.investments), getCurrency(), true);
+  if (totalEl) totalEl.textContent = fmt(totalCurrentConverted(data.investments), getCurrency(), true);
 }
 
 function renderCashflowChart() {
@@ -610,8 +646,8 @@ function renderStats() {
   const range = getSelectedRange();
   const rangeEndISO = getRangeEndISO();
   const invsAsOf = getInvestmentsAsOf(rangeEndISO, data.investments);
-  const total = totalCurrent(invsAsOf);
-  const gain = totalGain(invsAsOf);
+  const total = totalCurrentConverted(invsAsOf);
+  const gain = total - totalInvestedConverted(invsAsOf);
   const nw = {
     assets: total,
     liabilities: totalOutstanding(data.emis),
@@ -707,22 +743,28 @@ function renderTopHoldings() {
     return;
   }
   const top = [...invs]
-    .sort((a, b) => b.currentValue - a.currentValue)
+    .sort((a, b) => toMainCurrency(b) - toMainCurrency(a))
     .slice(0, 5);
   root.innerHTML = `
     <ul class="divide-y divide-hairline">
       ${top
         .map((i) => {
-          const gain = i.currentValue - i.amount;
-          const pct = i.amount > 0 ? (gain / i.amount) * 100 : 0;
+          const convCurrent = toMainCurrency(i);
+          const convAmount = toMainCurrencyAmount(i);
+          const gain = convCurrent - convAmount;
+          const pct = convAmount > 0 ? (gain / convAmount) * 100 : 0;
+          const isForeign = i.currency && i.currency !== getCurrency();
+          const currBadge = isForeign
+            ? ` <span class="text-caption text-mute">${currencies[i.currency as CurrencyCode]?.symbol ?? i.currency}</span>`
+            : "";
           return `
             <li class="flex items-center justify-between py-sm">
               <div>
-                <p class="text-body-sm-strong text-ink">${escapeHtml(i.name)}</p>
-                <p class="text-caption text-mute">${i.type} · ${fmt(i.amount, currency)}</p>
+                <p class="text-body-sm-strong text-ink">${escapeHtml(i.name)}${currBadge}</p>
+                <p class="text-caption text-mute">${i.type} · ${fmt(convAmount, currency)}</p>
               </div>
               <div class="text-right">
-                <p class="text-body-sm-strong text-ink">${fmt(i.currentValue, currency)}</p>
+                <p class="text-body-sm-strong text-ink">${fmt(convCurrent, currency)}</p>
                 <p class="text-caption ${gain >= 0 ? "text-gain" : "text-loss"}">${gain >= 0 ? "+" : ""}${pct.toFixed(1)}%</p>
               </div>
             </li>`;
@@ -825,10 +867,23 @@ function escapeHtml(s: string): string {
 const modal = document.getElementById("quick-add-modal") as HTMLDialogElement | null;
 const quickAddBtn = document.getElementById("quick-add-investment");
 
+function populateQaCurrencySelect(selected?: string) {
+  const sel = document.getElementById("qa-currency") as HTMLSelectElement | null;
+  if (!sel) return;
+  const mainCur = getCurrency();
+  const options = Object.entries(currencies).map(([code, meta]) => {
+    const isMain = code === mainCur ? " (main)" : "";
+    return `<option value="${code}"${code === (selected ?? mainCur) ? " selected" : ""}>${meta.symbol} ${code}${isMain}</option>`;
+  });
+  sel.innerHTML = options.join("");
+}
+
 function openQuickAdd() {
   if (!modal) return;
   const form = modal.querySelector("form");
   if (form) form.reset();
+  populateQaCurrencySelect();
+  toggleQaCurrencyGroup(false);
   (modal.querySelector("#qa-date") as HTMLInputElement | null)?.setAttribute(
     "value",
     new Date().toISOString().split("T")[0],
@@ -837,6 +892,16 @@ function openQuickAdd() {
   updateRiskLabel();
   modal.showModal();
 }
+
+function toggleQaCurrencyGroup(show: boolean) {
+  const group = document.getElementById("qa-currency-group");
+  if (group) group.classList.toggle("hidden", !show);
+}
+
+document.querySelector<HTMLSelectElement>("#qa-type")?.addEventListener("change", (e) => {
+  const type = (e.target as HTMLSelectElement).value;
+  toggleQaCurrencyGroup(type === "International" || type === "Crypto" || type === "ETF" || type === "Gold");
+});
 quickAddBtn?.addEventListener("click", openQuickAdd);
 
 document.querySelectorAll("[data-close-modal]").forEach((btn) => {
@@ -857,6 +922,7 @@ form?.addEventListener("submit", (e) => {
   if (!form) return;
   const fd = new FormData(form);
   const ts = nowISO();
+  const currency = String(fd.get("currency") ?? "");
   const inv: Investment = {
     id: uid(),
     name: String(fd.get("name") ?? "").trim(),
@@ -866,6 +932,7 @@ form?.addEventListener("submit", (e) => {
     date: String(fd.get("date") ?? ts.split("T")[0]),
     risk: Number(fd.get("risk") ?? 5),
     notes: String(fd.get("notes") ?? ""),
+    currency: currency && currency !== getCurrency() ? currency : undefined,
     createdAt: ts,
     updatedAt: ts,
   };
@@ -892,7 +959,7 @@ const openProjBtn = document.getElementById("open-projection");
 function renderProjection() {
   const data = loadData();
   const currency = getCurrency();
-  const portfolioValue = totalCurrent(data.investments);
+  const portfolioValue = totalCurrentConverted(data.investments);
 
   const returnEl = document.getElementById("proj-return") as HTMLInputElement | null;
   const yearsEl = document.getElementById("proj-years") as HTMLInputElement | null;
@@ -1020,6 +1087,9 @@ function renderAll() {
 }
 
 subscribe(() => renderAll());
+
+// Kick off rate preload
+preloadRates().then(() => renderAll());
 renderAll();
 
 // Re-render charts on theme change so colors update

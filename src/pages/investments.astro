@@ -75,9 +75,9 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
 
     <!-- Table -->
       <div class="card p-0 overflow-hidden">
-        <div class="overflow-x-auto scroll-thin">
+        <div class="overflow-auto scroll-thin" style="max-height: 70vh;">
           <table class="w-full text-body-sm" data-table="investments">
-            <thead>
+            <thead class="sticky top-0 z-10">
               <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
                 <th class="font-medium py-sm px-md hide-mobile">#</th>
                 <th class="font-medium py-sm px-md">Asset</th>
@@ -142,6 +142,13 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
             <label class="label" for="inv-date">Date *</label>
             <input class="input" type="date" id="inv-date" name="date" required />
           </div>
+        </div>
+        <div id="inv-currency-group" class="hidden">
+          <label class="label" for="inv-currency">Purchase Currency</label>
+          <select class="select" id="inv-currency" name="currency">
+            <!-- populated dynamically from currency list -->
+          </select>
+          <p class="text-caption text-mute mt-xs">This asset is in a foreign currency. Values will be converted to your main currency at today's rate.</p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>

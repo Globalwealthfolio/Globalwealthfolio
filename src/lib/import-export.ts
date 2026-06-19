@@ -99,6 +99,7 @@ const FIELD_SYNONYMS: Record<string, string[]> = {
   risk: ["risk", "risk score", "risk level"],
   notes: ["notes", "tags", "comment", "remarks"],
   goal: ["goal", "goal name", "target"],
+  currency: ["currency", "purchase currency", "fx currency", "foreign currency", "fx"],
 };
 
 export function autoMapColumns(
@@ -161,6 +162,7 @@ export function buildEntities(
       const date = String(get("date")) || mapping.defaultDate || ts.split("T")[0];
 
       if (mapping.entity === "investment") {
+        const currencyRaw = String(get("currency") || "");
         const inv: Investment = {
           id: baseId,
           name: String(get("name") || "Untitled"),
@@ -170,6 +172,7 @@ export function buildEntities(
           date,
           risk: Number(get("risk") || 5),
           notes: String(get("notes") || ""),
+          currency: currencyRaw && currencyRaw !== "INR" ? currencyRaw : undefined,
           createdAt: ts,
           updatedAt: ts,
         };

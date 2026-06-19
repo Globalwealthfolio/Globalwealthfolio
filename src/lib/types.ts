@@ -73,6 +73,7 @@ export interface Investment {
   notes?: string;
   quantity?: number;
   symbol?: string;
+  currency?: string; // CurrencyCode for foreign assets (e.g. "USD")
   createdAt: string;
   updatedAt: string;
 }

@@ -120,7 +120,7 @@ const FIELD_LABELS: Record<string, string> = {
 
 function getTargetFields(): string[] {
   const ent = currentEntity();
-  if (ent === "investment") return ["name", "type", "amount", "currentValue", "date", "risk", "notes"];
+  if (ent === "investment") return ["name", "type", "amount", "currentValue", "date", "risk", "notes", "currency"];
   if (ent === "expense") return ["name", "amount", "date", "notes"];
   if (ent === "emi") return ["name", "type", "principal", "emi", "rate", "tenure", "startDate" as never, "outstanding", "notes"];
   return ["name", "type", "target", "current", "deadline" as never, "notes"];
@@ -183,7 +183,7 @@ function updatePreview() {
   const head = document.getElementById("xlsx-preview-head") as HTMLElement | null;
   const body = document.getElementById("xlsx-preview-body") as HTMLElement | null;
   if (head && body) {
-    const cols = ["name", "type", "amount", "currentValue", "date", "risk"];
+    const cols = ["name", "type", "amount", "currentValue", "date", "risk", "currency"];
     head.innerHTML = `<tr>${cols.map((c) => `<th class="py-xs px-md font-medium">${c}</th>`).join("")}</tr>`;
     body.innerHTML = entities
       .map(

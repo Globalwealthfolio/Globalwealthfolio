@@ -29,7 +29,7 @@ export function seedSampleData(): void {
     { id: uid(), name: "SGB 2024-25", type: "Gold", amount: 60000, currentValue: 67800, date: daysAgo(220), risk: 3, notes: "Sovereign Gold Bond", createdAt: ts, updatedAt: ts },
     { id: uid(), name: "Physical Gold", type: "Gold", amount: 85000, currentValue: 102000, date: daysAgo(720), risk: 3, notes: "Jewellery + coins", createdAt: ts, updatedAt: ts },
     { id: uid(), name: "Bitcoin", type: "Crypto", amount: 48000, currentValue: 72200, date: daysAgo(150), risk: 9, notes: "Cold wallet", createdAt: ts, updatedAt: ts },
-    { id: uid(), name: "Apple Inc (AAPL)", type: "International", amount: 35000, currentValue: 42800, date: daysAgo(300), risk: 6, notes: "US equity", createdAt: ts, updatedAt: ts },
+    { id: uid(), name: "Apple Inc (AAPL)", type: "International", amount: 420, currentValue: 510, date: daysAgo(300), risk: 6, notes: "US equity", currency: "USD", createdAt: ts, updatedAt: ts },
     { id: uid(), name: "NIFTY 50 ETF", type: "ETF", amount: 50000, currentValue: 57200, date: daysAgo(250), risk: 5, notes: "Index fund", createdAt: ts, updatedAt: ts },
     { id: uid(), name: "EPF Balance", type: "EPF", amount: 280000, currentValue: 318000, date: daysAgo(60), risk: 1, notes: "Employer contribution", createdAt: ts, updatedAt: ts },
     { id: uid(), name: "PPF Account", type: "PPF", amount: 150000, currentValue: 168000, date: daysAgo(30), risk: 1, notes: "Tax-saving", createdAt: ts, updatedAt: ts },

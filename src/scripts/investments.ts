@@ -9,14 +9,47 @@ import {
   type AssetType,
   type Goal,
 } from "../lib/types";
-import { formatCurrency, type CurrencyCode } from "../lib/currency";
+import { formatCurrency, currencies, fetchExchangeRates, getCachedConversionRate, type CurrencyCode } from "../lib/currency";
 import { getDateRange, isInRange } from "./date-range-filter";
+
+let ratesLoaded = false;
 
 function getCurrency(): CurrencyCode {
   return (document.documentElement.dataset.currency ?? "INR") as CurrencyCode;
 }
 function fmt(n: number, compact = false): string {
   return formatCurrency(n, getCurrency(), { compact, decimals: compact ? 1 : 0 });
+}
+function fmtOrig(n: number, currency: CurrencyCode): string {
+  return formatCurrency(n, currency, { decimals: 0 });
+}
+
+/** Convert an investment's currentValue to the main display currency */
+function toMainCurrency(inv: Investment): number {
+  if (!inv.currency || inv.currency === getCurrency()) return inv.currentValue;
+  const rate = getCachedConversionRate(inv.currency as CurrencyCode, getCurrency());
+  if (rate == null) return inv.currentValue;
+  return inv.currentValue * rate;
+}
+
+/** Convert an investment's amount to the main display currency */
+function toMainCurrencyAmount(inv: Investment): number {
+  if (!inv.currency || inv.currency === getCurrency()) return inv.amount;
+  const rate = getCachedConversionRate(inv.currency as CurrencyCode, getCurrency());
+  if (rate == null) return inv.amount;
+  return inv.amount * rate;
+}
+
+/** Preload exchange rates for all unique currencies used in investments */
+async function preloadRates() {
+  const data = loadData();
+  const mainCurrency = getCurrency();
+  const usedCurrencies = new Set(data.investments.map((i) => i.currency).filter(Boolean) as CurrencyCode[]);
+  try { await fetchExchangeRates(mainCurrency); } catch {}
+  for (const c of usedCurrencies) {
+    try { await fetchExchangeRates(c); } catch {}
+  }
+  ratesLoaded = true;
 }
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -51,11 +84,44 @@ riskInput?.addEventListener("input", () => {
 document.getElementById("add-investment")?.addEventListener("click", () => openModal());
 document.querySelectorAll("[data-close-modal]").forEach((b) => b.addEventListener("click", () => modal?.close()));
 
+/* ── Currency selector ────────────────────────────────────── */
+function isForeignType(type: string): boolean {
+  return type === "International" || type === "Crypto" || type === "ETF" || type === "Gold";
+}
+
+function populateCurrencySelect(selId: string, selected?: string) {
+  const sel = document.getElementById(selId) as HTMLSelectElement | null;
+  if (!sel) return;
+  const mainCur = getCurrency();
+  const options = Object.entries(currencies).map(([code, meta]) => {
+    const isMain = code === mainCur ? " (main)" : "";
+    return `<option value="${code}"${code === (selected ?? mainCur) ? " selected" : ""}>${meta.symbol} ${code}${isMain} — ${meta.name}</option>`;
+  });
+  sel.innerHTML = options.join("");
+}
+
+function toggleCurrencyGroup(show: boolean, groupId: string) {
+  const group = document.getElementById(groupId);
+  if (group) group.classList.toggle("hidden", !show);
+}
+
+document.getElementById("inv-type")?.addEventListener("change", (e) => {
+  const type = (e.target as HTMLSelectElement).value;
+  toggleCurrencyGroup(isForeignType(type), "inv-currency-group");
+});
+document.getElementById("qa-type")?.addEventListener("change", (e) => {
+  const type = (e.target as HTMLSelectElement).value;
+  toggleCurrencyGroup(isForeignType(type), "qa-currency-group");
+});
+
 function openModal(inv?: Investment) {
   if (!modal || !form) return;
   if (title) title.textContent = inv ? "Edit Investment" : "Add Investment";
   form.reset();
   populateGoalSelect();
+  populateCurrencySelect("inv-currency", inv?.currency ?? getCurrency());
+  const typeVal = inv?.type ?? "Equity";
+  toggleCurrencyGroup(isForeignType(typeVal), "inv-currency-group");
   (document.getElementById("inv-date") as HTMLInputElement).value = new Date().toISOString().split("T")[0];
   if (inv) {
     (document.getElementById("inv-id") as HTMLInputElement).value = inv.id;
@@ -68,6 +134,7 @@ function openModal(inv?: Investment) {
     (document.getElementById("inv-risk") as HTMLInputElement).value = String(inv.risk);
     (document.getElementById("inv-notes") as HTMLInputElement).value = inv.notes ?? "";
     if (riskLabel) riskLabel.textContent = String(inv.risk);
+    (document.getElementById("inv-currency") as HTMLSelectElement).value = inv.currency ?? getCurrency();
   } else {
     (document.getElementById("inv-id") as HTMLInputElement).value = "";
     (document.getElementById("inv-risk") as HTMLInputElement).value = "5";
@@ -89,6 +156,7 @@ form?.addEventListener("submit", (e) => {
   const fd = new FormData(form);
   const id = String(fd.get("id") ?? "");
   const ts = nowISO();
+  const currency = String(fd.get("currency") ?? "");
   const payload: Investment = {
     id: id || uid(),
     name: String(fd.get("name") ?? "").trim(),
@@ -99,6 +167,7 @@ form?.addEventListener("submit", (e) => {
     goalId: (String(fd.get("goalId") ?? "") || undefined) as string | undefined,
     risk: Number(fd.get("risk") ?? 5),
     notes: String(fd.get("notes") ?? ""),
+    currency: currency && currency !== getCurrency() ? currency : undefined,
     createdAt: id ? loadData().investments.find((i) => i.id === id)?.createdAt ?? ts : ts,
     updatedAt: ts,
   };
@@ -205,12 +274,15 @@ function renderTable() {
 
   tbody.innerHTML = rows
     .map((i, idx) => {
-      const gain = i.currentValue - i.amount;
-      const pct = i.amount > 0 ? (gain / i.amount) * 100 : 0;
+      const convCurrent = toMainCurrency(i);
+      const convAmount = toMainCurrencyAmount(i);
+      const gain = convCurrent - convAmount;
+      const pct = convAmount > 0 ? (gain / convAmount) * 100 : 0;
       const goalName = i.goalId ? goalMap.get(i.goalId) ?? "—" : "—";
       const eta = i.goalId ? goalEtaCache.get(i.goalId) : null;
       const per = eta?.perInvestment.find((p) => p.id === i.id);
       const months = per?.months ?? null;
+      const isForeign = i.currency && i.currency !== getCurrency();
       let etaCell: string;
       if (!i.goalId) {
         etaCell = `<span class="text-caption text-mute">Not linked</span>`;
@@ -220,6 +292,13 @@ function renderTable() {
         const cls = months <= 0 ? "text-gain" : "text-gold";
         etaCell = `<span class="text-body-sm-strong ${cls}">${formatMonthsHuman(months)}</span>`;
       }
+      const currencySymbol = isForeign ? currencies[i.currency as CurrencyCode]?.symbol ?? i.currency : "";
+      const currencyBadgeCurrent = isForeign
+        ? `<span class="text-caption text-mute ml-xs" title="Original: ${fmtOrig(i.currentValue, i.currency as CurrencyCode)}">${currencySymbol}</span>`
+        : "";
+      const currencyBadgeInvested = isForeign
+        ? `<span class="text-caption text-mute ml-xs" title="Invested: ${fmtOrig(i.amount, i.currency as CurrencyCode)}">${currencySymbol}</span>`
+        : "";
       return `
         <tr class="border-t border-hairline hover:bg-canvas-soft">
           <td class="py-sm px-md text-mute hide-mobile">${idx + 1}</td>
@@ -229,8 +308,8 @@ function renderTable() {
           <td class="py-sm px-md hide-tablet"><span class="badge">${i.type}</span></td>
           <td class="py-sm px-md text-body hide-mobile">${esc(goalName)}</td>
           <td class="py-sm px-md text-body hide-tablet">${i.date}</td>
-          <td class="py-sm px-md text-right">${fmt(i.amount)}</td>
-          <td class="py-sm px-md text-right">${fmt(i.currentValue)}</td>
+          <td class="py-sm px-md text-right">${fmt(convAmount)}${currencyBadgeInvested}</td>
+          <td class="py-sm px-md text-right">${fmt(convCurrent)}${currencyBadgeCurrent}</td>
           <td class="py-sm px-md text-right ${gain >= 0 ? "text-gain" : "text-loss"} hide-tablet">${gain >= 0 ? "+" : ""}${fmt(gain)} (${pct.toFixed(1)}%)</td>
           <td class="py-sm px-md hide-mobile">
             <span class="badge ${i.risk <= 3 ? "badge-gain" : i.risk >= 7 ? "badge-loss" : ""}">${riskLevelLabel(i.risk)} ${i.risk}</span>
@@ -273,8 +352,8 @@ function renderTable() {
 
 function renderStats() {
   const rows = filteredInvestments();
-  const invested = totalInvested(rows);
-  const current = totalCurrent(rows);
+  const invested = rows.reduce((sum, i) => sum + toMainCurrencyAmount(i), 0);
+  const current = rows.reduce((sum, i) => sum + toMainCurrency(i), 0);
   const gain = current - invested;
   const pct = invested > 0 ? (gain / invested) * 100 : 0;
   const setText = (sel: string, text: string, color?: string) => {
@@ -312,4 +391,10 @@ function renderAll() {
 
 subscribe(renderAll);
 window.addEventListener("gwp:daterange", renderAll);
+
+// Kick off rate preload
+preloadRates().then(() => {
+  renderStats();
+  renderTable();
+});
 renderAll();

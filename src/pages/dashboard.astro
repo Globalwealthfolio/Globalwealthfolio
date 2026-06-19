@@ -236,6 +236,13 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
             <input class="input" type="date" id="qa-date" name="date" required />
           </div>
         </div>
+        <div id="qa-currency-group" class="hidden">
+          <label class="label" for="qa-currency">Purchase Currency</label>
+          <select class="select" id="qa-currency" name="currency">
+            <!-- populated dynamically from currency list -->
+          </select>
+          <p class="text-caption text-mute mt-xs">Foreign asset? Select the purchase currency for automatic conversion.</p>
+        </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
           <div>
             <label class="label" for="qa-amount">Invested *</label>
