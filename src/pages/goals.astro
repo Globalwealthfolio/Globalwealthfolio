@@ -93,9 +93,9 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
 
     <!-- Goals table -->
     <div class="card p-0 overflow-hidden">
-      <div class="overflow-x-auto scroll-thin">
+      <div class="overflow-auto scroll-thin" style="max-height: 70vh;">
         <table class="w-full text-body-sm" data-table="goals">
-          <thead>
+          <thead class="sticky top-0 z-10">
             <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
               <th class="font-medium py-sm px-md">Goal</th>
               <th class="font-medium py-sm px-md hide-tablet">Type</th>

@@ -121,9 +121,9 @@ import DateRangeFilter from "../components/DateRangeFilter.astro";
 
     <!-- Table -->
       <div class="card p-0 overflow-hidden">
-        <div class="overflow-x-auto scroll-thin">
+        <div class="overflow-auto scroll-thin" style="max-height: 70vh;">
           <table class="w-full text-body-sm" data-table="expenses">
-            <thead>
+            <thead class="sticky top-0 z-10">
               <tr class="text-left text-caption-mono text-body bg-canvas-soft-2">
                 <th class="font-medium py-sm px-md hide-mobile">#</th>
                 <th class="font-medium py-sm px-md">Type</th>
