@@ -176,7 +176,7 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   riskTolerance: "Medium",
   notifications: true,
   useWebLLM: true,
-  disableChatWidget: false,
+  disableChatWidget: true,
 };
 
 export const DEFAULT_DATA: AppData = {
