@@ -196,6 +196,13 @@ import Layout from "../layouts/Layout.astro";
             <button type="button" data-fmt="ol" title="Numbered list">OL</button>
             <span class="toolbar-divider"></span>
             <button type="button" data-fmt="link" title="Insert link">Link</button>
+            <span class="toolbar-divider"></span>
+            <select class="toolbar-select" data-fmt="font" title="Font family">
+              <option value="">Font</option>
+              <option value="sans-serif">Sans-serif</option>
+              <option value="serif">Serif</option>
+              <option value="monospace">Monospace</option>
+            </select>
           </div>
           <textarea
             class="input editor-textarea"
@@ -268,6 +275,21 @@ import Layout from "../layouts/Layout.astro";
     width: 1px;
     background: var(--color-hairline);
     margin: 4px 5px;
+  }
+  .toolbar-select {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 3px 4px;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    color: var(--color-body);
+    font-family: var(--font-sans);
+    line-height: 1.4;
+    outline: none;
+  }
+  .toolbar-select:hover {
+    background: var(--color-hairline);
   }
   .editor-textarea {
     border-top-left-radius: 0 !important;

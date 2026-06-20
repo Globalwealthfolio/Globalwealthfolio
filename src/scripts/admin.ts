@@ -537,6 +537,29 @@ toolbar?.addEventListener("click", (e) => {
   ta.dispatchEvent(new Event("input", { bubbles: true }));
 });
 
+document.querySelector<HTMLSelectElement>(".toolbar-select")?.addEventListener("change", (e) => {
+  const select = e.target as HTMLSelectElement;
+  if (!select.value || !contentArea) return;
+  const ta = contentArea;
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end);
+  applyFont(ta, sel, select.value);
+  select.value = "";
+  ta.focus();
+  ta.dispatchEvent(new Event("input", { bubbles: true }));
+});
+
+function applyFont(ta: HTMLTextAreaElement, sel: string, font: string) {
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const text = ta.value;
+  const inner = sel || "text";
+  ta.value = text.substring(0, start) + `<span style="font-family:${font}">` + inner + `</span>` + text.substring(end);
+  ta.selectionStart = start + `<span style="font-family:${font}">`.length;
+  ta.selectionEnd = start + `<span style="font-family:${font}">`.length + inner.length;
+}
+
 function wrapInline(ta: HTMLTextAreaElement, tag: string, sel: string) {
   const start = ta.selectionStart;
   const end = ta.selectionEnd;
