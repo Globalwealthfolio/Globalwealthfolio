@@ -152,6 +152,8 @@ export interface UserPreferences {
   portfolioBaseDate: string;
   riskTolerance: RiskLevel;
   notifications: boolean;
+  useWebLLM: boolean;
+  disableChatWidget: boolean;
 }
 
 export interface AppData {
@@ -173,6 +175,8 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   portfolioBaseDate: new Date().toISOString().split("T")[0],
   riskTolerance: "Medium",
   notifications: true,
+  useWebLLM: true,
+  disableChatWidget: false,
 };
 
 export const DEFAULT_DATA: AppData = {

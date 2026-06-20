@@ -108,6 +108,23 @@ const languageList = Object.entries(languages).map(([code, meta]) => ({
         <p class="text-caption text-mute">Resetting clears all investments, expenses, goals, EMIs, and the audit log from this device.</p>
       </div>
 
+      <!-- AI Model -->
+      <div class="card">
+        <h2 class="text-display-sm mb-sm">AI Portfolio Assistant</h2>
+        <p class="text-body-sm text-body mb-md">The AI runs a large language model directly in your browser via WebLLM. No data is ever sent to any server — everything stays on your device.</p>
+        <div class="space-y-md">
+          <label class="flex items-center gap-sm cursor-pointer">
+            <input type="checkbox" id="set-webllm" class="w-4 h-4 accent-current" />
+            <span class="text-body-md">Enable AI model (WebLLM)</span>
+          </label>
+          <label class="flex items-center gap-sm cursor-pointer">
+            <input type="checkbox" id="set-disable-chat" class="w-4 h-4 accent-current" />
+            <span class="text-body-md">Disable chat widget</span>
+          </label>
+        </div>
+        <p class="text-caption text-mute mt-sm">Uncheck "Enable AI model" to use the rule-based engine instead. Check "Disable chat widget" to hide the floating chat bubble entirely.</p>
+      </div>
+
       <!-- Encryption -->
       <div class="card" id="encryption-card">
         <h2 class="text-display-sm mb-sm">Encryption</h2>

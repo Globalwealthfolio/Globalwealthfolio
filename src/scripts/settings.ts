@@ -10,6 +10,8 @@ function populateUI() {
   (document.getElementById("set-income") as HTMLInputElement).value = String(prefs.monthlyIncome);
   (document.getElementById("set-base-date") as HTMLInputElement).value = prefs.portfolioBaseDate;
   (document.getElementById("set-notifications") as HTMLInputElement).checked = prefs.notifications;
+  (document.getElementById("set-webllm") as HTMLInputElement).checked = prefs.useWebLLM;
+  (document.getElementById("set-disable-chat") as HTMLInputElement).checked = prefs.disableChatWidget;
   document.querySelectorAll<HTMLButtonElement>("[data-theme]").forEach((btn) => {
     btn.setAttribute("aria-selected", String(btn.dataset.theme === prefs.theme));
   });
@@ -82,6 +84,30 @@ document.getElementById("set-notifications")?.addEventListener("change", (e) => 
   });
 });
 
+document.getElementById("set-webllm")?.addEventListener("click", (e) => {
+  const cb = e.currentTarget as HTMLInputElement;
+  const nativeVal = cb.checked;
+  e.preventDefault();
+  cb.checked = nativeVal;
+  updateData((d) => { d.preferences.useWebLLM = nativeVal; });
+});
+
+document.getElementById("set-disable-chat")?.addEventListener("click", (e) => {
+  const cb = e.currentTarget as HTMLInputElement;
+  const nativeVal = cb.checked;
+  e.preventDefault();
+  cb.checked = nativeVal;
+  updateData((d) => { d.preferences.disableChatWidget = nativeVal; });
+  if (nativeVal) {
+    const widget = document.getElementById("gwp-chat-widget");
+    if (widget) widget.style.display = "none";
+  } else {
+    const existing = document.getElementById("gwp-chat-widget");
+    if (existing) { existing.style.display = ""; return; }
+    import("../scripts/chat-widget.ts");
+  }
+});
+
 document.getElementById("reset-data")?.addEventListener("click", () => {
   if (!confirm("This will permanently delete all your data on this device. Are you sure?")) return;
   if (!confirm("Really sure? This cannot be undone.")) return;
@@ -132,7 +158,8 @@ saveBtn?.addEventListener("click", async () => {
   try {
     await setupEncryption(pwd);
     passphraseModal?.close();
-    populateUI();
+subscribe(populateUI);
+populateUI();
   } catch {
     passphraseError.textContent = "Encryption failed. Try again.";
     passphraseError.style.display = "block";
@@ -146,5 +173,4 @@ document.getElementById("lock-data-btn")?.addEventListener("click", () => {
   populateUI();
 });
 
-subscribe(populateUI);
 populateUI();
