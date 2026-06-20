@@ -113,7 +113,7 @@ async function syncPost(post: import("../lib/types").BlogPost, statusEl: HTMLEle
     const res = await fetch("/api/add-post", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ id: post.id, title: post.title, content: post.content, excerpt: post.excerpt, tags: post.tags, authorName: post.authorName }),
+      body: JSON.stringify({ id: post.id, title: post.title, slug: post.slug, content: post.content, excerpt: post.excerpt, tags: post.tags, status: post.status, authorName: post.authorName }),
     });
     if (res.ok) {
       statusEl.textContent = "✓ Synced";

@@ -45,7 +45,8 @@ export async function onRequest(context) {
     let allPosts = raw ? JSON.parse(raw) : [];
     const idx = allPosts.findIndex((p) => p.id === id);
     const ts = new Date().toISOString();
-    const slug = title.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-").slice(0, 80) || `post-${Date.now().toString(36)}`;
+    const clientSlug = body.slug || "";
+    const slug = clientSlug || title.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-").slice(0, 80) || `post-${Date.now().toString(36)}`;
 
     const post = {
       id,
@@ -54,7 +55,7 @@ export async function onRequest(context) {
       content,
       excerpt: body.excerpt || "",
       tags: Array.isArray(body.tags) ? body.tags : [],
-      status: "published",
+      status: body.status || "published",
       authorName: body.authorName || "",
       createdAt: idx >= 0 ? allPosts[idx].createdAt : ts,
       updatedAt: ts,
