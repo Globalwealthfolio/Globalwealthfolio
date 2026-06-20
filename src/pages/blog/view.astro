@@ -14,6 +14,49 @@ import Layout from "../../layouts/Layout.astro";
   </article>
 </Layout>
 
+<style>
+  .prose-custom h1,
+  .prose-custom h2,
+  .prose-custom h3 {
+    color: var(--color-ink);
+    font-weight: 600;
+    line-height: 1.3;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+  .prose-custom h1 { font-size: 1.75rem; }
+  .prose-custom h2 { font-size: 1.375rem; }
+  .prose-custom h3 { font-size: 1.125rem; }
+  .prose-custom blockquote {
+    border-left: 3px solid var(--color-gold);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: var(--color-body);
+    font-style: italic;
+  }
+  .prose-custom ul,
+  .prose-custom ol {
+    padding-left: 1.5rem;
+    margin: 0.5rem 0;
+  }
+  .prose-custom li {
+    margin-bottom: 0.25rem;
+  }
+  .prose-custom a {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+  .prose-custom a:hover {
+    color: var(--color-link-deep);
+  }
+  .prose-custom strong { font-weight: 600; }
+  .prose-custom em { font-style: italic; }
+  .prose-custom u { text-decoration: underline; }
+  .prose-custom p {
+    margin-bottom: 0.5rem;
+  }
+</style>
+
 <script>
   function esc(s) {
     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -22,6 +65,21 @@ import Layout from "../../layouts/Layout.astro";
   function formatDate(iso) {
     try { return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }); }
     catch { return iso; }
+  }
+
+  function sanitize(html) {
+    return html
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+      .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+      .replace(/href\s*=\s*["']javascript:/gi, 'href="#"');
+  }
+
+  function renderContent(content) {
+    return content.split("\n").filter(Boolean).map(line => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith("<")) return sanitize(line);
+      return `<p>${sanitize(line)}</p>`;
+    }).join("\n");
   }
 
   async function renderPost(slug) {
@@ -36,7 +94,7 @@ import Layout from "../../layouts/Layout.astro";
         <p class="text-caption-mono text-gold mb-xs">Blog</p>
         <h1 class="text-display-lg mb-md">${esc(post.title)}</h1>
         <p class="text-caption text-mute mb-lg">${formatDate(post.publishedAt ?? post.updatedAt)}${post.authorName ? ` · By ${esc(post.authorName)}` : ""}</p>
-        <div class="prose-custom text-body-md text-body leading-relaxed space-y-md">${post.content.split("\n").filter(Boolean).map(line => line.trim().startsWith("<") ? line : `<p>${esc(line)}</p>`).join("\n")}</div>
+        <div class="prose-custom text-body-md text-body leading-relaxed space-y-md">${renderContent(post.content)}</div>
       `;
     } catch {
       container.innerHTML = `

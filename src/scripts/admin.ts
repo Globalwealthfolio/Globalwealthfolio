@@ -506,3 +506,84 @@ function renderAll() {
 modal?.addEventListener("close", () => {
   renderAll();
 });
+
+// --- Formatting toolbar ---
+const toolbar = document.getElementById("editor-toolbar");
+const contentArea = document.getElementById("blog-content") as HTMLTextAreaElement;
+
+toolbar?.addEventListener("click", (e) => {
+  const btn = (e.target as HTMLElement).closest("[data-fmt]") as HTMLButtonElement;
+  if (!btn || !contentArea) return;
+  e.preventDefault();
+  const fmt = btn.dataset.fmt!;
+  const ta = contentArea;
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end);
+
+  switch (fmt) {
+    case "h1": wrapBlock(ta, "h1", sel); break;
+    case "h2": wrapBlock(ta, "h2", sel); break;
+    case "h3": wrapBlock(ta, "h3", sel); break;
+    case "bold": wrapInline(ta, "strong", sel); break;
+    case "italic": wrapInline(ta, "em", sel); break;
+    case "underline": wrapInline(ta, "u", sel); break;
+    case "blockquote": wrapBlock(ta, "blockquote", sel); break;
+    case "ul": wrapList(ta, "ul", sel); break;
+    case "ol": wrapList(ta, "ol", sel); break;
+    case "link": insertLink(ta, sel); break;
+  }
+  ta.focus();
+  ta.dispatchEvent(new Event("input", { bubbles: true }));
+});
+
+function wrapInline(ta: HTMLTextAreaElement, tag: string, sel: string) {
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const text = ta.value;
+  const inner = sel || "text";
+  ta.value = text.substring(0, start) + `<${tag}>` + inner + `</${tag}>` + text.substring(end);
+  ta.selectionStart = start + `<${tag}>`.length;
+  ta.selectionEnd = start + `<${tag}>`.length + inner.length;
+}
+
+function wrapBlock(ta: HTMLTextAreaElement, tag: string, sel: string) {
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const text = ta.value;
+  const inner = sel || "text";
+  const prevNL = start > 0 && text[start - 1] !== "\n";
+  const nextNL = end < text.length && text[end] !== "\n";
+  const before = (prevNL ? "\n" : "") + `<${tag}>`;
+  const after = `</${tag}>` + (nextNL ? "\n" : "");
+  ta.value = text.substring(0, start) + before + inner + after + text.substring(end);
+  ta.selectionStart = start + before.length;
+  ta.selectionEnd = start + before.length + inner.length;
+}
+
+function wrapList(ta: HTMLTextAreaElement, type: "ul" | "ol", sel: string) {
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const text = ta.value;
+  const items = sel ? sel.split("\n").filter((l: string) => l.trim()) : ["item"];
+  const lis = items.map((i: string) => `  <li>${i}</li>`).join("\n");
+  const prevNL = start > 0 && text[start - 1] !== "\n";
+  const nextNL = end < text.length && text[end] !== "\n";
+  const before = (prevNL ? "\n" : "") + `<${type}>\n`;
+  const after = `\n</${type}>` + (nextNL ? "\n" : "");
+  ta.value = text.substring(0, start) + before + lis + after + text.substring(end);
+  ta.selectionStart = start + before.length;
+  ta.selectionEnd = start + before.length + lis.length;
+}
+
+function insertLink(ta: HTMLTextAreaElement, sel: string) {
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const text = ta.value;
+  const inner = sel || "link text";
+  const before = `<a href="https://">`;
+  const after = `</a>`;
+  ta.value = text.substring(0, start) + before + inner + after + text.substring(end);
+  ta.selectionStart = start + before.length;
+  ta.selectionEnd = start + before.length + inner.length;
+}
