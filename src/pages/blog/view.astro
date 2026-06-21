@@ -78,11 +78,7 @@ import Layout from "../../layouts/Layout.astro";
   }
 
   function renderContent(content) {
-    return content.split("\n").filter(Boolean).map(line => {
-      const trimmed = line.trim();
-      if (trimmed.startsWith("<")) return sanitize(line);
-      return `<p>${sanitize(line)}</p>`;
-    }).join("\n");
+    return sanitize(content);
   }
 
   async function renderPost(slug) {
