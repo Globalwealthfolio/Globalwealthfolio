@@ -31,7 +31,7 @@ export async function onRequest(context) {
       if (!raw) {
         return new Response(JSON.stringify({ posts: [] }), { headers: { ...headers, "Content-Type": "application/json" } });
       }
-      const allPosts = JSON.parse(raw);
+      const allPosts = (JSON.parse(raw) || []).filter((p, i, arr) => arr.findIndex(x => x.id === p.id) === i);
       const published = allPosts.filter((p) => p.status === "published").sort((a, b) => {
         return (a.publishedAt ?? a.updatedAt) < (b.publishedAt ?? b.updatedAt) ? 1 : -1;
       });
