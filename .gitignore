@@ -16,6 +16,8 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+.env.local
+.env.*.local
 
 # macOS-specific files
 .DS_Store
@@ -23,9 +25,22 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-.env
+# sensitive config
 wrangler.toml
+
+# dev artifacts
 dev-error*.txt
+dev-output*.txt
 ngrok_output.txt
 ngrok_url.txt
+
+# secrets / credentials
+*.key
+*.pem
+*.cer
+*.crt
+*.pfx
+service-account*.json
+credentials*
+secrets*
 
