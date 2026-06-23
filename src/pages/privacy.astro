@@ -2,24 +2,20 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="Privacy — Global Wealth Portfolio" description="How we handle your data, security measures, and your rights under DPDPA, GDPR, and CCPA.">
+<Layout title="Privacy — Global Wealth Portfolio" description="How we handle your data and the security measures we take.">
   <section class="container-page page-section pt-3xl pb-2xl max-w-3xl">
     <p class="text-caption-mono text-gold mb-xs">Privacy &amp; Security</p>
     <h1 class="text-display-lg mb-lg">Your data stays yours.</h1>
     <p class="text-body-md text-body mb-md">
       Global Wealth Portfolio is designed with <strong>privacy by design</strong> and
-      <strong>security by default</strong>. This policy describes how we protect your
-      data and your rights under <strong>DPDPA (India)</strong>,
-      <strong>GDPR (EU/UK)</strong>, and <strong>CCPA (California)</strong>.
+      <strong>security by default</strong>. This policy describes what data we collect,
+      how we use it, and the choices available to you.
     </p>
 
-    <h2 class="text-display-md mt-2xl mb-md">1. Data controller &amp; contact</h2>
+    <h2 class="text-display-md mt-2xl mb-md">1. Contact</h2>
     <p class="text-body-md text-body mb-md">
-      Global Wealth Portfolio operates as a data controller. For any privacy-related
-      requests or concerns:
-    </p>
-    <p class="text-body-md text-body mb-md">
-      Use the contact form on our website. Response time: within 30 days (DPDPA &amp; GDPR compliant).
+      For any privacy-related requests or concerns, use the contact form on our website.
+      We aim to respond within 30 days.
     </p>
 
     <h2 class="text-display-md mt-2xl mb-md">2. Data collection &amp; purpose</h2>
@@ -28,9 +24,9 @@ import Layout from "../layouts/Layout.astro";
     </p>
     <ul class="list-disc pl-lg space-y-xs text-body-md text-body mb-md">
       <li><strong>Financial data</strong> (investments, expenses, goals, EMI) — stored in your browser's <code>localStorage</code> for offline use. Never sent to our servers.</li>
-      <li><strong>Blog subscribers</strong> — email address only, stored in encrypted Cloudflare KV, used solely to send new-post notifications. Consent obtained at time of subscription. Unsubscribe one-click at any time.</li>
-      <li><strong>Usage analytics</strong> — anonymized page view data via Google Analytics (G-J020W8NDX9). No personally identifiable information is collected. You may opt out via browser privacy settings.</li>
-      <li><strong>Advertising</strong> — contextual ads via Google AdSense. No targeted advertising based on your financial data.</li>
+      <li><strong>Blog subscribers</strong> — email address only, stored in encrypted Cloudflare KV, used solely to send new-post notifications. Unsubscribe one-click at any time.</li>
+      <li><strong>Usage analytics</strong> — anonymized page view data via Google Analytics (G-J020W8NDX9). Google sets cookies for this purpose. No personally identifiable information is collected.</li>
+      <li><strong>Advertising</strong> — contextual ads via Google AdSense. Google may set cookies to personalize ads. No advertising is based on your financial data within the app.</li>
     </ul>
 
     <h2 class="text-display-md mt-2xl mb-md">3. Security measures</h2>
@@ -57,55 +53,20 @@ import Layout from "../layouts/Layout.astro";
       </div>
     </div>
 
-    <h2 class="text-display-md mt-2xl mb-md">4. Your rights (DPDPA / GDPR / CCPA)</h2>
-    <div class="overflow-x-auto">
-      <table class="w-full text-body-md text-body border-collapse">
-        <thead>
-          <tr class="border-b border-hairline">
-            <th class="text-left py-sm pr-md font-medium text-ink">Right</th>
-            <th class="text-left py-sm font-medium text-ink">How to exercise</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="border-b border-hairline">
-            <td class="py-sm pr-md">Access / data portability</td>
-            <td class="py-sm">Settings → Import/Export → Export JSON</td>
-          </tr>
-          <tr class="border-b border-hairline">
-            <td class="py-sm pr-md">Rectification</td>
-            <td class="py-sm">Edit data directly in the app (all changes are local)</td>
-          </tr>
-          <tr class="border-b border-hairline">
-            <td class="py-sm pr-md">Deletion (right to be forgotten)</td>
-            <td class="py-sm">Settings → Reset all data (local). Unsubscribe link in every email (server).</td>
-          </tr>
-          <tr class="border-b border-hairline">
-            <td class="py-sm pr-md">Withdraw consent</td>
-            <td class="py-sm">Click unsubscribe in any newsletter email, or delete your data via Settings</td>
-          </tr>
-          <tr class="border-b border-hairline">
-            <td class="py-sm pr-md">Opt out of sale (CCPA)</td>
-            <td class="py-sm">We do not sell your personal information. No action needed.</td>
-          </tr>
-          <tr>
-            <td class="py-sm pr-md">Lodge a complaint</td>
-            <td class="py-sm">Contact us via the website contact form</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h2 class="text-display-md mt-2xl mb-md">5. Consent &amp; lawful basis</h2>
-    <p class="text-body-md text-body mb-md">
-      We process data on the following lawful bases under GDPR:
-    </p>
+    <h2 class="text-display-md mt-2xl mb-md">4. Your data choices</h2>
     <ul class="list-disc pl-lg space-y-xs text-body-md text-body mb-md">
-      <li><strong>Consent</strong> — newsletter subscriptions (explicit opt-in, verifiable, withdrawable)</li>
-      <li><strong>Legitimate interest</strong> — anonymized analytics to improve the service</li>
-      <li><strong>Performance of a contract</strong> — core app functionality (financial tracking)</li>
+      <li><strong>Export your data</strong> — Settings → Import/Export → Export JSON</li>
+      <li><strong>Edit or delete data</strong> — directly in the app (all changes are local). Use "Reset all data" in Settings to clear everything.</li>
+      <li><strong>Unsubscribe</strong> — click the unsubscribe link in any newsletter email to stop receiving notifications.</li>
+      <li><strong>Ad preferences</strong> — Google's ad settings can be managed at <a href="https://adssettings.google.com" class="text-link hover:underline" target="_blank" rel="noopener">adssettings.google.com</a>.</li>
+      <li><strong>Contact us</strong> — use the website contact form for any data-related requests.</li>
     </ul>
+
+    <h2 class="text-display-md mt-2xl mb-md">5. Cookies</h2>
     <p class="text-body-md text-body mb-md">
-      Under DPDPA, consent is obtained through explicit action (typing your email and clicking Subscribe). Consent logs are maintained in the audit trail.
+      Google Analytics and Google AdSense set cookies in your browser when you visit this site.
+      These cookies help us understand site usage and serve relevant ads. You can control cookie
+      settings through your browser preferences.
     </p>
 
     <h2 class="text-display-md mt-2xl mb-md">6. Data retention</h2>
@@ -126,7 +87,7 @@ import Layout from "../layouts/Layout.astro";
 
     <h2 class="text-display-md mt-2xl mb-md">8. International transfers</h2>
     <p class="text-body-md text-body mb-md">
-      Data may be processed on Cloudflare's global edge network (GDPR-compliant Standard Contractual Clauses in place).
+      Data may be processed on Cloudflare's global edge network (Standard Contractual Clauses in place).
       Local data stays on your device and never crosses your browser's origin.
     </p>
 
@@ -136,11 +97,9 @@ import Layout from "../layouts/Layout.astro";
       For significant changes, returning users will see a notice on the dashboard.
     </p>
 
-    <h2 class="text-display-md mt-2xl mb-md">Contact &amp; DPO</h2>
+    <h2 class="text-display-md mt-2xl mb-md">Contact</h2>
     <p class="text-body-md text-body">
-      Data Protection Officer: Sourabhsingh Rajput<br />
-      Use the contact form on the website.<br />
-      Response within 30 days as required by DPDPA &amp; GDPR.
+      Use the contact form on the website for any privacy-related requests.
     </p>
   </section>
 </Layout>
