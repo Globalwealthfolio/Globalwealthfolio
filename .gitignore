@@ -22,3 +22,10 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+.env
+wrangler.toml
+dev-error*.txt
+ngrok_output.txt
+ngrok_url.txt
+
