@@ -100,14 +100,6 @@ In plain language: You are free to **use, modify, distribute, and sell** this so
 
 ---
 
-## 💡 Monetization Ideas
-
-- **Freemium Model** — Free tier with basic tracking; premium tier for advanced analytics, reports, and AI insights.
-- **SaaS Hosting** — Offer a hosted version at [globalwealthfolio.com](https://globalwealthfolio.com) with managed backups and support.
-- **Consulting & Customization** — Provide tailored portfolio solutions for financial advisors or wealth management firms.
-
----
-
 ## 🤝 Contributing
 
 Contributions are welcome!
