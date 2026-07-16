@@ -412,9 +412,9 @@ function parseHoldingDate(text: string): string | null {
 
 const HEADER_COLUMNS = [
   { key: "name",     re: /\b(name|script|scrip|security|scheme|fund|holding|particulars|description|equity|shares|instrument)\b/i },
-  { key: "quantity", re: /\b(quantity|qty|units?|count|no\.? of)\b/i },
-  { key: "amount",   re: /\b(inv\.?\s*(?:amount|amt|value)|invested\s*(?:amount|value)?|cost\s*(?:value)?|purchase\s*(?:price|value)?|acquisition|buy\s*(?:price|value)?|face\s*value|amt\s*invested)\b/i },
-  { key: "currentValue", re: /\b(current\s*(?:amount|value|amt|nav)?|market\s*(?:value)?|nav\s*(?:amount|value)?|closing\s*(?:value|balance|nav)?|valuation|cur\.?\s*value)\b/i },
+  { key: "quantity", re: /\b(quantity|qty|units?|count|no\.? of|shares|nos)\b/i },
+  { key: "amount",   re: /\b(inv\.?\s*(?:amount|amt|value)|invested\s*(?:amount|value)?|cost\s*(?:value)?|purchase\s*(?:price|value)?|acquisition|buy\s*(?:price|value)?|face\s*value|amt\s*invested|amount\b)\b/i },
+  { key: "currentValue", re: /\b(current\s*(?:amount|value|amt|nav)?|market\s*(?:value)?|nav\s*(?:amount|value)?|closing\s*(?:value|balance|nav)?|valuation|cur\.?\s*value|(?:total\s+)?value|val\b)\b/i },
   { key: "nav",      re: /\b(nav|rate|price|unit\s*price)\b/i },
 ];
 
@@ -440,21 +440,14 @@ function detectColumns(lines: string[]): HeaderMap | null {
   return null;
 }
 
-/** Extract numeric values from a line, returning an array of { value, raw } pairs. */
+/** Extract numeric values from a line, returning an array of { value, end } pairs. */
 function extractNums(line: string): { value: number; end: number }[] {
   const results: { value: number; end: number }[] = [];
   const re = /(\d[\d,]*)(?:\.(\d{1,2}))?/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(line)) !== null) {
     const intPart = m[1].replace(/,/g, "");
-    // Build full decimal — if it ends in ".00" use the integer part
-    let full: string;
-    if (m[2] !== undefined) {
-      // If decimals are "00", treat as whole number suffix
-      full = m[2] === "00" ? intPart : intPart + "." + m[2];
-    } else {
-      full = intPart;
-    }
+    const full = m[2] !== undefined ? intPart + "." + m[2] : intPart;
     const n = parseFloat(full);
     if (!isNaN(n) && n > 0 && n < 1e10) {
       results.push({ value: n, end: m.index + m[0].length });
@@ -470,6 +463,15 @@ export function parseInvestmentText(text: string): OCRInvestment[] {
 
   const asOf = parseHoldingDate(text.slice(0, 2000));
   const columns = detectColumns(lines);
+
+  // Build ordered column list (excluding name) to map by position
+  const colOrder: ("quantity" | "amount" | "currentValue" | "nav")[] = [];
+  if (columns) {
+    const colEntries = (["quantity", "amount", "currentValue", "nav"] as const)
+      .filter((k) => columns[k] !== undefined)
+      .sort((a, b) => (columns[a] ?? 0) - (columns[b] ?? 0));
+    colOrder.push(...colEntries);
+  }
 
   for (const line of lines) {
     if (line.length < 6 || line.length > 300) continue;
@@ -497,37 +499,34 @@ export function parseInvestmentText(text: string): OCRInvestment[] {
     let amount: number | null = null;
     let currentValue: number | null = null;
 
-    if (columns) {
-      // Try to use column positions to map values
-      const sorted = [...nums].sort((a, b) => b.value - a.value);
-      if (columns.amount !== undefined || columns.currentValue !== undefined) {
-        const hasBoth = columns.amount !== undefined && columns.currentValue !== undefined;
-        if (hasBoth && nums.length >= 2) {
-          // Two values: larger is usually current value (market), smaller is invested
-          currentValue = sorted[0].value;
-          amount = sorted[1].value;
-        } else if (nums.length === 1) {
-          // Single value — treat as current value if "current" column exists
-          currentValue = nums[0].value;
-          amount = null;
-        } else {
-          currentValue = sorted[0].value;
-          amount = sorted.length > 1 ? sorted[1].value : null;
+    if (columns && colOrder.length > 0) {
+      // Use column-order mapping: assign numbers in their left-to-right sequence
+      // to columns in their left-to-right order (skipping name)
+      for (let ci = 0; ci < colOrder.length && ci < nums.length; ci++) {
+        const colKey = colOrder[ci];
+        const val = nums[ci].value;
+        if (colKey === "quantity") quantity = val;
+        else if (colKey === "amount") amount = val;
+        else if (colKey === "currentValue") currentValue = val;
+        else if (colKey === "nav") {
+          // Map nav to currentValue if no currentValue column exists
+          if (columns.currentValue === undefined) currentValue = val;
+          else amount = val;
         }
       }
-      if (columns.quantity !== undefined && nums.length >= (columns.amount !== undefined ? 3 : 2)) {
-        quantity = sorted[sorted.length - 1].value;
-      }
-    } else {
-      // No headers detected: use heuristic sorting
-      const sorted = [...nums].sort((a, b) => b.value - a.value);
-      if (nums.length >= 2) {
+
+      // When both amount and currentValue are still unset, use magnitude fallback
+      if (amount === null && currentValue === null && nums.length >= 2) {
+        const sorted = [...nums].sort((a, b) => b.value - a.value);
         currentValue = sorted[0].value;
         amount = sorted[1].value;
-        if (nums.length >= 3) quantity = sorted[sorted.length - 1].value;
-      } else {
-        currentValue = sorted[0].value;
       }
+    } else {
+      // No headers detected: use magnitude heuristic
+      const sorted = [...nums].sort((a, b) => b.value - a.value);
+      currentValue = sorted[0].value;
+      amount = nums.length >= 2 ? sorted[1].value : null;
+      if (nums.length >= 3) quantity = sorted[sorted.length - 1].value;
     }
 
     results.push({
