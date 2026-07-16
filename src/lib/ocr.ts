@@ -136,13 +136,59 @@ export function parseTransactions(text: string): ParsedTransaction[] {
 
 /* ── Image preprocessing ────────────────────────────────────── */
 
+/** Otsu's threshold: returns the optimal binarization threshold. */
+function otsuThreshold(hist: Uint32Array, total: number): number {
+  let sum = 0;
+  for (let i = 0; i < 256; i++) sum += i * hist[i];
+  let sumB = 0, wB = 0, wF = 0;
+  let maxVariance = 0, threshold = 0;
+  for (let t = 0; t < 256; t++) {
+    wB += hist[t];
+    if (wB === 0) continue;
+    wF = total - wB;
+    if (wF === 0) break;
+    sumB += t * hist[t];
+    const mB = sumB / wB;
+    const mF = (sum - sumB) / wF;
+    const between = wB * wF * (mB - mF) * (mB - mF);
+    if (between > maxVariance) {
+      maxVariance = between;
+      threshold = t;
+    }
+  }
+  return threshold;
+}
+
+/** 3×3 unsharp-mask sharpen on a grayscale buffer. */
+function sharpenGray(d: Uint8ClampedArray, w: number, h: number): void {
+  const src = new Uint8ClampedArray(d);
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x;
+      const tl = src[i - w - 1], tc = src[i - w], tr = src[i - w + 1];
+      const ml = src[i - 1],     mc = src[i],     mr = src[i + 1];
+      const bl = src[i + w - 1], bc = src[i + w], br = src[i + w + 1];
+      // Laplacian sharpen: out = 5*mc - (tl+tc+tr+ml+mr+bl+bc+br)
+      const val = 5 * mc - (tl + tc + tr + ml + mr + bl + bc + br);
+      d[i] = Math.max(0, Math.min(255, val));
+    }
+  }
+}
+
 async function preprocessImage(file: File | Blob): Promise<Blob> {
-  const img = await createImageBitmap(file);
+  let img: ImageBitmap;
+  try {
+    img = await createImageBitmap(file);
+  } catch {
+    // Fallback: pass the original file as-is
+    return file instanceof Blob ? file : new Blob([file]);
+  }
+
   let w = img.width;
   let h = img.height;
 
-  // Scale to a reasonable size for Tesseract: max 2000px on longest side
-  const MAX_DIM = 2000;
+  // Scale to ~300 DPI equivalent for A4: ~3000px on longest side
+  const MAX_DIM = 3000;
   const scale = Math.min(1, MAX_DIM / Math.max(w, h));
   if (scale < 1) { w = Math.round(w * scale); h = Math.round(h * scale); }
 
@@ -151,46 +197,40 @@ async function preprocessImage(file: File | Blob): Promise<Blob> {
   canvas.height = h;
   const ctx = canvas.getContext("2d")!;
 
+  // Draw on white background
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, w, h);
   ctx.drawImage(img, 0, 0, w, h);
+  img.close();
 
   const imageData = ctx.getImageData(0, 0, w, h);
   const d = imageData.data;
-  const len = d.length / 4;
+  const totalPx = d.length / 4;
 
-  // Single pass: grayscale + accumulate histogram
+  // Convert to grayscale + build histogram
+  const gray = new Uint8ClampedArray(totalPx);
   const hist = new Uint32Array(256);
-  for (let i = 0; i < d.length; i += 4) {
-    const gray = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
-    const v = Math.round(gray);
-    d[i] = d[i + 1] = d[i + 2] = v;
+  for (let i = 0, j = 0; i < d.length; i += 4, j++) {
+    const v = Math.round(d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114);
+    gray[j] = v;
     hist[v]++;
   }
 
-  // Find 5th and 95th percentiles from histogram (no sorting needed)
-  let cumul = 0;
-  const p5 = Math.round(len * 0.05);
-  const p95 = Math.round(len * 0.95);
-  let lo = 0, hi = 255;
-  for (let i = 0; i < 256; i++) {
-    cumul += hist[i];
-    if (cumul >= p5 && lo === 0) lo = i;
-    if (cumul >= p95) { hi = i; break; }
-  }
-  const range = hi - lo || 255;
+  // Sharpen grayscale before binarization (unsharp-mask style)
+  sharpenGray(gray, w, h);
 
-  // Contrast stretch (no binarization — preserves grayscale for Tesseract)
-  for (let i = 0; i < d.length; i += 4) {
-    let v = d[i];
-    v = ((v - lo) / range) * 255;
-    v = Math.max(0, Math.min(255, Math.round(v)));
+  // Otsu binarization
+  const threshold = otsuThreshold(hist, totalPx);
+
+  // Write binary result into RGBA buffer
+  for (let i = 0, j = 0; i < d.length; i += 4, j++) {
+    const v = gray[j] >= threshold ? 255 : 0;
     d[i] = d[i + 1] = d[i + 2] = v;
+    d[i + 3] = 255;
   }
 
   ctx.putImageData(imageData, 0, 0);
 
-  // PNG is slower to encode but lossless — critical for OCR accuracy
   return new Promise<Blob>((resolve) => canvas.toBlob((b) => resolve(b!), "image/png"));
 }
 
@@ -233,9 +273,9 @@ export async function ocrImage(
     const mapped = PRE_START + tp * (POST_END - PRE_START);
     onProgress?.({ status: "Recognising text…", progress: mapped });
   })) as {
-    recognize: (input: File | Blob) => Promise<{ data: { text: string } }>;
+    recognize: (input: File | Blob, opts?: { psm?: number }) => Promise<{ data: { text: string } }>;
   };
-  const { data } = await worker.recognize(processed);
+  const { data } = await worker.recognize(processed, { psm: 6 });
   const rawText = data.text ?? "";
 
   // Stage 3: parsing (0.9 → 1)
