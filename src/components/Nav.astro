@@ -68,6 +68,32 @@ const isActive = (href: string) => {
       <button
         type="button"
         class="btn-icon"
+        data-save-backup
+        aria-label="Save backup"
+        title="Save backup"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+          <polyline points="17 21 17 13 7 13 7 21"></polyline>
+          <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        class="btn-icon"
+        data-open-backup
+        aria-label="Open backup"
+        title="Open backup"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        class="btn-icon"
         data-theme-toggle
         aria-label="Toggle color theme"
         title="Toggle theme"
@@ -209,6 +235,16 @@ const isActive = (href: string) => {
 </header>
 
 <script>
+  // Save backup
+  document.querySelector("[data-save-backup]")?.addEventListener("click", () => {
+    window.gwp?.exportData();
+  });
+
+  // Open backup
+  document.querySelector("[data-open-backup]")?.addEventListener("click", () => {
+    window.gwp?.importData();
+  });
+
   // Theme toggle
   document.querySelector("[data-theme-toggle]")?.addEventListener("click", () => {
     window.gwp?.toggleTheme();

@@ -3,10 +3,11 @@
  * Loaded as a single inline script on every page so the UI is responsive instantly.
  */
 
-import { loadData, saveData, subscribe, type AppData } from "../lib/store";
+import { loadData, saveData, subscribe, addAudit, type AppData } from "../lib/store";
 import { DEFAULT_PREFERENCES, type UserPreferences } from "../lib/types";
 import type { CurrencyCode } from "../lib/currency";
 import type { LangCode } from "../lib/i18n";
+import { exportJSON, downloadFile, importJSON } from "../lib/import-export";
 
 type ThemeMode = "light" | "dark" | "system";
 
@@ -97,6 +98,47 @@ const api = {
   },
   refresh() {
     saveData({ ...loadData() });
+  },
+  async exportData(): Promise<void> {
+    const data = loadData();
+    const json = exportJSON(data);
+    const filename = `global-wealth-portfolio-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    if ("showSaveFilePicker" in window) {
+      try {
+        const handle = await (window as any).showSaveFilePicker({
+          suggestedName: filename,
+          types: [{ description: "JSON Backup", accept: { "application/json": [".json"] } }],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(json);
+        await writable.close();
+        addAudit({ action: "export", entity: "AppData", description: `Exported backup` });
+        return;
+      } catch {
+        return; // user cancelled — do nothing
+      }
+    }
+    downloadFile(json, filename, "application/json");
+    addAudit({ action: "export", entity: "AppData", description: `Exported backup to ${filename}` });
+  },
+  importData(): void {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json,application/json";
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const data = importJSON(text);
+        saveData(data);
+        addAudit({ action: "import", entity: "AppData", description: `Imported backup from ${file.name}` });
+        window.location.reload();
+      } catch {
+        alert("Invalid JSON file. Please select a valid backup file.");
+      }
+    };
+    input.click();
   },
 };
 
