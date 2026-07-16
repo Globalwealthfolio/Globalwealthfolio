@@ -136,51 +136,11 @@ export function parseTransactions(text: string): ParsedTransaction[] {
 
 /* ── Image preprocessing ────────────────────────────────────── */
 
-/** Otsu's threshold: returns the optimal binarization threshold. */
-function otsuThreshold(hist: Uint32Array, total: number): number {
-  let sum = 0;
-  for (let i = 0; i < 256; i++) sum += i * hist[i];
-  let sumB = 0, wB = 0, wF = 0;
-  let maxVariance = 0, threshold = 0;
-  for (let t = 0; t < 256; t++) {
-    wB += hist[t];
-    if (wB === 0) continue;
-    wF = total - wB;
-    if (wF === 0) break;
-    sumB += t * hist[t];
-    const mB = sumB / wB;
-    const mF = (sum - sumB) / wF;
-    const between = wB * wF * (mB - mF) * (mB - mF);
-    if (between > maxVariance) {
-      maxVariance = between;
-      threshold = t;
-    }
-  }
-  return threshold;
-}
-
-/** 3×3 unsharp-mask sharpen on a grayscale buffer. */
-function sharpenGray(d: Uint8ClampedArray, w: number, h: number): void {
-  const src = new Uint8ClampedArray(d);
-  for (let y = 1; y < h - 1; y++) {
-    for (let x = 1; x < w - 1; x++) {
-      const i = y * w + x;
-      const tl = src[i - w - 1], tc = src[i - w], tr = src[i - w + 1];
-      const ml = src[i - 1],     mc = src[i],     mr = src[i + 1];
-      const bl = src[i + w - 1], bc = src[i + w], br = src[i + w + 1];
-      // Laplacian sharpen: out = 5*mc - (tl+tc+tr+ml+mr+bl+bc+br)
-      const val = 5 * mc - (tl + tc + tr + ml + mr + bl + bc + br);
-      d[i] = Math.max(0, Math.min(255, val));
-    }
-  }
-}
-
 async function preprocessImage(file: File | Blob): Promise<Blob> {
   let img: ImageBitmap;
   try {
     img = await createImageBitmap(file);
   } catch {
-    // Fallback: pass the original file as-is
     return file instanceof Blob ? file : new Blob([file]);
   }
 
@@ -197,36 +157,19 @@ async function preprocessImage(file: File | Blob): Promise<Blob> {
   canvas.height = h;
   const ctx = canvas.getContext("2d")!;
 
-  // Draw on white background
+  // White background (handles transparent PNGs)
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, w, h);
   ctx.drawImage(img, 0, 0, w, h);
   img.close();
 
+  // Convert to grayscale — Tesseract handles binarization internally
+  // with adaptive thresholding which is far better than any global method
   const imageData = ctx.getImageData(0, 0, w, h);
   const d = imageData.data;
-  const totalPx = d.length / 4;
-
-  // Convert to grayscale + build histogram
-  const gray = new Uint8ClampedArray(totalPx);
-  const hist = new Uint32Array(256);
-  for (let i = 0, j = 0; i < d.length; i += 4, j++) {
+  for (let i = 0; i < d.length; i += 4) {
     const v = Math.round(d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114);
-    gray[j] = v;
-    hist[v]++;
-  }
-
-  // Sharpen grayscale before binarization (unsharp-mask style)
-  sharpenGray(gray, w, h);
-
-  // Otsu binarization
-  const threshold = otsuThreshold(hist, totalPx);
-
-  // Write binary result into RGBA buffer
-  for (let i = 0, j = 0; i < d.length; i += 4, j++) {
-    const v = gray[j] >= threshold ? 255 : 0;
     d[i] = d[i + 1] = d[i + 2] = v;
-    d[i + 3] = 255;
   }
 
   ctx.putImageData(imageData, 0, 0);
