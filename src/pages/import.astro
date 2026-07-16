@@ -291,11 +291,15 @@ import Layout from "../layouts/Layout.astro";
           </div>
         </div>
 
-        <!-- Detected transactions -->
+        <!-- Detected type badge + results -->
         <div id="ocr-result" class="hidden">
+          <div class="flex items-center gap-sm mb-md">
+            <span id="ocr-detected-type" class="badge">—</span>
+          </div>
+
           <div class="flex items-center justify-between mb-md">
             <div>
-              <p class="text-caption-mono text-body">Detected transactions</p>
+              <p class="text-caption-mono text-body" id="ocr-panel-title">Detected entries</p>
               <p class="text-caption text-mute">Review before saving — deselect anything that's wrong.</p>
             </div>
             <div class="flex gap-sm">
@@ -305,7 +309,7 @@ import Layout from "../layouts/Layout.astro";
           </div>
           <div class="card-soft p-0 overflow-hidden max-h-80 overflow-y-auto scroll-thin">
             <table class="w-full text-body-sm">
-              <thead class="text-left text-caption-mono text-body bg-canvas-soft-2">
+              <thead id="ocr-thead" class="text-left text-caption-mono text-body bg-canvas-soft-2">
                 <tr>
                   <th class="py-sm px-md w-8"></th>
                   <th class="py-sm px-md">Date</th>
@@ -321,7 +325,7 @@ import Layout from "../layouts/Layout.astro";
             <p class="text-caption text-mute"><span id="ocr-selected-count">0</span> selected · <span id="ocr-total-count">0</span> detected</p>
             <div class="flex gap-sm">
               <button id="ocr-discard" type="button" class="btn-secondary">Discard</button>
-              <button id="ocr-import" type="button" class="btn-primary">Import as expenses</button>
+              <button id="ocr-import" type="button" class="btn-primary">Import</button>
             </div>
           </div>
         </div>

@@ -7,7 +7,17 @@
 
 import { updateData, addAudit, uid, nowISO, type Investment } from "../lib/store";
 import { parseSpreadsheet, autoMapColumns, buildEntities, importJSON, exportJSON, exportCSV, downloadFile, type ParsedSheet } from "../lib/import-export";
-import { ocrImage, terminateOCR, transactionsToExpenses, type ParsedTransaction } from "../lib/ocr";
+import {
+  ocrImage,
+  terminateOCR,
+  transactionsToExpenses,
+  classifyStatementType,
+  parseInvestmentText,
+  ocrInvestmentsToInvestments,
+  type ParsedTransaction,
+  type OCRInvestment,
+  type StatementType,
+} from "../lib/ocr";
 import { importPdf, parseHoldings, type ParsedHolding, type PdfMode } from "../lib/pdf-import";
 
 /* ── Tabs ──────────────────────────────────────────────────── */
@@ -252,9 +262,15 @@ const ocrPercentEl = document.getElementById("ocr-percent") as HTMLElement | nul
 const ocrBar = document.getElementById("ocr-progress-bar") as HTMLElement | null;
 const ocrResult = document.getElementById("ocr-result") as HTMLElement | null;
 const ocrTbody = document.getElementById("ocr-tbody") as HTMLElement | null;
+const ocrThead = document.getElementById("ocr-thead") as HTMLElement | null;
+const ocrDetectedType = document.getElementById("ocr-detected-type") as HTMLElement | null;
+const ocrPanelTitle = document.getElementById("ocr-panel-title") as HTMLElement | null;
 
 let currentImage: File | Blob | null = null;
 let currentTransactions: ParsedTransaction[] = [];
+let currentInvestments: OCRInvestment[] = [];
+let currentStatementType: StatementType = "unknown";
+let currentRawText = "";
 let cameraStream: MediaStream | null = null;
 
 imgDrop?.addEventListener("click", () => imgInput?.click());
@@ -351,10 +367,13 @@ async function runOCR() {
       if (ocrPercentEl) ocrPercentEl.textContent = `${Math.round(p.progress * 100)}%`;
       if (ocrBar) ocrBar.style.width = `${p.progress * 100}%`;
     });
+    currentRawText = result.text;
     currentTransactions = result.transactions;
+    currentStatementType = classifyStatementType(result.text);
+    currentInvestments = parseInvestmentText(result.text);
     if (ocrStatusEl) ocrStatusEl.textContent = `Done in ${(result.durationMs / 1000).toFixed(1)}s`;
     if (ocrBar) ocrBar.style.width = "100%";
-    renderTransactions();
+    renderImageResult();
     ocrResult?.classList.remove("hidden");
   } catch (e) {
     console.error(e);
@@ -362,88 +381,167 @@ async function runOCR() {
   }
 }
 
+function renderImageResult() {
+  const isInvest = currentStatementType === "investment";
+
+  // Detected type badge
+  if (ocrDetectedType) {
+    const labels: Record<StatementType, string> = {
+      expense: "Bank statement detected",
+      investment: "Investment portfolio detected",
+      unknown: "Bank statement detected",
+    };
+    ocrDetectedType.textContent = labels[currentStatementType];
+    ocrDetectedType.className = currentStatementType === "investment" ? "badge badge-gain" : "badge";
+  }
+
+  // Panel title
+  if (ocrPanelTitle) {
+    ocrPanelTitle.textContent = isInvest ? "Detected portfolio holdings" : "Detected transactions";
+  }
+
+  // Table headers
+  if (ocrThead) {
+    ocrThead.innerHTML = isInvest
+      ? `<tr>
+          <th class="py-sm px-md w-8"></th>
+          <th class="py-sm px-md">Name</th>
+          <th class="py-sm px-md text-right">Qty</th>
+          <th class="py-sm px-md text-right">Inv. Amount</th>
+          <th class="py-sm px-md text-right">Cur. Value</th>
+          <th class="py-sm px-md">As of</th>
+        </tr>`
+      : `<tr>
+          <th class="py-sm px-md w-8"></th>
+          <th class="py-sm px-md">Date</th>
+          <th class="py-sm px-md">Description</th>
+          <th class="py-sm px-md">Type</th>
+          <th class="py-sm px-md text-right">Amount</th>
+        </tr>`;
+  }
+
+  // Import button label
+  const btn = document.getElementById("ocr-import");
+  if (btn) btn.textContent = isInvest ? "Import as investments" : "Import as expenses";
+
+  // Table rows
+  if (!ocrTbody) return;
+
+  if (isInvest) {
+    if (currentInvestments.length === 0) {
+      ocrTbody.innerHTML = `<tr><td colspan="6" class="text-center py-3xl text-body">No portfolio holdings detected. Try a clearer image or a depository statement.</td></tr>`;
+    } else {
+      ocrTbody.innerHTML = currentInvestments
+        .map(
+          (h, i) => `
+        <tr class="border-t border-hairline">
+          <td class="py-sm px-md"><input type="checkbox" data-ocr-row="${i}" checked class="w-4 h-4 accent-current" aria-label="Select holding" /></td>
+          <td class="py-sm px-md text-body-sm-strong">${esc(h.name)}</td>
+          <td class="py-sm px-md text-right">${h.quantity != null ? h.quantity.toLocaleString() : "—"}</td>
+          <td class="py-sm px-md text-right">${h.amount != null ? h.amount.toLocaleString() : "—"}</td>
+          <td class="py-sm px-md text-right">${h.currentValue != null ? h.currentValue.toLocaleString() : "—"}</td>
+          <td class="py-sm px-md text-body">${h.asOf ?? "—"}</td>
+        </tr>`,
+        )
+        .join("");
+    }
+  } else {
+    if (currentTransactions.length === 0) {
+      ocrTbody.innerHTML = `<tr><td colspan="5" class="text-center py-3xl text-body text-body">No transactions detected. Try a clearer image or a different statement.</td></tr>`;
+    } else {
+      ocrTbody.innerHTML = currentTransactions
+        .map(
+          (t, i) => `
+        <tr class="border-t border-hairline">
+          <td class="py-sm px-md"><input type="checkbox" data-ocr-row="${i}" checked class="w-4 h-4 accent-current" aria-label="Select transaction" /></td>
+          <td class="py-sm px-md text-body">${t.date}</td>
+          <td class="py-sm px-md">${esc(t.description)}</td>
+          <td class="py-sm px-md"><span class="badge ${t.type === "credit" ? "badge-gain" : ""}">${t.type}</span></td>
+          <td class="py-sm px-md text-right text-body-sm-strong">${t.amount.toFixed(2)}</td>
+        </tr>`,
+        )
+        .join("");
+    }
+  }
+
+  updateImageSelectedCount();
+}
+
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
-function renderTransactions() {
-  if (!ocrTbody) return;
-  if (currentTransactions.length === 0) {
-    ocrTbody.innerHTML = `<tr><td colspan="5" class="text-center py-3xl text-body text-body">No transactions detected. Try a clearer image or a different statement.</td></tr>`;
-    const sc = document.getElementById("ocr-selected-count");
-    const tc = document.getElementById("ocr-total-count");
-    if (sc) sc.textContent = "0";
-    if (tc) tc.textContent = "0";
-    return;
-  }
-  ocrTbody.innerHTML = currentTransactions
-    .map(
-      (t, i) => `
-    <tr class="border-t border-hairline">
-      <td class="py-sm px-md"><input type="checkbox" data-tx="${i}" checked class="w-4 h-4 accent-current" aria-label="Select transaction" /></td>
-      <td class="py-sm px-md text-body">${t.date}</td>
-      <td class="py-sm px-md">${esc(t.description)}</td>
-      <td class="py-sm px-md"><span class="badge ${t.type === "credit" ? "badge-gain" : ""}">${t.type}</span></td>
-      <td class="py-sm px-md text-right text-body-sm-strong">${t.amount.toFixed(2)}</td>
-    </tr>`,
-    )
-    .join("");
-  const sc = document.getElementById("ocr-selected-count");
-  const tc = document.getElementById("ocr-total-count");
-  if (sc) sc.textContent = String(currentTransactions.length);
-  if (tc) tc.textContent = String(currentTransactions.length);
-}
-
 document.getElementById("ocr-select-all")?.addEventListener("click", () => {
-  document.querySelectorAll<HTMLInputElement>("[data-tx]").forEach((c) => (c.checked = true));
-  updateSelectedCount();
+  document.querySelectorAll<HTMLInputElement>("[data-ocr-row]").forEach((c) => (c.checked = true));
+  updateImageSelectedCount();
 });
 document.getElementById("ocr-deselect-all")?.addEventListener("click", () => {
-  document.querySelectorAll<HTMLInputElement>("[data-tx]").forEach((c) => (c.checked = false));
-  updateSelectedCount();
+  document.querySelectorAll<HTMLInputElement>("[data-ocr-row]").forEach((c) => (c.checked = false));
+  updateImageSelectedCount();
 });
-ocrTbody?.addEventListener("change", updateSelectedCount);
+ocrTbody?.addEventListener("change", updateImageSelectedCount);
 
-function updateSelectedCount() {
-  const checked = document.querySelectorAll<HTMLInputElement>("[data-tx]:checked").length;
+function updateImageSelectedCount() {
+  const checked = document.querySelectorAll<HTMLInputElement>("[data-ocr-row]:checked").length;
+  const total = currentStatementType === "investment" ? currentInvestments.length : currentTransactions.length;
   const sc = document.getElementById("ocr-selected-count");
+  const tc = document.getElementById("ocr-total-count");
   if (sc) sc.textContent = String(checked);
+  if (tc) tc.textContent = String(total);
 }
 
-document.getElementById("ocr-discard")?.addEventListener("click", () => {
+document.getElementById("ocr-discard")?.addEventListener("click", () => resetImageImport());
+
+function resetImageImport() {
   currentTransactions = [];
+  currentInvestments = [];
   currentImage = null;
+  currentRawText = "";
+  currentStatementType = "unknown";
   imgPreviewWrap?.classList.add("hidden");
   ocrResult?.classList.add("hidden");
   if (imgInput) imgInput.value = "";
   if (imgPreview) URL.revokeObjectURL(imgPreview.src);
   terminateOCR();
-});
+}
 
 document.getElementById("ocr-import")?.addEventListener("click", () => {
-  const checked = Array.from(document.querySelectorAll<HTMLInputElement>("[data-tx]:checked")).map((c) => Number(c.dataset.tx));
-  const selected = checked.map((i) => currentTransactions[i]).filter(Boolean);
-  if (selected.length === 0) {
-    alert("Select at least one transaction to import.");
-    return;
+  const checked = Array.from(document.querySelectorAll<HTMLInputElement>("[data-ocr-row]:checked")).map((c) => Number(c.dataset.ocrRow));
+
+  if (currentStatementType === "investment") {
+    const selected = checked.map((i) => currentInvestments[i]).filter(Boolean);
+    if (selected.length === 0) {
+      alert("Select at least one holding to import.");
+      return;
+    }
+    const investments = ocrInvestmentsToInvestments(selected);
+    updateData((data) => {
+      data.investments.push(...investments);
+    });
+    addAudit({
+      action: "import",
+      entity: "investment",
+      description: `Imported ${investments.length} investment(s) from statement image (OCR)`,
+    });
+    alert(`Successfully imported ${investments.length} investment(s) to your portfolio.`);
+  } else {
+    const selected = checked.map((i) => currentTransactions[i]).filter(Boolean);
+    if (selected.length === 0) {
+      alert("Select at least one transaction to import.");
+      return;
+    }
+    const expenses = transactionsToExpenses(selected);
+    updateData((data) => {
+      data.expenses.push(...expenses);
+    });
+    addAudit({
+      action: "import",
+      entity: "expense",
+      description: `Imported ${expenses.length} expense(s) from bank statement (OCR)`,
+    });
+    alert(`Successfully imported ${expenses.length} expense(s) to your dashboard.`);
   }
-  const expenses = transactionsToExpenses(selected);
-  updateData((data) => {
-    data.expenses.push(...expenses);
-  });
-  addAudit({
-    action: "import",
-    entity: "expense",
-    description: `Imported ${expenses.length} expense(s) from bank statement (OCR)`,
-  });
-  alert(`Successfully imported ${expenses.length} expense(s) from the statement.`);
-  currentTransactions = [];
-  currentImage = null;
-  imgPreviewWrap?.classList.add("hidden");
-  ocrResult?.classList.add("hidden");
-  if (imgInput) imgInput.value = "";
-  if (imgPreview) URL.revokeObjectURL(imgPreview.src);
-  terminateOCR();
+  resetImageImport();
 });
 
 /* ═════════════════════════════════════════════════════════════
