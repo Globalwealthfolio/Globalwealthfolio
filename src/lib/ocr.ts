@@ -134,65 +134,16 @@ export function parseTransactions(text: string): ParsedTransaction[] {
   return results;
 }
 
-/* ── Image preprocessing ────────────────────────────────────── */
-
-async function preprocessImage(file: File | Blob): Promise<Blob> {
-  let img: ImageBitmap;
-  try {
-    img = await createImageBitmap(file);
-  } catch {
-    return file instanceof Blob ? file : new Blob([file]);
-  }
-
-  let w = img.width;
-  let h = img.height;
-
-  // Scale to ~300 DPI equivalent for A4: ~3000px on longest side
-  const MAX_DIM = 3000;
-  const scale = Math.min(1, MAX_DIM / Math.max(w, h));
-  if (scale < 1) { w = Math.round(w * scale); h = Math.round(h * scale); }
-
-  const canvas = document.createElement("canvas");
-  canvas.width = w;
-  canvas.height = h;
-  const ctx = canvas.getContext("2d")!;
-
-  // White background (handles transparent PNGs)
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, w, h);
-  ctx.drawImage(img, 0, 0, w, h);
-  img.close();
-
-  // Convert to grayscale — Tesseract handles binarization internally
-  // with adaptive thresholding which is far better than any global method
-  const imageData = ctx.getImageData(0, 0, w, h);
-  const d = imageData.data;
-  for (let i = 0; i < d.length; i += 4) {
-    const v = Math.round(d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114);
-    d[i] = d[i + 1] = d[i + 2] = v;
-  }
-
-  ctx.putImageData(imageData, 0, 0);
-
-  return new Promise<Blob>((resolve) => canvas.toBlob((b) => resolve(b!), "image/png"));
-}
-
 /* ── Tesseract worker (lazy loaded) ─────────────────────────── */
 let workerPromise: Promise<unknown> | null = null;
 
-// Reports progress from 0..1 mapped so it never goes backward.
-// Tesseract's internal progress occupies [0.15, 0.9]; we reserve
-// [0, 0.15) for preprocessing and [0.9, 1] for final parsing.
-const PRE_START = 0.15;
-const POST_END = 0.9;
-
-async function getWorker(tesseractProgress?: (p: number) => void) {
+async function getWorker(onProgress?: (p: OCRProgress) => void) {
   if (workerPromise) return workerPromise;
   workerPromise = (async () => {
     const Tesseract = await import("tesseract.js");
     const worker = await Tesseract.createWorker("eng", 1, {
       logger: (m: { status: string; progress: number }) => {
-        tesseractProgress?.(m.progress);
+        onProgress?.({ status: m.status, progress: m.progress });
       },
     });
     return worker;
@@ -206,30 +157,12 @@ export async function ocrImage(
 ): Promise<OCRResult> {
   const start = performance.now();
 
-  // Stage 1: preprocessing (0 → 0.15)
-  onProgress?.({ status: "Enhancing image…", progress: 0 });
-  const processed = await preprocessImage(file);
-  onProgress?.({ status: "Recognising text…", progress: PRE_START });
-
-  // Stage 2: Tesseract OCR (0.15 → 0.9 via mapped logger)
-  const worker = (await getWorker((tp: number) => {
-    const mapped = PRE_START + tp * (POST_END - PRE_START);
-    onProgress?.({ status: "Recognising text…", progress: mapped });
-  })) as {
-    recognize: (input: File | Blob, opts?: { psm?: number }) => Promise<{ data: { text: string } }>;
+  const worker = (await getWorker(onProgress)) as {
+    recognize: (input: File | Blob) => Promise<{ data: { text: string } }>;
   };
-  const { data } = await worker.recognize(processed, { psm: 6 });
+  const { data } = await worker.recognize(file);
   const rawText = data.text ?? "";
-
-  // Stage 3: parsing (0.9 → 1)
-  let parseP = POST_END;
-  const step = (1 - POST_END) / 3;
-  onProgress?.({ status: "Parsing results…", progress: (parseP += step) });
-
   const transactions = parseTransactions(rawText);
-  onProgress?.({ status: "Classifying statement…", progress: (parseP += step) });
-
-  onProgress?.({ status: "Done", progress: 1 });
   return { text: rawText, transactions, durationMs: performance.now() - start };
 }
 
