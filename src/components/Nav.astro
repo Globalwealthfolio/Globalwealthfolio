@@ -8,17 +8,35 @@ const currencyList = Object.entries(currencies).map(([code, meta]) => ({
   name: meta.name,
 }));
 
-const navLinks = [
+const langs = [
+  { code: "en", label: "English" },
+  { code: "hi", label: "हिन्दी" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Français" },
+  { code: "de", label: "Deutsch" },
+  { code: "ja", label: "日本語" },
+  { code: "zh", label: "中文" },
+  { code: "pt", label: "Português" },
+  { code: "ru", label: "Русский" },
+  { code: "ar", label: "العربية" },
+];
+
+const primaryLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/investments", label: "Investments" },
   { href: "/expenses", label: "Expenses" },
   { href: "/goals", label: "Goals" },
+  { href: "/calculators", label: "Calculators" },
+  { href: "/blog", label: "Blog" },
+];
+
+const secondaryLinks = [
   { href: "/benchmarks", label: "Benchmarks" },
   { href: "/emi", label: "EMI" },
-  { href: "/blog", label: "Blog" },
   { href: "/import", label: "Import" },
-  { href: "/calculators", label: "Calculators" },
 ];
+
+const allLinks = [...primaryLinks, ...secondaryLinks];
 
 const isActive = (href: string) => {
   if (href === "/" && path === "/") return true;
@@ -32,24 +50,29 @@ const isActive = (href: string) => {
   style="height: 64px"
 >
   <div class="container-page h-full flex items-center justify-between gap-md">
-    <!-- Logo -->
-    <a href="/" class="flex items-center gap-2 shrink-0 group" aria-label="Global Wealth Portfolio home">
+    <!-- Logo + tagline -->
+    <a href="/" class="flex items-center gap-2.5 shrink-0 group" aria-label="Global Wealth Portfolio home">
       <span
-        class="inline-flex items-center justify-center w-7 h-7 rounded-md bg-ink text-gold font-bold text-sm relative overflow-hidden"
+        class="inline-flex items-center justify-center w-7 h-7 rounded-md bg-ink text-gold font-bold text-sm relative overflow-hidden shrink-0"
         aria-hidden="true"
       >
         <span class="relative z-10">G</span>
         <span class="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent opacity-50"></span>
       </span>
-      <span class="text-body-sm-strong text-ink hidden sm:inline tracking-tight">
-        Global <span class="text-gradient-gold font-semibold">Wealth</span> Portfolio
-      </span>
+      <div class="flex flex-col leading-tight">
+        <span class="text-body-sm-strong text-ink hidden sm:inline tracking-tight leading-tight">
+          Global <span class="text-gradient-gold font-semibold">Wealth</span> Portfolio
+        </span>
+        <span class="text-[11px] text-mute hidden xl:inline leading-tight -mt-0.5">
+          Track. Invest. Grow.
+        </span>
+      </div>
     </a>
 
     <!-- Desktop nav -->
     <nav class="hidden lg:flex items-center gap-1" aria-label="Primary">
       {
-        navLinks.map((link) => (
+        primaryLinks.map((link) => (
           <a
             href={link.href}
             class:list={[
@@ -62,36 +85,48 @@ const isActive = (href: string) => {
           </a>
         ))
       }
+      <!-- More dropdown for secondary links (hover to open) -->
+      <div class="relative group" data-nav-more>
+        <button
+          type="button"
+          class:list={[
+            "btn-ghost",
+            secondaryLinks.some((l) => isActive(l.href)) && "bg-canvas-soft-2 text-ink",
+          ]}
+          aria-haspopup="menu"
+        >
+          More
+          <svg class="w-3.5 h-3.5 ml-0.5 transition-transform duration-150 group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div
+          data-nav-more-dropdown
+          class="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150 absolute left-0 top-full mt-1 min-w-40 bg-canvas rounded-md shadow-level-4 p-1 z-50"
+          role="menu"
+        >
+          {
+            secondaryLinks.map((link) => (
+              <a
+                href={link.href}
+                class:list={[
+                  "block px-3 py-1.5 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors",
+                  isActive(link.href) && "bg-canvas-soft-2 text-ink font-medium",
+                ]}
+                role="menuitem"
+                aria-current={isActive(link.href) ? "page" : undefined}
+              >
+                {link.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
     </nav>
 
     <!-- Right cluster -->
     <div class="flex items-center gap-1.5">
-      <button
-        type="button"
-        class="btn-icon"
-        data-save-backup
-        aria-label="Save backup"
-        title="Save backup"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-          <polyline points="17 21 17 13 7 13 7 21"></polyline>
-          <polyline points="7 3 7 8 15 8"></polyline>
-        </svg>
-      </button>
-
-      <button
-        type="button"
-        class="btn-icon"
-        data-open-backup
-        aria-label="Open backup"
-        title="Open backup"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-        </svg>
-      </button>
-
+      <!-- Theme toggle -->
       <button
         type="button"
         class="btn-icon"
@@ -108,83 +143,118 @@ const isActive = (href: string) => {
         </svg>
       </button>
 
-      <div class="relative hidden sm:block" data-lang-menu>
-        <button type="button" class="btn-icon" data-lang-toggle aria-label="Change language" aria-haspopup="menu">
+      <!-- Settings dropdown (language, currency, backup) -->
+      <div class="relative hidden sm:block" data-settings-menu>
+        <button
+          type="button"
+          class="btn-icon"
+          data-settings-toggle
+          aria-label="Settings"
+          aria-haspopup="menu"
+          aria-expanded="false"
+          title="Settings"
+        >
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M2 12h20M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
           </svg>
         </button>
         <div
-          data-lang-dropdown
-          class="hidden absolute right-0 top-full mt-2 min-w-44 bg-canvas rounded-md shadow-level-4 p-1 z-50"
+          data-settings-dropdown
+          class="hidden absolute right-0 top-full mt-2 min-w-52 bg-canvas rounded-md shadow-level-4 p-2 z-50"
           role="menu"
         >
-          {
-            [
-              { code: "en", label: "English" },
-              { code: "hi", label: "हिन्दी" },
-              { code: "es", label: "Español" },
-              { code: "fr", label: "Français" },
-              { code: "de", label: "Deutsch" },
-              { code: "ja", label: "日本語" },
-              { code: "zh", label: "中文" },
-              { code: "pt", label: "Português" },
-              { code: "ru", label: "Русский" },
-              { code: "ar", label: "العربية" },
-            ].map((lang) => (
-              <button
-                type="button"
-                class="w-full text-left px-3 py-1.5 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors"
-                data-set-lang={lang.code}
-                role="menuitem"
-              >
-                {lang.label}
-              </button>
-            ))
-          }
+          <!-- Language -->
+          <div class="text-caption-mono text-mute px-1 mb-1" aria-hidden="true">Language</div>
+          <div class="grid grid-cols-2 gap-0.5 mb-2">
+            {
+              langs.map((lang) => (
+                <button
+                  type="button"
+                  class="text-left px-2 py-1 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors truncate"
+                  data-set-lang={lang.code}
+                  role="menuitem"
+                >
+                  {lang.label}
+                </button>
+              ))
+            }
+          </div>
+          <div class="hairline my-1" role="separator"></div>
+
+          <!-- Currency -->
+          <div class="text-caption-mono text-mute px-1 mb-1 mt-2" aria-hidden="true">Currency</div>
+          <div class="max-h-48 overflow-y-auto scroll-thin -mx-1 px-1">
+            <div class="grid grid-cols-2 gap-0.5">
+              {
+                currencyList.map((c) => (
+                  <button
+                    type="button"
+                    class="text-left px-2 py-1 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors truncate"
+                    data-set-currency={c.code}
+                    role="menuitem"
+                  >
+                    <span class="mr-1 text-mute">{c.symbol}</span>
+                    {c.code}
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+          <div class="hairline my-1" role="separator"></div>
+
+          <!-- Actions -->
+          <button
+            type="button"
+            class="w-full flex items-center gap-2 px-2 py-1.5 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors"
+            data-save-backup
+            role="menuitem"
+          >
+            <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            Save Backup
+          </button>
+          <button
+            type="button"
+            class="w-full flex items-center gap-2 px-2 py-1.5 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors"
+            data-open-backup
+            role="menuitem"
+          >
+            <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Open Backup
+          </button>
+
+          <div class="hairline my-1" role="separator"></div>
+
+          <a
+            href="/settings"
+            class="flex items-center gap-2 px-2 py-1.5 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors"
+            role="menuitem"
+          >
+            <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            All Settings
+          </a>
         </div>
       </div>
 
-      <div class="relative hidden sm:block" data-currency-menu>
-        <button type="button" class="btn-icon" data-currency-toggle aria-label="Change currency" aria-haspopup="menu">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="12" y1="1" x2="12" y2="23"></line>
-            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-          </svg>
-        </button>
-        <div
-          data-currency-dropdown
-          class="hidden absolute right-0 top-full mt-2 min-w-48 bg-canvas rounded-md shadow-level-4 p-1 z-50 max-h-80 overflow-y-auto scroll-thin"
-          role="menu"
-        >
-          {
-            currencyList.map((c) => (
-              <button
-                type="button"
-                class="w-full text-left px-3 py-1.5 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors"
-                data-set-currency={c.code}
-                role="menuitem"
-              >
-                <span class="mr-1.5 text-mute">{c.symbol}</span>
-                {c.name}
-              </button>
-            ))
-          }
-        </div>
-      </div>
-
-      <a href="/settings" class="btn-icon hidden sm:inline-flex" aria-label="Settings">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      <!-- Primary CTA -->
+      <a href="/dashboard" class="btn-primary hidden md:inline-flex" style="height: 32px; padding: 0 14px; font-size: 13px;">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
+        Start Tracking
       </a>
 
-      <a href="/dashboard" class="btn-primary hidden md:inline-flex" style="height: 32px; padding: 0 12px; font-size: 13px;">
-        Open Dashboard
-      </a>
-
+      <!-- Mobile hamburger -->
       <button
         type="button"
         class="btn-icon lg:hidden"
@@ -202,48 +272,128 @@ const isActive = (href: string) => {
     </div>
   </div>
 
-  <!-- Mobile menu -->
+  <!-- Mobile menu panel -->
   <div
     id="mobile-menu"
-    class="hidden lg:hidden border-t border-hairline bg-canvas"
+    class="hidden lg:hidden border-t border-hairline bg-canvas shadow-level-4"
     data-mobile-menu
   >
-    <nav class="container-page py-3 flex flex-col gap-0.5" aria-label="Mobile primary">
-      {
-        navLinks.map((link) => (
-          <a
-            href={link.href}
-            class:list={[
-              "px-3 py-2 rounded-sm text-body-sm hover:bg-canvas-soft-2 text-body hover:text-ink",
-              isActive(link.href) && "bg-canvas-soft-2 text-ink font-medium",
-            ]}
-            aria-current={isActive(link.href) ? "page" : undefined}
-          >
-            {link.label}
-          </a>
-        ))
-      }
-      <a
-        href="/settings"
-        class:list={[
-          "px-3 py-2 rounded-sm text-body-sm hover:bg-canvas-soft-2 text-body hover:text-ink",
-        ]}
-      >
-        Settings
+    <div class="container-page py-4 flex flex-col gap-3">
+      <!-- Mobile CTA -->
+      <a href="/dashboard" class="btn-primary w-full justify-center">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Start Tracking
       </a>
-    </nav>
+
+      <!-- Mobile nav links -->
+      <nav class="flex flex-col gap-0.5" aria-label="Mobile primary">
+        {
+          allLinks.map((link) => (
+            <a
+              href={link.href}
+              class:list={[
+                "px-3 py-2 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors",
+                isActive(link.href) && "bg-canvas-soft-2 text-ink font-medium",
+              ]}
+              aria-current={isActive(link.href) ? "page" : undefined}
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="hairline" role="separator"></div>
+
+      <!-- Mobile utilities -->
+      <div class="flex flex-col gap-2">
+        <!-- Language -->
+        <div class="text-caption-mono text-mute px-1">Language</div>
+        <div class="grid grid-cols-2 gap-1">
+          {
+            langs.map((lang) => (
+              <button
+                type="button"
+                class="text-left px-2.5 py-1.5 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors truncate"
+                data-set-lang={lang.code}
+              >
+                {lang.label}
+              </button>
+            ))
+          }
+        </div>
+
+        <div class="hairline my-0.5" role="separator"></div>
+
+        <!-- Currency -->
+        <div class="text-caption-mono text-mute px-1">Currency</div>
+        <div class="grid grid-cols-2 gap-1 max-h-48 overflow-y-auto scroll-thin">
+          {
+            currencyList.map((c) => (
+              <button
+                type="button"
+                class="text-left px-2.5 py-1.5 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors truncate"
+                data-set-currency={c.code}
+              >
+                <span class="mr-1 text-mute">{c.symbol}</span>
+                {c.code} — {c.name}
+              </button>
+            ))
+          }
+        </div>
+
+        <div class="hairline my-0.5" role="separator"></div>
+
+        <!-- Mobile actions -->
+        <button
+          type="button"
+          class="flex items-center gap-2 px-2.5 py-2 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors"
+          data-save-backup
+        >
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          Save Backup
+        </button>
+        <button
+          type="button"
+          class="flex items-center gap-2 px-2.5 py-2 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors"
+          data-open-backup
+        >
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+          </svg>
+          Open Backup
+        </button>
+        <a
+          href="/settings"
+          class="flex items-center gap-2 px-2.5 py-2 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors"
+        >
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          All Settings
+        </a>
+      </div>
+    </div>
   </div>
 </header>
 
 <script>
   // Save backup
-  document.querySelector("[data-save-backup]")?.addEventListener("click", () => {
-    window.gwp?.exportData();
+  document.querySelectorAll("[data-save-backup]").forEach((el) => {
+    el.addEventListener("click", () => window.gwp?.exportData());
   });
 
   // Open backup
-  document.querySelector("[data-open-backup]")?.addEventListener("click", () => {
-    window.gwp?.importData();
+  document.querySelectorAll("[data-open-backup]").forEach((el) => {
+    el.addEventListener("click", () => window.gwp?.importData());
   });
 
   // Theme toggle
@@ -251,60 +401,60 @@ const isActive = (href: string) => {
     window.gwp?.toggleTheme();
   });
 
-  // Language menu
-  const langMenu = document.querySelector("[data-lang-menu]");
-  const langToggle = document.querySelector("[data-lang-toggle]");
-  const langDropdown = document.querySelector("[data-lang-dropdown]");
+  // --- Settings dropdown ---
+  const settingsMenu = document.querySelector("[data-settings-menu]");
+  const settingsToggle = document.querySelector("[data-settings-toggle]");
+  const settingsDropdown = document.querySelector("[data-settings-dropdown]");
 
-  // Currency menu
-  const currencyMenu = document.querySelector("[data-currency-menu]");
-  const currencyToggle = document.querySelector("[data-currency-toggle]");
-  const currencyDropdown = document.querySelector("[data-currency-dropdown]");
-
-  langToggle?.addEventListener("click", (e) => {
+  settingsToggle?.addEventListener("click", (e) => {
     e.stopPropagation();
-    currencyDropdown?.classList.add("hidden");
-    langDropdown?.classList.toggle("hidden");
+    settingsDropdown?.classList.toggle("hidden");
+    const isExpanded = !settingsDropdown?.classList.contains("hidden");
+    settingsToggle.setAttribute("aria-expanded", String(isExpanded));
   });
+
+  // --- Language setter ---
   document.querySelectorAll<HTMLButtonElement>("[data-set-lang]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const code = btn.dataset.setLang!;
       window.gwp?.setLanguage(code as never);
-      langDropdown?.classList.add("hidden");
-      currencyDropdown?.classList.add("hidden");
-      // Re-render i18n strings
+      settingsDropdown?.classList.add("hidden");
       window.dispatchEvent(new CustomEvent("gwp:lang", { detail: code }));
     });
   });
 
-  currencyToggle?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    langDropdown?.classList.add("hidden");
-    currencyDropdown?.classList.toggle("hidden");
-  });
-  document.addEventListener("click", (e) => {
-    if (!langMenu?.contains(e.target as Node)) {
-      langDropdown?.classList.add("hidden");
-    }
-    if (!currencyMenu?.contains(e.target as Node)) {
-      currencyDropdown?.classList.add("hidden");
-    }
-  });
+  // --- Currency setter ---
   document.querySelectorAll<HTMLButtonElement>("[data-set-currency]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const code = btn.dataset.setCurrency!;
       window.gwp?.setCurrency(code as never);
-      currencyDropdown?.classList.add("hidden");
+      settingsDropdown?.classList.add("hidden");
     });
   });
 
-  // Mobile menu
+  // --- Close dropdowns on outside click ---
+  document.addEventListener("click", (e) => {
+    if (!settingsMenu?.contains(e.target as Node)) {
+      settingsDropdown?.classList.add("hidden");
+      settingsToggle?.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  // --- Mobile menu ---
   const mobileToggle = document.querySelector("[data-mobile-toggle]");
   const mobileMenu = document.querySelector("[data-mobile-menu]");
   mobileToggle?.addEventListener("click", () => {
     const isOpen = !mobileMenu?.classList.contains("hidden");
     mobileMenu?.classList.toggle("hidden");
     mobileToggle.setAttribute("aria-expanded", String(!isOpen));
+  });
+
+  // Close mobile menu on nav link click
+  document.querySelectorAll("#mobile-menu a[href]").forEach((link) => {
+    link.addEventListener("click", () => {
+      mobileMenu?.classList.add("hidden");
+      mobileToggle?.setAttribute("aria-expanded", "false");
+    });
   });
 
   // "New" badge on Blog nav link
