@@ -52,12 +52,12 @@ const calcDefs = [
           <div class="space-y-md">
             <div>
               <label class="label" for="emi-amount">Loan Amount</label>
-              <input class="input" type="number" id="emi-amount" data-calc-input value="3000000" min="0" step="100000" aria-describedby="emi-amount-desc" />
+              <input class="input" type="text" inputmode="numeric" id="emi-amount" data-calc-input value="3000000" min="0" step="100000" aria-describedby="emi-amount-desc" />
               <p id="emi-amount-desc" class="text-caption text-mute mt-xxs">₹3,00,000 — ₹10Cr</p>
             </div>
             <div>
               <label class="label" for="emi-rate">Interest Rate (% p.a.)</label>
-              <input class="input" type="number" id="emi-rate" data-calc-input value="9" min="0" max="30" step="0.1" />
+              <input class="input" type="text" inputmode="numeric" id="emi-rate" data-calc-input value="9" min="0" max="30" step="0.1" />
               <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick rate presets">
                 {["6.5", "8", "9", "10.5", "12"].map((v) => (
                   <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="emi-rate" data-value={v}>{v}%</button>
@@ -66,7 +66,7 @@ const calcDefs = [
             </div>
             <div>
               <label class="label" for="emi-tenure">Tenure (months)</label>
-              <input class="input" type="number" id="emi-tenure" data-calc-input value="240" min="1" max="600" step="12" />
+              <input class="input" type="text" inputmode="numeric" id="emi-tenure" data-calc-input value="240" min="1" max="600" step="12" />
               <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick tenure presets">
                 {["12", "36", "60", "120", "240", "360"].map((v) => (
                   <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="emi-tenure" data-value={v}>{Number(v) >= 12 ? `${Number(v)/12}yr` : `${v}mo`}</button>
@@ -75,7 +75,7 @@ const calcDefs = [
             </div>
             <div>
               <label class="label" for="emi-extra">Monthly Extra Payment (optional)</label>
-              <input class="input" type="number" id="emi-extra" data-calc-input value="0" min="0" step="1000" placeholder="0 = no extra payment" />
+              <input class="input" type="text" inputmode="numeric" id="emi-extra" data-calc-input value="0" min="0" step="1000" placeholder="0 = no extra payment" />
               <p class="text-caption text-mute mt-xxs">Extra amount each month to reduce principal faster</p>
             </div>
             <div>
@@ -184,15 +184,15 @@ const calcDefs = [
           <div class="space-y-md">
             <div>
               <label class="label" for="sip-monthly">Monthly SIP</label>
-              <input class="input" type="number" id="sip-monthly" data-calc-input value="10000" min="0" step="1000" />
+              <input class="input" type="text" inputmode="numeric" id="sip-monthly" data-calc-input value="10000" min="0" step="1000" />
             </div>
             <div>
               <label class="label" for="sip-lumpsum">Lumpsum Investment (optional)</label>
-              <input class="input" type="number" id="sip-lumpsum" data-calc-input value="0" min="0" step="50000" placeholder="0 = no lumpsum" />
+              <input class="input" type="text" inputmode="numeric" id="sip-lumpsum" data-calc-input value="0" min="0" step="50000" placeholder="0 = no lumpsum" />
             </div>
             <div>
               <label class="label" for="sip-rate">Expected Return (% p.a.)</label>
-              <input class="input" type="number" id="sip-rate" data-calc-input value="12" min="0" max="30" step="0.5" />
+              <input class="input" type="text" inputmode="numeric" id="sip-rate" data-calc-input value="12" min="0" max="30" step="0.5" />
               <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick return presets">
                 {["8", "10", "12", "15", "18"].map((v) => (
                   <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="sip-rate" data-value={v}>{v}%</button>
@@ -201,7 +201,7 @@ const calcDefs = [
             </div>
             <div>
               <label class="label" for="sip-years">Time Horizon (years)</label>
-              <input class="input" type="number" id="sip-years" data-calc-input value="10" min="1" max="50" step="1" />
+              <input class="input" type="text" inputmode="numeric" id="sip-years" data-calc-input value="10" min="1" max="50" step="1" />
               <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick year presets">
                 {["5", "10", "15", "20", "30"].map((v) => (
                   <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="sip-years" data-value={v}>{v}y</button>
@@ -270,15 +270,15 @@ const calcDefs = [
           <div class="space-y-md">
             <div>
               <label class="label" for="xirr-investment">Annual Investment</label>
-              <input class="input" type="number" id="xirr-investment" data-calc-input value="120000" min="0" step="10000" />
+              <input class="input" type="text" inputmode="numeric" id="xirr-investment" data-calc-input value="120000" min="0" step="10000" />
             </div>
             <div>
               <label class="label" for="xirr-years">Number of Years</label>
-              <input class="input" type="number" id="xirr-years" data-calc-input value="3" min="1" max="30" step="1" />
+              <input class="input" type="text" inputmode="numeric" id="xirr-years" data-calc-input value="3" min="1" max="30" step="1" />
             </div>
             <div>
               <label class="label" for="xirr-finalValue">Final / Current Value</label>
-              <input class="input" type="number" id="xirr-finalValue" data-calc-input value="180000" min="0" step="10000" />
+              <input class="input" type="text" inputmode="numeric" id="xirr-finalValue" data-calc-input value="180000" min="0" step="10000" />
             </div>
           </div>
           <div class="flex flex-wrap gap-sm mt-lg pt-lg hairline">
@@ -330,11 +330,11 @@ const calcDefs = [
           <div class="space-y-md">
             <div>
               <label class="label" for="swp-investment">Investment Corpus</label>
-              <input class="input" type="number" id="swp-investment" data-calc-input value="10000000" min="0" step="500000" />
+              <input class="input" type="text" inputmode="numeric" id="swp-investment" data-calc-input value="10000000" min="0" step="500000" />
             </div>
             <div>
               <label class="label" for="swp-rate">Expected Return (% p.a.)</label>
-              <input class="input" type="number" id="swp-rate" data-calc-input value="8" min="0" max="30" step="0.5" />
+              <input class="input" type="text" inputmode="numeric" id="swp-rate" data-calc-input value="8" min="0" max="30" step="0.5" />
               <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick return presets">
                 {["6", "8", "10", "12"].map((v) => (
                   <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="swp-rate" data-value={v}>{v}%</button>
@@ -343,11 +343,11 @@ const calcDefs = [
             </div>
             <div>
               <label class="label" for="swp-years">Withdrawal Period (years)</label>
-              <input class="input" type="number" id="swp-years" data-calc-input value="10" min="1" max="50" step="1" />
+              <input class="input" type="text" inputmode="numeric" id="swp-years" data-calc-input value="10" min="1" max="50" step="1" />
             </div>
             <div>
               <label class="label" for="swp-monthlyNeeded">Monthly Withdrawal Needed (optional)</label>
-              <input class="input" type="number" id="swp-monthlyNeeded" data-calc-input value="0" min="0" step="5000" placeholder="0 = calculate from corpus" />
+              <input class="input" type="text" inputmode="numeric" id="swp-monthlyNeeded" data-calc-input value="0" min="0" step="5000" placeholder="0 = calculate from corpus" />
               <p class="text-caption text-mute mt-xxs">Leave 0 to calculate max withdrawal from corpus</p>
             </div>
           </div>
@@ -399,11 +399,11 @@ const calcDefs = [
           <div class="space-y-md">
             <div>
               <label class="label" for="ppf-annual">Annual Investment (₹500 – ₹1.5L)</label>
-              <input class="input" type="number" id="ppf-annual" data-calc-input value="150000" min="500" max="150000" step="5000" />
+              <input class="input" type="text" inputmode="numeric" id="ppf-annual" data-calc-input value="150000" min="500" max="150000" step="5000" />
             </div>
             <div>
               <label class="label" for="ppf-rate">PPF Interest Rate (% p.a.)</label>
-              <input class="input" type="number" id="ppf-rate" data-calc-input value={PPF_RATE_SERVER} min="1" max="15" step="0.1" />
+              <input class="input" type="text" inputmode="numeric" id="ppf-rate" data-calc-input value={PPF_RATE_SERVER} min="1" max="15" step="0.1" />
               <p class="text-caption text-mute mt-xxs">Current rate: {PPF_RATE_SERVER}% (notified quarterly by govt)</p>
             </div>
             <div class="card-soft mt-md">
@@ -464,11 +464,11 @@ const calcDefs = [
           <div class="space-y-md">
             <div>
               <label class="label" for="fd-amount">Deposit Amount</label>
-              <input class="input" type="number" id="fd-amount" data-calc-input value="100000" min="0" step="10000" />
+              <input class="input" type="text" inputmode="numeric" id="fd-amount" data-calc-input value="100000" min="0" step="10000" />
             </div>
             <div>
               <label class="label" for="fd-rate">Interest Rate (% p.a.)</label>
-              <input class="input" type="number" id="fd-rate" data-calc-input value="7" min="0" max="15" step="0.25" />
+              <input class="input" type="text" inputmode="numeric" id="fd-rate" data-calc-input value="7" min="0" max="15" step="0.25" />
               <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick rate presets">
                 {["5.5", "6", "7", "7.5", "8", "9"].map((v) => (
                   <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="fd-rate" data-value={v}>{v}%</button>
@@ -477,7 +477,7 @@ const calcDefs = [
             </div>
             <div>
               <label class="label" for="fd-years">Tenure (years)</label>
-              <input class="input" type="number" id="fd-years" data-calc-input value="3" min="1" max="30" step="1" />
+              <input class="input" type="text" inputmode="numeric" id="fd-years" data-calc-input value="3" min="1" max="30" step="1" />
               <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick tenure presets">
                 {["1", "2", "3", "5", "10"].map((v) => (
                   <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="fd-years" data-value={v}>{v}y</button>
@@ -530,34 +530,34 @@ const calcDefs = [
             <div class="grid grid-cols-2 gap-sm">
               <div>
                 <label class="label" for="retirement-age">Current Age</label>
-                <input class="input" type="number" id="retirement-age" data-calc-input value="30" min="18" max="80" />
+                <input class="input" type="text" inputmode="numeric" id="retirement-age" data-calc-input value="30" min="18" max="80" />
               </div>
               <div>
                 <label class="label" for="retirement-retireAge">Retirement Age</label>
-                <input class="input" type="number" id="retirement-retireAge" data-calc-input value="60" min="30" max="80" />
+                <input class="input" type="text" inputmode="numeric" id="retirement-retireAge" data-calc-input value="60" min="30" max="80" />
               </div>
             </div>
             <div>
               <label class="label" for="retirement-currentCorpus">Current Retirement Corpus</label>
-              <input class="input" type="number" id="retirement-currentCorpus" data-calc-input value="500000" min="0" step="50000" />
+              <input class="input" type="text" inputmode="numeric" id="retirement-currentCorpus" data-calc-input value="500000" min="0" step="50000" />
             </div>
             <div>
               <label class="label" for="retirement-monthlySip">Monthly SIP for Retirement</label>
-              <input class="input" type="number" id="retirement-monthlySip" data-calc-input value="10000" min="0" step="1000" />
+              <input class="input" type="text" inputmode="numeric" id="retirement-monthlySip" data-calc-input value="10000" min="0" step="1000" />
             </div>
             <div class="grid grid-cols-2 gap-sm">
               <div>
                 <label class="label" for="retirement-expectedReturn">Expected Return (%)</label>
-                <input class="input" type="number" id="retirement-expectedReturn" data-calc-input value="12" min="0" max="30" step="0.5" />
+                <input class="input" type="text" inputmode="numeric" id="retirement-expectedReturn" data-calc-input value="12" min="0" max="30" step="0.5" />
               </div>
               <div>
                 <label class="label" for="retirement-inflation">Inflation Rate (%)</label>
-                <input class="input" type="number" id="retirement-inflation" data-calc-input value="6" min="0" max="20" step="0.5" />
+                <input class="input" type="text" inputmode="numeric" id="retirement-inflation" data-calc-input value="6" min="0" max="20" step="0.5" />
               </div>
             </div>
             <div>
               <label class="label" for="retirement-lifeExpectancy">Life Expectancy</label>
-              <input class="input" type="number" id="retirement-lifeExpectancy" data-calc-input value="85" min="60" max="120" />
+              <input class="input" type="text" inputmode="numeric" id="retirement-lifeExpectancy" data-calc-input value="85" min="60" max="120" />
             </div>
           </div>
           <div class="flex flex-wrap gap-sm mt-lg pt-lg hairline">
@@ -606,7 +606,7 @@ const calcDefs = [
           <div class="space-y-md">
             <div>
               <label class="label" for="tax-annualIncome">Annual Gross Income</label>
-              <input class="input" type="number" id="tax-annualIncome" data-calc-input value="1200000" min="0" step="50000" />
+              <input class="input" type="text" inputmode="numeric" id="tax-annualIncome" data-calc-input value="1200000" min="0" step="50000" />
             </div>
             <div>
               <label class="label">Tax Regime</label>
@@ -624,27 +624,27 @@ const calcDefs = [
               <p class="text-caption-mono text-body">Old Regime Deductions</p>
               <div>
                 <label class="label" for="tax-hra">HRA Exemption</label>
-                <input class="input" type="number" id="tax-hra" data-calc-input value="0" min="0" step="10000" />
+                <input class="input" type="text" inputmode="numeric" id="tax-hra" data-calc-input value="0" min="0" step="10000" />
               </div>
               <div>
                 <label class="label" for="tax-lta">LTA Exemption</label>
-                <input class="input" type="number" id="tax-lta" data-calc-input value="0" min="0" step="10000" />
+                <input class="input" type="text" inputmode="numeric" id="tax-lta" data-calc-input value="0" min="0" step="10000" />
               </div>
               <div>
                 <label class="label" for="tax-sec80c">Section 80C (max ₹1.5L)</label>
-                <input class="input" type="number" id="tax-sec80c" data-calc-input value="150000" min="0" max="150000" step="10000" />
+                <input class="input" type="text" inputmode="numeric" id="tax-sec80c" data-calc-input value="150000" min="0" max="150000" step="10000" />
               </div>
               <div>
                 <label class="label" for="tax-sec80d">Section 80D (max ₹25k)</label>
-                <input class="input" type="number" id="tax-sec80d" data-calc-input value="25000" min="0" max="25000" step="5000" />
+                <input class="input" type="text" inputmode="numeric" id="tax-sec80d" data-calc-input value="25000" min="0" max="25000" step="5000" />
               </div>
               <div>
                 <label class="label" for="tax-nps">NPS 80CCD(1B) (max ₹50k)</label>
-                <input class="input" type="number" id="tax-nps" data-calc-input value="50000" min="0" max="50000" step="5000" />
+                <input class="input" type="text" inputmode="numeric" id="tax-nps" data-calc-input value="50000" min="0" max="50000" step="5000" />
               </div>
               <div>
                 <label class="label" for="tax-homeLoanInterest">Home Loan Interest (max ₹2L)</label>
-                <input class="input" type="number" id="tax-homeLoanInterest" data-calc-input value="200000" min="0" max="200000" step="10000" />
+                <input class="input" type="text" inputmode="numeric" id="tax-homeLoanInterest" data-calc-input value="200000" min="0" max="200000" step="10000" />
               </div>
             </div>
           </div>

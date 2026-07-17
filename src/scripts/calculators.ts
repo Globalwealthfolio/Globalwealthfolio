@@ -123,13 +123,31 @@ function setParams(params: Record<string, string>, replace = false) {
 function getVal(id: string): number {
   const el = document.getElementById(id) as HTMLInputElement;
   if (!el) return 0;
-  const v = parseFloat(el.value);
+  const v = parseFloat(el.value.replace(/,/g, ""));
   return isNaN(v) ? 0 : v;
+}
+
+function fmtInput(v: number): string {
+  if (!isFinite(v)) return "0";
+  const locale = (document.documentElement.lang || "en").replace("hi", "en-IN");
+  try {
+    return new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(v);
+  } catch {
+    return String(v);
+  }
 }
 
 function setVal(id: string, v: number) {
   const el = document.getElementById(id) as HTMLInputElement;
-  if (el) el.value = String(v);
+  if (el) {
+    el.value = fmtInput(v);
+  }
+}
+
+function stripCommas(el: HTMLInputElement) {
+  if (el.value.includes(",")) {
+    el.value = el.value.replace(/,/g, "");
+  }
 }
 
 function getCalcCurrency(): string {
@@ -930,17 +948,23 @@ function addLumpsumRow(container: HTMLElement, month = "", amount = "") {
   row.innerHTML = `
     <div style="flex:1;">
       <label class="label" style="font-size:11px;">Month</label>
-      <input class="input" type="number" data-calc-input data-emi-lumpsum-month value="${month}" min="1" placeholder="mo" style="height:32px;font-size:13px;" />
+      <input class="input" type="text" inputmode="numeric" data-calc-input data-emi-lumpsum-month value="${month}" min="1" placeholder="mo" style="height:32px;font-size:13px;" />
     </div>
     <div style="flex:2;">
       <label class="label" style="font-size:11px;">Amount</label>
-      <input class="input" type="number" data-calc-input data-emi-lumpsum-amount value="${amount}" min="0" step="10000" placeholder="Amount" style="height:32px;font-size:13px;" />
+      <input class="input" type="text" inputmode="numeric" data-calc-input data-emi-lumpsum-amount value="${amount}" min="0" step="10000" placeholder="Amount" style="height:32px;font-size:13px;" />
     </div>
     <button type="button" class="btn-ghost" data-emi-remove-lumpsum style="height:32px;padding:0 8px;font-size:14px;flex-shrink:0;line-height:1;">&times;</button>
   `;
   container.appendChild(row);
   row.querySelectorAll("[data-calc-input]").forEach((input) => {
     input.addEventListener("input", () => { destroyCharts(); calculate(currentCalc); });
+    input.addEventListener("focus", () => stripCommas(input as HTMLInputElement));
+    input.addEventListener("blur", () => {
+      const el = input as HTMLInputElement;
+      const raw = el.value.replace(/,/g, "");
+      if (raw) setVal(el.id, parseFloat(raw));
+    });
   });
   row.querySelector("[data-emi-remove-lumpsum]")?.addEventListener("click", () => {
     row.remove();
@@ -983,6 +1007,12 @@ function initCalculator() {
     input.addEventListener("input", () => {
       destroyCharts();
       calculate(currentCalc);
+    });
+    input.addEventListener("focus", () => stripCommas(input as HTMLInputElement));
+    input.addEventListener("blur", () => {
+      const el = input as HTMLInputElement;
+      const raw = el.value.replace(/,/g, "");
+      if (raw) setVal(el.id, parseFloat(raw));
     });
   });
 
