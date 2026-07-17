@@ -1,0 +1,800 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const FY_YEAR_SERVER = 2025;
+const STANDARD_DEDUCTION_NEW_SERVER = 75000;
+const STANDARD_DEDUCTION_OLD_SERVER = 50000;
+const FINANCIAL_YEAR_SERVER = `FY ${FY_YEAR_SERVER}-${FY_YEAR_SERVER + 1}`;
+const PPF_RATE_SERVER = 7.1;
+
+const calcDefs = [
+  { id: "emi", label: "Advance EMI" },
+  { id: "sip", label: "SIP" },
+  { id: "xirr", label: "XIRR" },
+  { id: "swp", label: "SWP" },
+  { id: "ppf", label: "PPF" },
+  { id: "fd", label: "FD" },
+  { id: "retirement", label: "Retirement" },
+  { id: "tax", label: "Tax Estimator" },
+];
+---
+
+<Layout title="Calculators — Global Wealth Portfolio" description="Free financial calculators: Advance EMI with prepayment, SIP with Lumpsum, XIRR, SWP, PPF, FD, Retirement Planner, and India Tax Estimator.">
+  <section class="container-page page-section pt-3xl pb-2xl">
+    <div class="mb-2xl max-w-3xl">
+      <p class="text-caption-mono text-gold mb-xs">Calculators</p>
+      <h1 class="text-display-lg">Financial calculators, built for clarity.</h1>
+      <p class="text-body-md text-body mt-sm leading-relaxed">
+        Plan loans, investments, retirement, and taxes — all in one place.
+        Every calculator updates instantly. Share or bookmark your results.
+      </p>
+    </div>
+
+    <div role="tablist" aria-label="Calculator type" class="flex max-sm:overflow-x-auto max-sm:gap-0 gap-1 p-1 bg-canvas-soft-2 rounded-full mb-2xl max-sm:rounded-md">
+      {calcDefs.map((c) => (
+        <button
+          role="tab"
+          aria-selected={c.id === "emi" ? "true" : "false"}
+          data-calc-tab={c.id}
+          class="tab-pill flex-1 max-sm:flex-none max-sm:whitespace-nowrap max-sm:px-3 max-sm:text-xs"
+          tabindex={c.id === "emi" ? "0" : "-1"}
+        >
+          {c.label}
+        </button>
+      ))}
+    </div>
+
+    <!-- ─── ADVANCE EMI ─────────────────────────────────────────── -->
+    <div data-calc-panel="emi" class="animate-fade-in">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-xl">
+        <div class="lg:col-span-2 card-elevated">
+          <p class="text-caption-mono text-gold mb-sm">Advance EMI Calculator</p>
+          <div class="space-y-md">
+            <div>
+              <label class="label" for="emi-amount">Loan Amount</label>
+              <input class="input" type="number" id="emi-amount" data-calc-input value="3000000" min="0" step="100000" aria-describedby="emi-amount-desc" />
+              <p id="emi-amount-desc" class="text-caption text-mute mt-xxs">₹3,00,000 — ₹10Cr</p>
+            </div>
+            <div>
+              <label class="label" for="emi-rate">Interest Rate (% p.a.)</label>
+              <input class="input" type="number" id="emi-rate" data-calc-input value="9" min="0" max="30" step="0.1" />
+              <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick rate presets">
+                {["6.5", "8", "9", "10.5", "12"].map((v) => (
+                  <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="emi-rate" data-value={v}>{v}%</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="label" for="emi-tenure">Tenure (months)</label>
+              <input class="input" type="number" id="emi-tenure" data-calc-input value="240" min="1" max="600" step="12" />
+              <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick tenure presets">
+                {["12", "36", "60", "120", "240", "360"].map((v) => (
+                  <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="emi-tenure" data-value={v}>{Number(v) >= 12 ? `${Number(v)/12}yr` : `${v}mo`}</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="label" for="emi-extra">Monthly Extra Payment (optional)</label>
+              <input class="input" type="number" id="emi-extra" data-calc-input value="0" min="0" step="1000" placeholder="0 = no extra payment" />
+              <p class="text-caption text-mute mt-xxs">Extra amount each month to reduce principal faster</p>
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-xs">
+                <label class="label mb-0">Lumpsum Prepayments</label>
+                <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-emi-add-lumpsum>+ Add</button>
+              </div>
+              <div id="emi-lumpsum-rows"></div>
+              <p class="text-caption text-mute mt-xxs">Month number and amount for each one-time prepayment</p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-sm mt-lg pt-lg hairline">
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-reset>Reset</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-copy>Copy values</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-share>Share</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-pdf>Save PDF</button>
+          </div>
+        </div>
+        <div class="lg:col-span-3 space-y-xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Monthly EMI</p>
+              <p class="text-display-sm text-ink" id="emi-result-emi" data-result="Monthly EMI" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Total Interest</p>
+              <p class="text-display-sm text-gold" id="emi-result-interest" data-result="Total Interest" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Total Payment</p>
+              <p class="text-display-sm text-ink" id="emi-result-total" data-result="Total Payment" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Principal</p>
+              <p class="text-display-sm text-ink" id="emi-result-principal" data-result="Principal" aria-live="polite">—</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Interest Saved</p>
+              <p class="text-display-sm text-gold" id="emi-result-interest-saved" data-result="Interest Saved" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Actual Term</p>
+              <p class="text-display-sm text-ink" id="emi-result-actual-term" data-result="Actual Term" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Term Reduced</p>
+              <p class="text-display-sm text-ink" id="emi-result-term-saved" data-result="Term Reduced" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Total Extra Paid</p>
+              <p class="text-display-sm text-ink" id="emi-result-total-extra" data-result="Total Extra Paid" aria-live="polite">—</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-md">
+            <div class="card">
+              <p class="text-caption-mono text-body mb-md">Balance Over Time</p>
+              <div style="position:relative;height:220px;"><canvas id="emi-line-chart" aria-label="EMI balance over time chart"></canvas></div>
+            </div>
+            <div class="card">
+              <p class="text-caption-mono text-body mb-md">Payment Breakdown</p>
+              <div style="position:relative;height:220px;"><canvas id="emi-stacked-chart" aria-label="EMI payment breakdown stacked bar chart"></canvas></div>
+            </div>
+          </div>
+          <div class="card">
+            <p class="text-caption-mono text-body mb-md">Principal vs Interest</p>
+            <div style="position:relative;height:220px;max-width:320px;margin:0 auto;"><canvas id="emi-donut-chart" aria-label="EMI principal vs interest donut chart"></canvas></div>
+          </div>
+          <div class="card">
+            <details>
+              <summary class="text-caption-mono text-body" style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;user-select:none;">
+                <span style="font-size:14px;line-height:1;">&#9776;</span> Amortization Schedule
+              </summary>
+              <div style="max-height:400px;overflow:auto;margin-top:12px;">
+                <table class="w-full text-left" style="font-size:12px;border-collapse:collapse;">
+                  <thead>
+                    <tr style="border-bottom:2px solid var(--color-hairline,#e5e7eb);">
+                      <th class="p-xs text-mute text-caption-mono">#</th>
+                      <th class="p-xs text-mute text-caption-mono">EMI</th>
+                      <th class="p-xs text-mute text-caption-mono">Principal</th>
+                      <th class="p-xs text-mute text-caption-mono">Interest</th>
+                      <th class="p-xs text-mute text-caption-mono">Extra</th>
+                      <th class="p-xs text-mute text-caption-mono">Lumpsum</th>
+                      <th class="p-xs text-mute text-caption-mono">Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody id="emi-amortization-body"></tbody>
+                </table>
+              </div>
+            </details>
+          </div>
+          <div class="card-soft">
+            <p class="text-caption-mono text-body mb-xs">Assumptions</p>
+            <p class="text-caption text-mute">EMI is calculated using the standard reducing-balance formula. The interest rate is assumed constant throughout the loan tenure. Extra payments and lumpsum prepayments reduce the principal directly, shortening the loan term and reducing total interest. Actual EMI may vary based on lender terms, processing fees, and prepayment penalties.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SIP + LUMPSUM ───────────────────────────────────────── -->
+    <div data-calc-panel="sip" class="hidden animate-fade-in">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-xl">
+        <div class="lg:col-span-2 card-elevated">
+          <p class="text-caption-mono text-gold mb-sm">SIP + Lumpsum Calculator</p>
+          <div class="space-y-md">
+            <div>
+              <label class="label" for="sip-monthly">Monthly SIP</label>
+              <input class="input" type="number" id="sip-monthly" data-calc-input value="10000" min="0" step="1000" />
+            </div>
+            <div>
+              <label class="label" for="sip-lumpsum">Lumpsum Investment (optional)</label>
+              <input class="input" type="number" id="sip-lumpsum" data-calc-input value="0" min="0" step="50000" placeholder="0 = no lumpsum" />
+            </div>
+            <div>
+              <label class="label" for="sip-rate">Expected Return (% p.a.)</label>
+              <input class="input" type="number" id="sip-rate" data-calc-input value="12" min="0" max="30" step="0.5" />
+              <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick return presets">
+                {["8", "10", "12", "15", "18"].map((v) => (
+                  <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="sip-rate" data-value={v}>{v}%</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="label" for="sip-years">Time Horizon (years)</label>
+              <input class="input" type="number" id="sip-years" data-calc-input value="10" min="1" max="50" step="1" />
+              <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick year presets">
+                {["5", "10", "15", "20", "30"].map((v) => (
+                  <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="sip-years" data-value={v}>{v}y</button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-sm mt-lg pt-lg hairline">
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-reset>Reset</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-copy>Copy values</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-share>Share</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-pdf>Save PDF</button>
+          </div>
+        </div>
+        <div class="lg:col-span-3 space-y-xl">
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-md">
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">SIP Invested</p>
+              <p class="text-display-sm text-ink" id="sip-result-invested" data-result="SIP Invested" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Lumpsum</p>
+              <p class="text-display-sm text-ink" id="sip-result-lumpsum" data-result="Lumpsum" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Lumpsum Growth</p>
+              <p class="text-display-sm text-gold" id="sip-result-lumpsum-growth" data-result="Lumpsum Future Value" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">SIP Corpus</p>
+              <p class="text-display-sm text-ink" id="sip-result-sip-growth" data-result="SIP Corpus" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Est. Returns</p>
+              <p class="text-display-sm text-ink" id="sip-result-returns" data-result="Est. Returns" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Total Corpus</p>
+              <p class="text-display-sm text-ink" id="sip-result-total" data-result="Total Corpus" aria-live="polite">—</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-md">
+            <div class="card">
+              <p class="text-caption-mono text-body mb-md">Wealth Growth</p>
+              <div style="position:relative;height:220px;"><canvas id="sip-line-chart" aria-label="SIP wealth growth chart"></canvas></div>
+            </div>
+            <div class="card">
+              <p class="text-caption-mono text-body mb-md">Investment vs Returns</p>
+              <div style="position:relative;height:220px;"><canvas id="sip-donut-chart" aria-label="SIP investment vs returns donut chart"></canvas></div>
+            </div>
+          </div>
+          <div class="card-soft">
+            <p class="text-caption-mono text-body mb-xs">Assumptions</p>
+            <p class="text-caption text-mute">Returns are assumed constant and compounded monthly. Past performance does not guarantee future returns. SIP is assumed at beginning of each month. Lumpsum grows at same rate as SIP.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── XIRR ─────────────────────────────────────────────────── -->
+    <div data-calc-panel="xirr" class="hidden animate-fade-in">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-xl">
+        <div class="lg:col-span-2 card-elevated">
+          <p class="text-caption-mono text-gold mb-sm">XIRR Calculator</p>
+          <p class="text-caption text-mute mb-md">Calculate returns for annual investments with a final lump-sum value.</p>
+          <div class="space-y-md">
+            <div>
+              <label class="label" for="xirr-investment">Annual Investment</label>
+              <input class="input" type="number" id="xirr-investment" data-calc-input value="120000" min="0" step="10000" />
+            </div>
+            <div>
+              <label class="label" for="xirr-years">Number of Years</label>
+              <input class="input" type="number" id="xirr-years" data-calc-input value="3" min="1" max="30" step="1" />
+            </div>
+            <div>
+              <label class="label" for="xirr-finalValue">Final / Current Value</label>
+              <input class="input" type="number" id="xirr-finalValue" data-calc-input value="180000" min="0" step="10000" />
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-sm mt-lg pt-lg hairline">
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-reset>Reset</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-copy>Copy values</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-share>Share</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-pdf>Save PDF</button>
+          </div>
+        </div>
+        <div class="lg:col-span-3 space-y-xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">XIRR</p>
+              <p class="text-display-sm text-gold" id="xirr-result-rate" data-result="XIRR" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Total Invested</p>
+              <p class="text-display-sm text-ink" id="xirr-result-invested" data-result="Total Invested" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Total Returns</p>
+              <p class="text-display-sm text-ink" id="xirr-result-returns" data-result="Total Returns" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Final Value</p>
+              <p class="text-display-sm text-ink" id="xirr-result-final" data-result="Final Value" aria-live="polite">—</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="flex items-center justify-between mb-md">
+              <p class="text-caption-mono text-body">Return Breakdown</p>
+              <p class="text-caption text-mute">Absolute Return: <span id="xirr-result-abs">—</span></p>
+            </div>
+            <div class="flex justify-center" style="position:relative;height:220px;max-width:320px;margin:0 auto;"><canvas id="xirr-donut-chart" aria-label="XIRR return breakdown donut chart"></canvas></div>
+          </div>
+          <div class="card-soft">
+            <p class="text-caption-mono text-body mb-xs">Assumptions</p>
+            <p class="text-caption text-mute">XIRR is calculated using Newton's method. The calculator assumes annual investments made at regular intervals. Enter the total current value of your investments.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SWP ──────────────────────────────────────────────────── -->
+    <div data-calc-panel="swp" class="hidden animate-fade-in">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-xl">
+        <div class="lg:col-span-2 card-elevated">
+          <p class="text-caption-mono text-gold mb-sm">SWP / Systematic Withdrawal Plan</p>
+          <div class="space-y-md">
+            <div>
+              <label class="label" for="swp-investment">Investment Corpus</label>
+              <input class="input" type="number" id="swp-investment" data-calc-input value="10000000" min="0" step="500000" />
+            </div>
+            <div>
+              <label class="label" for="swp-rate">Expected Return (% p.a.)</label>
+              <input class="input" type="number" id="swp-rate" data-calc-input value="8" min="0" max="30" step="0.5" />
+              <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick return presets">
+                {["6", "8", "10", "12"].map((v) => (
+                  <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="swp-rate" data-value={v}>{v}%</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="label" for="swp-years">Withdrawal Period (years)</label>
+              <input class="input" type="number" id="swp-years" data-calc-input value="10" min="1" max="50" step="1" />
+            </div>
+            <div>
+              <label class="label" for="swp-monthlyNeeded">Monthly Withdrawal Needed (optional)</label>
+              <input class="input" type="number" id="swp-monthlyNeeded" data-calc-input value="0" min="0" step="5000" placeholder="0 = calculate from corpus" />
+              <p class="text-caption text-mute mt-xxs">Leave 0 to calculate max withdrawal from corpus</p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-sm mt-lg pt-lg hairline">
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-reset>Reset</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-copy>Copy values</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-share>Share</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-pdf>Save PDF</button>
+          </div>
+        </div>
+        <div class="lg:col-span-3 space-y-xl">
+          <div class="grid grid-cols-3 gap-md">
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Monthly Withdrawal</p>
+              <p class="text-display-sm text-ink" id="swp-result-monthly" data-result="Monthly Withdrawal" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Total Withdrawn</p>
+              <p class="text-display-sm text-gold" id="swp-result-total" data-result="Total Withdrawn" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Corpus Remaining</p>
+              <p class="text-display-sm text-ink" id="swp-result-remaining" data-result="Corpus Remaining" aria-live="polite">—</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-md">
+            <div class="card">
+              <p class="text-caption-mono text-body mb-md">Corpus Depletion</p>
+              <div style="position:relative;height:220px;"><canvas id="swp-line-chart" aria-label="SWP corpus depletion chart"></canvas></div>
+            </div>
+            <div class="card">
+              <p class="text-caption-mono text-body mb-md">Investment vs Withdrawals</p>
+              <div style="position:relative;height:220px;"><canvas id="swp-donut-chart" aria-label="SWP investment vs withdrawals donut chart"></canvas></div>
+            </div>
+          </div>
+          <div class="card-soft">
+            <p class="text-caption-mono text-body mb-xs">Assumptions</p>
+            <p class="text-caption text-mute">Returns are assumed constant. Withdrawals happen at end of each month. If monthly amount is specified, the calculator shows remaining corpus after withdrawal period.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PPF ──────────────────────────────────────────────────── -->
+    <div data-calc-panel="ppf" class="hidden animate-fade-in">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-xl">
+        <div class="lg:col-span-2 card-elevated">
+          <p class="text-caption-mono text-gold mb-sm">PPF / Public Provident Fund Calculator</p>
+          <div class="space-y-md">
+            <div>
+              <label class="label" for="ppf-annual">Annual Investment (₹500 – ₹1.5L)</label>
+              <input class="input" type="number" id="ppf-annual" data-calc-input value="150000" min="500" max="150000" step="5000" />
+            </div>
+            <div>
+              <label class="label" for="ppf-rate">PPF Interest Rate (% p.a.)</label>
+              <input class="input" type="number" id="ppf-rate" data-calc-input value={PPF_RATE_SERVER} min="1" max="15" step="0.1" />
+              <p class="text-caption text-mute mt-xxs">Current rate: {PPF_RATE_SERVER}% (notified quarterly by govt)</p>
+            </div>
+            <div class="card-soft mt-md">
+              <p class="text-caption-mono text-body mb-xs">About PPF</p>
+              <ul class="text-caption text-mute space-y-xs">
+                <li>• Lock-in period: 15 years</li>
+                <li>• Min annual: ₹500 | Max: ₹1.5L</li>
+                <li>• Interest compounded annually</li>
+                <li>• Tax-free returns (EEE category)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-sm mt-lg pt-lg hairline">
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-reset>Reset</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-copy>Copy values</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-share>Share</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-pdf>Save PDF</button>
+          </div>
+        </div>
+        <div class="lg:col-span-3 space-y-xl">
+          <div class="grid grid-cols-3 gap-md">
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Maturity Amount</p>
+              <p class="text-display-sm text-ink" id="ppf-result-maturity" data-result="Maturity Amount" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Total Invested</p>
+              <p class="text-display-sm text-ink" id="ppf-result-invested" data-result="Total Invested" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Interest Earned</p>
+              <p class="text-display-sm text-gold" id="ppf-result-interest" data-result="Interest Earned" aria-live="polite">—</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-md">
+            <div class="card">
+              <p class="text-caption-mono text-body mb-md">PPF Growth (15 years)</p>
+              <div style="position:relative;height:220px;"><canvas id="ppf-line-chart" aria-label="PPF growth chart"></canvas></div>
+            </div>
+            <div class="card">
+              <p class="text-caption-mono text-body mb-md">Investment vs Interest</p>
+              <div style="position:relative;height:220px;"><canvas id="ppf-donut-chart" aria-label="PPF investment vs interest donut chart"></canvas></div>
+            </div>
+          </div>
+          <div class="card-soft">
+            <p class="text-caption-mono text-body mb-xs">Assumptions</p>
+            <p class="text-caption text-mute">PPF interest rate is assumed constant for all 15 years. Actual rates are revised quarterly by the government. Investment is made at the beginning of each financial year.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── FD ───────────────────────────────────────────────────── -->
+    <div data-calc-panel="fd" class="hidden animate-fade-in">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-xl">
+        <div class="lg:col-span-2 card-elevated">
+          <p class="text-caption-mono text-gold mb-sm">FD / Fixed Deposit Calculator</p>
+          <div class="space-y-md">
+            <div>
+              <label class="label" for="fd-amount">Deposit Amount</label>
+              <input class="input" type="number" id="fd-amount" data-calc-input value="100000" min="0" step="10000" />
+            </div>
+            <div>
+              <label class="label" for="fd-rate">Interest Rate (% p.a.)</label>
+              <input class="input" type="number" id="fd-rate" data-calc-input value="7" min="0" max="15" step="0.25" />
+              <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick rate presets">
+                {["5.5", "6", "7", "7.5", "8", "9"].map((v) => (
+                  <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="fd-rate" data-value={v}>{v}%</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="label" for="fd-years">Tenure (years)</label>
+              <input class="input" type="number" id="fd-years" data-calc-input value="3" min="1" max="30" step="1" />
+              <div class="flex gap-1 mt-xxs" role="group" aria-label="Quick tenure presets">
+                {["1", "2", "3", "5", "10"].map((v) => (
+                  <button type="button" class="btn-ghost" style="height:26px;padding:0 8px;font-size:11px;" data-quick data-target="fd-years" data-value={v}>{v}y</button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-sm mt-lg pt-lg hairline">
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-reset>Reset</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-copy>Copy values</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-share>Share</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-pdf>Save PDF</button>
+          </div>
+        </div>
+        <div class="lg:col-span-3 space-y-xl">
+          <div class="grid grid-cols-2 gap-md">
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Maturity Amount</p>
+              <p class="text-display-sm text-ink" id="fd-result-maturity" data-result="Maturity Amount" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Total Interest</p>
+              <p class="text-display-sm text-gold" id="fd-result-interest" data-result="Total Interest" aria-live="polite">—</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-md">
+            <div class="card">
+              <p class="text-caption-mono text-body mb-md">FD Growth</p>
+              <div style="position:relative;height:220px;"><canvas id="fd-line-chart" aria-label="FD growth chart"></canvas></div>
+            </div>
+            <div class="card">
+              <p class="text-caption-mono text-body mb-md">Principal vs Interest</p>
+              <div style="position:relative;height:220px;"><canvas id="fd-donut-chart" aria-label="FD principal vs interest donut chart"></canvas></div>
+            </div>
+          </div>
+          <div class="card-soft">
+            <p class="text-caption-mono text-body mb-xs">Assumptions</p>
+            <p class="text-caption text-mute">Interest rate is assumed constant for the entire tenure. Actual FD rates vary by bank and tenure. Interest is compounded annually. TDS applicable on interest above ₹40,000 (₹50,000 for senior citizens).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── RETIREMENT PLANNER ─────────────────────────────────── -->
+    <div data-calc-panel="retirement" class="hidden animate-fade-in">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-xl">
+        <div class="lg:col-span-2 card-elevated">
+          <p class="text-caption-mono text-gold mb-sm">Retirement Planner</p>
+          <div class="space-y-md">
+            <div class="grid grid-cols-2 gap-sm">
+              <div>
+                <label class="label" for="retirement-age">Current Age</label>
+                <input class="input" type="number" id="retirement-age" data-calc-input value="30" min="18" max="80" />
+              </div>
+              <div>
+                <label class="label" for="retirement-retireAge">Retirement Age</label>
+                <input class="input" type="number" id="retirement-retireAge" data-calc-input value="60" min="30" max="80" />
+              </div>
+            </div>
+            <div>
+              <label class="label" for="retirement-currentCorpus">Current Retirement Corpus</label>
+              <input class="input" type="number" id="retirement-currentCorpus" data-calc-input value="500000" min="0" step="50000" />
+            </div>
+            <div>
+              <label class="label" for="retirement-monthlySip">Monthly SIP for Retirement</label>
+              <input class="input" type="number" id="retirement-monthlySip" data-calc-input value="10000" min="0" step="1000" />
+            </div>
+            <div class="grid grid-cols-2 gap-sm">
+              <div>
+                <label class="label" for="retirement-expectedReturn">Expected Return (%)</label>
+                <input class="input" type="number" id="retirement-expectedReturn" data-calc-input value="12" min="0" max="30" step="0.5" />
+              </div>
+              <div>
+                <label class="label" for="retirement-inflation">Inflation Rate (%)</label>
+                <input class="input" type="number" id="retirement-inflation" data-calc-input value="6" min="0" max="20" step="0.5" />
+              </div>
+            </div>
+            <div>
+              <label class="label" for="retirement-lifeExpectancy">Life Expectancy</label>
+              <input class="input" type="number" id="retirement-lifeExpectancy" data-calc-input value="85" min="60" max="120" />
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-sm mt-lg pt-lg hairline">
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-reset>Reset</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-copy>Copy values</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-share>Share</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-pdf>Save PDF</button>
+          </div>
+        </div>
+        <div class="lg:col-span-3 space-y-xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Corpus at Retirement</p>
+              <p class="text-display-sm text-ink" id="retirement-result-corpus" data-result="Corpus at Retirement" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Monthly Withdrawal</p>
+              <p class="text-display-sm text-gold" id="retirement-result-monthly" data-result="Monthly Withdrawal" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Annual Withdrawal</p>
+              <p class="text-display-sm text-ink" id="retirement-result-annual" data-result="Annual Withdrawal" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Monthly Need (Today)</p>
+              <p class="text-display-sm text-ink" id="retirement-result-current" data-result="Monthly Need in Today's Value" aria-live="polite">—</p>
+            </div>
+          </div>
+          <div class="card">
+            <p class="text-caption-mono text-body mb-md">Corpus Growth Projection</p>
+            <div style="position:relative;height:260px;"><canvas id="retirement-line-chart" aria-label="Retirement corpus growth chart"></canvas></div>
+          </div>
+          <div class="card-soft">
+            <p class="text-caption-mono text-body mb-xs">Assumptions</p>
+            <p class="text-caption text-mute">Returns are assumed constant. Inflation erodes purchasing power. The calculator assumes you withdraw inflation-adjusted amounts in retirement. Actual results depend on market conditions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── TAX ESTIMATOR ──────────────────────────────────────── -->
+    <div data-calc-panel="tax" class="hidden animate-fade-in">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-xl">
+        <div class="lg:col-span-2 card-elevated">
+          <p class="text-caption-mono text-gold mb-sm">India Tax Estimator — {FINANCIAL_YEAR_SERVER}</p>
+          <div class="space-y-md">
+            <div>
+              <label class="label" for="tax-annualIncome">Annual Gross Income</label>
+              <input class="input" type="number" id="tax-annualIncome" data-calc-input value="1200000" min="0" step="50000" />
+            </div>
+            <div>
+              <label class="label">Tax Regime</label>
+              <div class="flex gap-md" role="radiogroup" aria-label="Tax regime">
+                <label class="flex items-center gap-xs cursor-pointer">
+                  <input type="radio" name="tax-regime" value="80" data-tax-regime checked /> New Regime
+                </label>
+                <label class="flex items-center gap-xs cursor-pointer">
+                  <input type="radio" name="tax-regime" value="0" data-tax-regime /> Old Regime
+                </label>
+                <input type="hidden" id="tax-regime" data-calc-input value="80" />
+              </div>
+            </div>
+            <div id="tax-old-deductions" class="space-y-md hidden">
+              <p class="text-caption-mono text-body">Old Regime Deductions</p>
+              <div>
+                <label class="label" for="tax-hra">HRA Exemption</label>
+                <input class="input" type="number" id="tax-hra" data-calc-input value="0" min="0" step="10000" />
+              </div>
+              <div>
+                <label class="label" for="tax-lta">LTA Exemption</label>
+                <input class="input" type="number" id="tax-lta" data-calc-input value="0" min="0" step="10000" />
+              </div>
+              <div>
+                <label class="label" for="tax-sec80c">Section 80C (max ₹1.5L)</label>
+                <input class="input" type="number" id="tax-sec80c" data-calc-input value="150000" min="0" max="150000" step="10000" />
+              </div>
+              <div>
+                <label class="label" for="tax-sec80d">Section 80D (max ₹25k)</label>
+                <input class="input" type="number" id="tax-sec80d" data-calc-input value="25000" min="0" max="25000" step="5000" />
+              </div>
+              <div>
+                <label class="label" for="tax-nps">NPS 80CCD(1B) (max ₹50k)</label>
+                <input class="input" type="number" id="tax-nps" data-calc-input value="50000" min="0" max="50000" step="5000" />
+              </div>
+              <div>
+                <label class="label" for="tax-homeLoanInterest">Home Loan Interest (max ₹2L)</label>
+                <input class="input" type="number" id="tax-homeLoanInterest" data-calc-input value="200000" min="0" max="200000" step="10000" />
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-sm mt-lg pt-lg hairline">
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-reset>Reset</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-copy>Copy values</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-share>Share</button>
+            <button type="button" class="btn-ghost" style="height:32px;padding:0 12px;font-size:12px;" data-calc-pdf>Save PDF</button>
+          </div>
+        </div>
+        <div class="lg:col-span-3 space-y-xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Taxable Income</p>
+              <p class="text-display-sm text-ink" id="tax-result-taxable" data-result="Taxable Income" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Income Tax</p>
+              <p class="text-display-sm text-ink" id="tax-result-tax" data-result="Income Tax" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Cess (4%)</p>
+              <p class="text-display-sm text-ink" id="tax-result-cess" data-result="Cess" aria-live="polite">—</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-caption-mono text-mute mb-xs">Total Tax</p>
+              <p class="text-display-sm text-gold" id="tax-result-total" data-result="Total Tax" aria-live="polite">—</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="flex items-center justify-between mb-md">
+              <p class="text-caption-mono text-body">Tax Breakdown</p>
+              <p class="text-caption text-mute">Effective Rate: <span id="tax-result-effective">—</span></p>
+            </div>
+            <div class="flex justify-center" style="position:relative;height:220px;max-width:320px;margin:0 auto;"><canvas id="tax-donut-chart" aria-label="Tax breakdown donut chart"></canvas></div>
+          </div>
+          <div class="card-soft">
+            <p class="text-caption-mono text-body mb-xs">Assumptions</p>
+            <p class="text-caption text-mute">Tax calculated for {FINANCIAL_YEAR_SERVER}. Standard deduction of ₹{new Intl.NumberFormat("en-IN").format(STANDARD_DEDUCTION_NEW_SERVER)} (new regime) / ₹{new Intl.NumberFormat("en-IN").format(STANDARD_DEDUCTION_OLD_SERVER)} (old regime) applied automatically. Cess at 4% on tax amount. Surcharge not included. Actual liability may vary based on specific exemptions and professional advice.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .tab-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      background: transparent;
+      color: var(--color-body);
+      border: 0;
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease;
+    }
+    .tab-pill[aria-selected="true"],
+    .tab-pill.active {
+      background: var(--color-canvas);
+      color: var(--color-ink);
+      box-shadow: var(--shadow-level-2);
+    }
+    .tab-pill:hover:not([aria-selected="true"]):not(.active) {
+      color: var(--color-ink);
+    }
+
+    @media print {
+      nav, footer, [data-calc-reset], [data-calc-copy], [data-calc-share], [data-calc-pdf],
+      [role="tablist"], .hairline > * { display: none !important; }
+      body { background: white !important; color: black !important; }
+      .card, .card-elevated, .card-soft {
+        box-shadow: none !important; border: 1px solid #ddd !important; break-inside: avoid;
+      }
+      canvas { max-width: 100% !important; }
+    }
+  </style>
+
+  <script>
+    import "../scripts/calculators.ts";
+  </script>
+
+  <script is:inline>
+    document.addEventListener("DOMContentLoaded", function() {
+      document.querySelectorAll("[data-tax-regime]").forEach(function(el) {
+        el.addEventListener("change", function() {
+          const val = parseInt(this.value);
+          document.getElementById("tax-regime").value = String(val);
+          const oldDeductions = document.getElementById("tax-old-deductions");
+          if (oldDeductions) {
+            oldDeductions.classList.toggle("hidden", val >= 80);
+          }
+          const event = new Event("input", { bubbles: true });
+          document.getElementById("tax-regime").dispatchEvent(event);
+        });
+      });
+    });
+  </script>
+
+  <script is:inline>
+    document.addEventListener("DOMContentLoaded", function() {
+      document.querySelectorAll("[data-quick]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var target = this.dataset.target;
+          var value = this.dataset.value;
+          var input = document.getElementById(target);
+          if (input) {
+            input.value = value;
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+          }
+        });
+      });
+    });
+  </script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": ["WebPage", "SoftwareApplication"],
+      "name": "Financial Calculators — Global Wealth Portfolio",
+      "url": "https://globalwealthfolio.com/calculators",
+      "description": "Free financial calculators: Advance EMI with prepayment options, SIP with Lumpsum, XIRR, SWP, PPF, FD, Retirement Planner, and India Tax Estimator.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://globalwealthfolio.com" },
+          { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://globalwealthfolio.com/calculators" }
+        ]
+      },
+      "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": [
+        { "@type": "SoftwareApplication", "name": "Advance EMI Calculator — with Prepayment & Amortization", "applicationCategory": "FinanceApplication" },
+        { "@type": "SoftwareApplication", "name": "SIP + Lumpsum Calculator", "applicationCategory": "FinanceApplication" },
+        { "@type": "SoftwareApplication", "name": "XIRR Calculator", "applicationCategory": "FinanceApplication" },
+        { "@type": "SoftwareApplication", "name": "SWP Calculator", "applicationCategory": "FinanceApplication" },
+        { "@type": "SoftwareApplication", "name": "PPF Calculator", "applicationCategory": "FinanceApplication" },
+        { "@type": "SoftwareApplication", "name": "FD Calculator", "applicationCategory": "FinanceApplication" },
+        { "@type": "SoftwareApplication", "name": "Retirement Planner", "applicationCategory": "FinanceApplication" },
+        { "@type": "SoftwareApplication", "name": "India Tax Estimator", "applicationCategory": "FinanceApplication" }
+        ]
+      }
+    }
+  </script>
+</Layout>
