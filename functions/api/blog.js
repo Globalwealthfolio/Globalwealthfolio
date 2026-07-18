@@ -32,6 +32,18 @@ export async function onRequest(context) {
         return new Response(JSON.stringify({ posts: [] }), { headers: { ...headers, "Content-Type": "application/json" } });
       }
       const allPosts = (JSON.parse(raw) || []).filter((p, i, arr) => arr.findIndex(x => x.id === p.id || x.slug === p.slug) === i);
+      const showAll = url.searchParams.get("all") === "true";
+      const adminToken = request.headers.get("X-Admin-Token") || "";
+      if (showAll && adminToken === env.ADMIN_TOKEN) {
+        allPosts.sort((a, b) => ((a.publishedAt ?? a.updatedAt) < (b.publishedAt ?? b.updatedAt) ? 1 : -1));
+        const slug = url.searchParams.get("slug");
+        if (slug) {
+          const post = allPosts.find((p) => p.slug === slug);
+          if (!post) return error(404, "Post not found");
+          return new Response(JSON.stringify(post), { headers: { ...headers, "Content-Type": "application/json" } });
+        }
+        return new Response(JSON.stringify({ posts: allPosts }), { headers: { ...headers, "Content-Type": "application/json" } });
+      }
       const published = allPosts.filter((p) => p.status === "published").sort((a, b) => {
         return (a.publishedAt ?? a.updatedAt) < (b.publishedAt ?? b.updatedAt) ? 1 : -1;
       });

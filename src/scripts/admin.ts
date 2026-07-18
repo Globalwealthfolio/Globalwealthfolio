@@ -83,6 +83,9 @@ function showPanel() {
   forgotScreen.style.display = "none";
   adminPanel.style.display = "block";
   renderAll();
+  if (getApiToken()) {
+    fetchPostsFromServer(true);
+  }
 }
 
 if (checkAuth()) {
@@ -437,15 +440,24 @@ function renderAll() {
   });
 
   if (posts.length === 0) {
+    const hasToken = getApiToken();
     list.innerHTML = `
       <div class="text-center py-5xl card-soft">
         <p class="text-display-sm text-ink mb-xs">No posts yet</p>
-        <p class="text-body-sm text-body mb-md">Create your first blog post.</p>
-        <button class="btn-primary" type="button" data-add-first>Write your first post</button>
+        <p class="text-body-sm text-body mb-md">Create your first blog post or load older posts from the server.</p>
+        <div class="flex items-center justify-center gap-sm flex-wrap">
+          <button class="btn-primary" type="button" data-add-first>Write your first post</button>
+          ${hasToken ? `<button class="btn-secondary" type="button" data-fetch-first>Load from server</button>` : ""}
+        </div>
+        ${!hasToken ? `<p class="text-body-sm text-mute mt-md">Set your Admin Token in the Server Sync section below to fetch older published posts.</p>` : ""}
       </div>`;
     list
       .querySelector("[data-add-first]")
       ?.addEventListener("click", () => openModal());
+    const fetchFirst = list.querySelector("[data-fetch-first]");
+    if (fetchFirst) {
+      fetchFirst.addEventListener("click", () => fetchPostsFromServer(false));
+    }
     return;
   }
 
@@ -510,6 +522,48 @@ modal?.addEventListener("close", () => {
   renderAll();
 });
 
+// --- Link dialog ---
+const linkDialog = document.getElementById("link-dialog") as HTMLDialogElement;
+const linkUrlInput = document.getElementById("link-url") as HTMLInputElement;
+const linkTextInput = document.getElementById("link-text") as HTMLInputElement;
+const linkInsertBtn = document.getElementById("link-insert")!;
+const linkCancelBtn = document.getElementById("link-cancel")!;
+
+function openLinkDialog() {
+  if (!linkDialog || !contentArea) return;
+  const sel = window.getSelection();
+  let selectedText = "";
+  if (sel && sel.rangeCount && !sel.isCollapsed) {
+    selectedText = sel.toString();
+  }
+  linkUrlInput.value = "";
+  linkTextInput.value = selectedText;
+  linkDialog.showModal();
+  linkUrlInput.focus();
+}
+
+linkCancelBtn?.addEventListener("click", () => linkDialog?.close());
+
+linkInsertBtn?.addEventListener("click", () => {
+  const url = linkUrlInput.value.trim();
+  if (!url) {
+    linkUrlInput.focus();
+    return;
+  }
+  contentArea?.focus();
+  const displayText = linkTextInput.value.trim();
+  if (displayText && window.getSelection()?.isCollapsed !== false) {
+    document.execCommand("insertHTML", false, `<a href="${url.replace(/"/g, "&quot;")}">${esc(displayText)}</a>`);
+  } else {
+    document.execCommand("createLink", false, url);
+  }
+  linkDialog?.close();
+});
+
+linkUrlInput?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") linkInsertBtn?.click();
+});
+
 // --- Formatting toolbar (WYSIWYG) ---
 const toolbar = document.getElementById("editor-toolbar");
 const contentArea = document.getElementById("blog-content") as HTMLElement;
@@ -529,8 +583,7 @@ toolbar?.addEventListener("click", (e) => {
     case "ul": document.execCommand("insertUnorderedList"); break;
     case "ol": document.execCommand("insertOrderedList"); break;
     case "link":
-      const url = prompt("Enter URL:", "https://");
-      if (url) document.execCommand("createLink", false, url);
+      openLinkDialog();
       break;
     case "font-sans": document.execCommand("fontName", false, "sans-serif"); break;
     case "font-serif": document.execCommand("fontName", false, "serif"); break;
@@ -559,5 +612,65 @@ toolbar?.addEventListener("click", (e) => {
     document.execCommand("foreColor", false, fmt.replace("color-", ""));
   }
 });
+
+// --- Fetch posts from server ---
+const fetchPostsBtn = document.getElementById("fetch-posts-btn");
+
+async function fetchPostsFromServer(silent = false) {
+  const token = getApiToken();
+  if (!token) {
+    if (!silent) {
+      apiSyncStatus.textContent = "⚠ Set Admin Token first to fetch server posts";
+      apiSyncStatus.className = "text-caption text-loss";
+    }
+    return;
+  }
+  if (!silent) {
+    apiSyncStatus.textContent = "Fetching posts…";
+    apiSyncStatus.className = "text-caption text-mute";
+  }
+  try {
+    const res = await fetch("/api/blog?all=true", {
+      headers: { "X-Admin-Token": token },
+    });
+    if (!res.ok) {
+      if (!silent) {
+        const data = await res.json().catch(() => ({}));
+        apiSyncStatus.textContent = `✗ ${data.error || res.status}`;
+        apiSyncStatus.className = "text-caption text-loss";
+      }
+      return;
+    }
+    const data = await res.json();
+    const serverPosts: BlogPost[] = data.posts || [];
+    if (serverPosts.length === 0) {
+      if (!silent) {
+        apiSyncStatus.textContent = "No posts found on server";
+        apiSyncStatus.className = "text-caption text-mute";
+      }
+      return;
+    }
+    updateData((appData) => {
+      for (const sp of serverPosts) {
+        const idx = appData.blog.findIndex((lp) => lp.id === sp.id);
+        if (idx >= 0) {
+          appData.blog[idx] = sp;
+        } else {
+          appData.blog.unshift(sp);
+        }
+      }
+    });
+    apiSyncStatus.textContent = `✓ Fetched ${serverPosts.length} post(s) from server`;
+    apiSyncStatus.className = "text-caption text-gain";
+    renderAll();
+  } catch {
+    if (!silent) {
+      apiSyncStatus.textContent = "✗ Network error";
+      apiSyncStatus.className = "text-caption text-loss";
+    }
+  }
+}
+
+fetchPostsBtn?.addEventListener("click", () => fetchPostsFromServer(false));
 
 

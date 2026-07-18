@@ -119,8 +119,9 @@ import Layout from "../layouts/Layout.astro";
             <input id="api-token" type="password" class="input" placeholder="Your secret admin token" />
             <p class="text-caption text-mute mt-xs">Token used to authenticate with the server API.</p>
           </div>
-          <div class="flex items-center gap-sm">
+          <div class="flex items-center gap-sm flex-wrap">
             <button id="resync-btn" class="btn-primary" type="button">Resync Posts</button>
+            <button id="fetch-posts-btn" class="btn-secondary" type="button">Fetch Posts</button>
             <span id="api-sync-status" class="text-caption text-mute"></span>
           </div>
         </div>
@@ -135,55 +136,55 @@ import Layout from "../layouts/Layout.astro";
   <!-- Editor modal -->
   <dialog
     id="blog-modal"
-    class="rounded-lg p-0 max-w-2xl w-full shadow-level-5 backdrop:bg-black/30"
+    class="rounded-lg p-0 w-full shadow-level-5 backdrop:bg-black/30"
   >
-    <form id="blog-form" method="dialog" class="p-lg">
-      <div class="flex items-center justify-between mb-md">
-        <h2 class="text-display-sm" id="blog-modal-title">Write a new post</h2>
-        <button type="button" data-close-modal class="btn-icon" aria-label="Close">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-      <input type="hidden" id="blog-id" name="id" />
-      <div class="space-y-md">
-        <div>
-          <label class="label" for="blog-title">Title *</label>
-          <input
-            class="input"
-            type="text"
-            id="blog-title"
-            name="title"
-            required
-            placeholder="e.g. Why I'm moving 20% into international equities"
-          />
+    <form id="blog-form" method="dialog">
+      <div class="modal-scroll">
+        <div class="flex items-center justify-between mb-md px-lg pt-lg">
+          <h2 class="text-display-sm" id="blog-modal-title">Write a new post</h2>
+          <button type="button" data-close-modal class="btn-icon" aria-label="Close">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
-        <div>
-          <label class="label" for="blog-excerpt">Excerpt</label>
-          <input
-            class="input"
-            type="text"
-            id="blog-excerpt"
-            name="excerpt"
-            placeholder="A short summary shown on the list view"
-          />
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
+        <input type="hidden" id="blog-id" name="id" />
+        <div class="px-lg space-y-md">
           <div>
-            <label class="label" for="blog-author">Author</label>
-            <input class="input" type="text" id="blog-author" name="authorName" placeholder="Your name" />
+            <label class="label" for="blog-title">Title *</label>
+            <input
+              class="input"
+              type="text"
+              id="blog-title"
+              name="title"
+              required
+              placeholder="e.g. Why I'm moving 20% into international equities"
+            />
           </div>
           <div>
-            <label class="label" for="blog-tags">Tags <span class="text-mute font-normal">(comma separated)</span></label>
-            <input class="input" type="text" id="blog-tags" name="tags" placeholder="investing, sip, review" />
+            <label class="label" for="blog-excerpt">Excerpt</label>
+            <input
+              class="input"
+              type="text"
+              id="blog-excerpt"
+              name="excerpt"
+              placeholder="A short summary shown on the list view"
+            />
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
+            <div>
+              <label class="label" for="blog-author">Author</label>
+              <input class="input" type="text" id="blog-author" name="authorName" placeholder="Your name" />
+            </div>
+            <div>
+              <label class="label" for="blog-tags">Tags <span class="text-mute font-normal">(comma separated)</span></label>
+              <input class="input" type="text" id="blog-tags" name="tags" placeholder="investing, sip, review" />
+            </div>
           </div>
         </div>
-        <div>
-          <label class="label" for="blog-content">Content *</label>
+        <div class="editor-wrapper">
           <div class="editor-toolbar" id="editor-toolbar">
-
             <button type="button" data-fmt="bold" title="Bold"><strong>B</strong></button>
             <button type="button" data-fmt="italic" title="Italic"><em>I</em></button>
             <button type="button" data-fmt="underline" title="Underline"><u>U</u></button>
@@ -192,7 +193,7 @@ import Layout from "../layouts/Layout.astro";
             <button type="button" data-fmt="ul" title="Bullet list">UL</button>
             <button type="button" data-fmt="ol" title="Numbered list">OL</button>
             <span class="toolbar-divider"></span>
-            <button type="button" data-fmt="link" title="Insert link">Link</button>
+            <button type="button" data-fmt="link" id="link-btn" title="Insert link">Link</button>
             <span class="toolbar-divider"></span>
             <button type="button" data-fmt="font-sans" title="Sans-serif">Sans</button>
             <button type="button" data-fmt="font-serif" title="Serif">Serif</button>
@@ -218,28 +219,50 @@ import Layout from "../layouts/Layout.astro";
             role="textbox"
             aria-multiline="true"
             data-placeholder="Write your thoughts here..."
-            style="min-height: 200px; padding: 12px; line-height: 1.55;"
+            style="min-height: 450px; padding: 12px; line-height: 1.55;"
           ></div>
+          <!-- Link dialog -->
+          <dialog id="link-dialog" class="rounded-lg p-0 shadow-level-5 backdrop:bg-black/30 border-0 max-w-sm w-full">
+            <div class="p-md">
+              <h3 class="text-display-xs mb-md">Insert Link</h3>
+              <div class="space-y-sm">
+                <div>
+                  <label class="label text-body-xs" for="link-url">URL</label>
+                  <input id="link-url" type="url" class="input" placeholder="https://" autocomplete="off" />
+                </div>
+                <div>
+                  <label class="label text-body-xs" for="link-text">Text to display <span class="text-mute font-normal">(optional)</span></label>
+                  <input id="link-text" type="text" class="input" placeholder="Selected text or custom label" autocomplete="off" />
+                </div>
+              </div>
+              <div class="flex justify-end gap-sm mt-md">
+                <button id="link-cancel" type="button" class="btn-secondary">Cancel</button>
+                <button id="link-insert" type="button" class="btn-primary">Insert</button>
+              </div>
+            </div>
+          </dialog>
         </div>
-        <div>
-          <label class="label">Status</label>
-          <div class="flex gap-sm">
-            <label class="flex items-center gap-xs cursor-pointer">
-              <input type="radio" name="status" value="draft" class="blog-status-radio accent-current" />
-              <span class="text-body-sm">Draft</span>
-            </label>
-            <label class="flex items-center gap-xs cursor-pointer">
-              <input type="radio" name="status" value="published" class="blog-status-radio accent-current" checked />
-              <span class="text-body-sm">Published</span>
-            </label>
+        <div class="px-lg pb-lg space-y-md mt-md">
+          <div>
+            <label class="label">Status</label>
+            <div class="flex gap-sm">
+              <label class="flex items-center gap-xs cursor-pointer">
+                <input type="radio" name="status" value="draft" class="blog-status-radio accent-current" />
+                <span class="text-body-sm">Draft</span>
+              </label>
+              <label class="flex items-center gap-xs cursor-pointer">
+                <input type="radio" name="status" value="published" class="blog-status-radio accent-current" checked />
+                <span class="text-body-sm">Published</span>
+              </label>
+            </div>
           </div>
-        </div>
-      </div>
-      <div class="flex justify-between items-center mt-lg">
-        <p class="text-caption text-mute">Posts are stored locally in your browser.</p>
-        <div class="flex gap-sm">
-          <button type="button" data-close-modal class="btn-secondary">Cancel</button>
-          <button type="submit" class="btn-primary">Save post</button>
+          <div class="flex justify-between items-center">
+            <p class="text-caption text-mute">Posts are stored locally in your browser.</p>
+            <div class="flex gap-sm">
+              <button type="button" data-close-modal class="btn-secondary">Cancel</button>
+              <button type="submit" class="btn-primary">Save post</button>
+            </div>
+          </div>
         </div>
       </div>
     </form>
@@ -247,7 +270,27 @@ import Layout from "../layouts/Layout.astro";
 </Layout>
 
 <style>
+  #blog-modal {
+    width: min(95vw, 960px);
+  }
+  #blog-form {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  #blog-form .modal-scroll {
+    display: flex;
+    flex-direction: column;
+  }
+  .editor-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 300px;
+  }
   .editor-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
     display: flex;
     flex-wrap: wrap;
     gap: 2px;
@@ -310,11 +353,12 @@ import Layout from "../layouts/Layout.astro";
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
     outline: none;
-    min-height: 200px;
+    min-height: 450px;
     height: auto;
     overflow-wrap: break-word;
     word-break: break-word;
     overflow-y: auto;
+    flex: 1;
   }
   .editor-content:empty:before {
     content: attr(data-placeholder);
