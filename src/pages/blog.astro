@@ -170,7 +170,13 @@ import Layout from "../layouts/Layout.astro";
     try {
       const res = await fetch("/api/blog");
       const data = await res.json();
-      const posts = (data.posts || []).filter((p, i, arr) => arr.findIndex(x => x.id === p.id || x.slug === p.slug) === i);
+      const posts = (data.posts || []).filter((p, i, arr) => arr.findIndex(x => x.id === p.id || x.slug === p.slug) === i)
+        .filter((p) => {
+          if (p.status === "scheduled" && p.scheduledAt) {
+            return new Date(p.scheduledAt) <= new Date();
+          }
+          return p.status === "published";
+        });
 
       if (posts.length === 0) {
         list.innerHTML = `<div class="md:col-span-2 text-center py-5xl card-soft"><p class="text-body-sm text-body">No posts yet. Check back soon!</p></div>`;

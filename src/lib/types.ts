@@ -137,11 +137,12 @@ export interface BlogPost {
   excerpt: string;
   content: string;
   tags: string[];
-  status: "draft" | "published";
+  status: "draft" | "published" | "scheduled";
   authorName?: string;
   createdAt: string;
   updatedAt: string;
   publishedAt?: string;
+  scheduledAt?: string;
 }
 
 export interface UserPreferences {

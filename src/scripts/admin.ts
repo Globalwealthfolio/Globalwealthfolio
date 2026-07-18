@@ -116,7 +116,7 @@ async function syncPost(post: import("../lib/types").BlogPost, statusEl: HTMLEle
     const res = await fetch("/api/add-post", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ id: post.id, title: post.title, slug: post.slug, content: post.content, excerpt: post.excerpt, tags: post.tags, status: post.status, authorName: post.authorName }),
+      body: JSON.stringify({ id: post.id, title: post.title, slug: post.slug, content: post.content, excerpt: post.excerpt, tags: post.tags, status: post.status, authorName: post.authorName, scheduledAt: post.scheduledAt }),
     });
     if (res.ok) {
       statusEl.textContent = "✓ Synced";
@@ -336,6 +336,37 @@ function formatDate(iso: string): string {
   }
 }
 
+function formatDatetimeLocal(iso: string): string {
+  try {
+    const d = new Date(iso);
+    const offset = d.getTimezoneOffset();
+    const local = new Date(d.getTime() - offset * 60000);
+    return local.toISOString().slice(0, 16);
+  } catch {
+    return "";
+  }
+}
+
+function autoPublishScheduled(): boolean {
+  const now = new Date().toISOString();
+  let changed = false;
+  const data = loadData();
+  data.blog.forEach((p) => {
+    if (p.status === "scheduled" && p.scheduledAt && p.scheduledAt <= now) {
+      p.status = "published";
+      p.publishedAt = p.scheduledAt;
+      p.updatedAt = now;
+      changed = true;
+    }
+  });
+  if (changed) {
+    updateData((d) => {
+      d.blog = data.blog;
+    });
+  }
+  return changed;
+}
+
 // --- Modal ---
 function openModal(post?: BlogPost) {
   if (!modal || !form) return;
@@ -343,6 +374,8 @@ function openModal(post?: BlogPost) {
   form.reset();
   const contentEl = document.getElementById("blog-content") as HTMLElement;
   contentEl.innerHTML = "";
+  const scheduledAtInput = document.getElementById("blog-scheduled-at") as HTMLInputElement;
+  const scheduledAtGroup = document.getElementById("scheduled-at-group");
   if (post) {
     (document.getElementById("blog-id") as HTMLInputElement).value = post.id;
     (document.getElementById("blog-title") as HTMLInputElement).value = post.title;
@@ -353,11 +386,18 @@ function openModal(post?: BlogPost) {
     document.querySelectorAll<HTMLInputElement>(".blog-status-radio").forEach((r) => {
       r.checked = r.value === post.status;
     });
+    if (post.scheduledAt && scheduledAtInput) {
+      scheduledAtInput.value = formatDatetimeLocal(post.scheduledAt);
+    }
+    if (scheduledAtGroup) {
+      scheduledAtGroup.style.display = post.status === "scheduled" ? "block" : "none";
+    }
   } else {
     (document.getElementById("blog-id") as HTMLInputElement).value = "";
     document.querySelectorAll<HTMLInputElement>(".blog-status-radio").forEach((r) => {
       r.checked = r.value === "published";
     });
+    if (scheduledAtGroup) scheduledAtGroup.style.display = "none";
   }
   modal.showModal();
 }
@@ -367,6 +407,15 @@ document.querySelectorAll("[data-close-modal]").forEach((b) =>
 );
 
 addBtn.addEventListener("click", () => openModal());
+
+document.querySelectorAll<HTMLInputElement>(".blog-status-radio").forEach((r) => {
+  r.addEventListener("change", () => {
+    const group = document.getElementById("scheduled-at-group");
+    if (group) {
+      group.style.display = r.value === "scheduled" && r.checked ? "block" : "none";
+    }
+  });
+});
 
 // --- Form submit ---
 form?.addEventListener("submit", (e) => {
@@ -382,7 +431,7 @@ form?.addEventListener("submit", (e) => {
         .map((t) => t.trim())
         .filter(Boolean)
     : [];
-  const status = (fd.get("status") as BlogPost["status"]) ?? "draft";
+  let status = (fd.get("status") as BlogPost["status"]) ?? "draft";
   const title = String(fd.get("title") ?? "").trim();
   if (!title) {
     alert("Please enter a title.");
@@ -395,6 +444,15 @@ form?.addEventListener("submit", (e) => {
     return;
   }
   const existing = id ? loadData().blog.find((p) => p.id === id) : undefined;
+  const scheduledAtRaw = String(fd.get("scheduledAt") ?? "").trim();
+  let scheduledAt = scheduledAtRaw ? new Date(scheduledAtRaw).toISOString() : undefined;
+  if (status === "scheduled" && !scheduledAt) {
+    alert("Please select a date & time for the scheduled post.");
+    return;
+  }
+  if (status === "scheduled" && scheduledAt && scheduledAt <= ts) {
+    status = "published";
+  }
   const payload: BlogPost = {
     id: id || uid(),
     title,
@@ -403,13 +461,16 @@ form?.addEventListener("submit", (e) => {
     content,
     tags,
     status,
+    scheduledAt,
     authorName: String(fd.get("authorName") ?? "").trim() || undefined,
     createdAt: existing?.createdAt ?? ts,
     updatedAt: ts,
     publishedAt:
       status === "published"
-        ? existing?.publishedAt ?? ts
-        : existing?.publishedAt,
+        ? existing?.publishedAt ?? scheduledAt ?? ts
+        : status === "scheduled"
+          ? undefined
+          : existing?.publishedAt,
   };
   updateData((data) => {
     if (id) {
@@ -433,8 +494,9 @@ form?.addEventListener("submit", (e) => {
 
 // --- Render ---
 function renderAll() {
+  autoPublishScheduled();
   const posts = loadData().blog.sort((a, b) => {
-    return (a.publishedAt ?? a.updatedAt) < (b.publishedAt ?? b.updatedAt)
+    return (a.publishedAt ?? a.scheduledAt ?? a.updatedAt) < (b.publishedAt ?? b.scheduledAt ?? b.updatedAt)
       ? 1
       : -1;
   });
@@ -463,11 +525,17 @@ function renderAll() {
 
   list.innerHTML = posts
     .map(
-      (p) => `
+      (p) => {
+      const statusLabel = p.status === "published" ? "Published" : p.status === "scheduled" ? "Scheduled" : "Draft";
+      const statusClass = p.status === "published" ? "badge-gain" : p.status === "scheduled" ? "badge" : "";
+      const dateLabel = p.status === "scheduled" && p.scheduledAt
+        ? `Scheduled: ${formatDate(p.scheduledAt)}`
+        : formatDate(p.publishedAt ?? p.updatedAt);
+      return `
     <div class="card">
       <div class="flex items-center justify-between mb-sm">
-        <span class="badge ${p.status === "published" ? "badge-gain" : ""}">${p.status === "published" ? "Published" : "Draft"}</span>
-        <span class="text-caption text-mute">${formatDate(p.publishedAt ?? p.updatedAt)}</span>
+        <span class="badge ${statusClass}">${statusLabel}</span>
+        <span class="text-caption text-mute">${dateLabel}</span>
       </div>
       <h3 class="text-display-sm text-ink mb-xs">${esc(p.title)}</h3>
       ${
@@ -487,8 +555,8 @@ function renderAll() {
           <button class="btn-ghost text-loss" type="button" data-delete="${p.id}">Delete</button>
         </div>
       </div>
-    </div>`,
-    )
+    </div>`;
+    })
     .join("");
 
   list.querySelectorAll<HTMLButtonElement>("[data-edit]").forEach((btn) => {
@@ -564,6 +632,86 @@ linkUrlInput?.addEventListener("keydown", (e) => {
   if (e.key === "Enter") linkInsertBtn?.click();
 });
 
+// --- Table dialog ---
+const tableDialog = document.getElementById("table-dialog") as HTMLDialogElement;
+const tableRowsInput = document.getElementById("table-rows") as HTMLInputElement;
+const tableColsInput = document.getElementById("table-cols") as HTMLInputElement;
+const tableInsertBtn = document.getElementById("table-insert")!;
+const tableCancelBtn = document.getElementById("table-cancel")!;
+let savedTableRange: Range | null = null;
+
+function openTableDialog() {
+  if (!tableDialog) return;
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount && contentArea?.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+    savedTableRange = sel.getRangeAt(0).cloneRange();
+  } else {
+    savedTableRange = null;
+  }
+  tableRowsInput.value = "3";
+  tableColsInput.value = "3";
+  tableDialog.showModal();
+  tableRowsInput.focus();
+}
+
+tableCancelBtn?.addEventListener("click", () => tableDialog?.close());
+
+tableInsertBtn?.addEventListener("click", () => {
+  const rows = Math.max(1, parseInt(tableRowsInput.value) || 3);
+  const cols = Math.max(1, parseInt(tableColsInput.value) || 3);
+  contentArea?.focus();
+
+  const sel = window.getSelection();
+  if (!sel) { tableDialog?.close(); return; }
+
+  let range: Range;
+  if (savedTableRange) {
+    range = savedTableRange;
+    sel.removeAllRanges();
+    sel.addRange(range);
+  } else if (sel.rangeCount) {
+    range = sel.getRangeAt(0);
+  } else {
+    tableDialog?.close();
+    return;
+  }
+
+  const table = document.createElement("table");
+  table.style.cssText = "width:100%;border-collapse:collapse;table-layout:auto;margin:0.5rem 0;";
+  for (let r = 0; r < rows; r++) {
+    const tr = document.createElement("tr");
+    for (let c = 0; c < cols; c++) {
+      const td = document.createElement("td");
+      td.style.cssText = "border:1px solid #ccc;padding:8px;min-width:60px;vertical-align:top;";
+      td.innerHTML = "&nbsp;";
+      tr.appendChild(td);
+    }
+    table.appendChild(tr);
+  }
+
+  range.deleteContents();
+  range.insertNode(table);
+
+  const br = document.createElement("br");
+  range.setStartAfter(table);
+  range.collapse(true);
+  range.insertNode(br);
+  range.setStartAfter(br);
+  range.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  contentArea?.focus();
+  tableDialog?.close();
+});
+
+tableRowsInput?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") tableInsertBtn?.click();
+});
+tableColsInput?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") tableInsertBtn?.click();
+});
+
 // --- Formatting toolbar (WYSIWYG) ---
 const toolbar = document.getElementById("editor-toolbar");
 const contentArea = document.getElementById("blog-content") as HTMLElement;
@@ -584,6 +732,9 @@ toolbar?.addEventListener("click", (e) => {
     case "ol": document.execCommand("insertOrderedList"); break;
     case "link":
       openLinkDialog();
+      break;
+    case "table":
+      openTableDialog();
       break;
     case "font-sans": document.execCommand("fontName", false, "sans-serif"); break;
     case "font-serif": document.execCommand("fontName", false, "serif"); break;

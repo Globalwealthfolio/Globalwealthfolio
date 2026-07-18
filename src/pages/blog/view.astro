@@ -58,6 +58,19 @@ import Layout from "../../layouts/Layout.astro";
   .prose-custom span[style] {
     display: inline;
   }
+  .prose-custom table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+    margin: 1rem 0;
+  }
+  .prose-custom td {
+    border: 1px solid var(--color-hairline-strong, #ccc);
+    padding: 8px;
+    min-width: 60px;
+    vertical-align: top;
+  }
+
 </style>
 
 <script>
@@ -81,6 +94,14 @@ import Layout from "../../layouts/Layout.astro";
     return sanitize(content);
   }
 
+  function isPostAccessible(p) {
+    if (p.status === "published") return true;
+    if (p.status === "scheduled" && p.scheduledAt) {
+      return new Date(p.scheduledAt) <= new Date();
+    }
+    return false;
+  }
+
   async function renderPost(slug) {
     const container = document.getElementById("post-content");
     if (!container) return;
@@ -88,6 +109,7 @@ import Layout from "../../layouts/Layout.astro";
       const res = await fetch(`/api/blog?slug=${encodeURIComponent(slug)}`);
       if (!res.ok) throw new Error("Not found");
       const post = await res.json();
+      if (!isPostAccessible(post)) throw new Error("Not found");
       document.title = `${esc(post.title)} — Global Wealth Portfolio Blog`;
       container.innerHTML = `
         <p class="text-caption-mono text-gold mb-xs">Blog</p>

@@ -31,7 +31,23 @@ export async function onRequest(context) {
       if (!raw) {
         return new Response(JSON.stringify({ posts: [] }), { headers: { ...headers, "Content-Type": "application/json" } });
       }
-      const allPosts = (JSON.parse(raw) || []).filter((p, i, arr) => arr.findIndex(x => x.id === p.id || x.slug === p.slug) === i);
+      let allPosts = (JSON.parse(raw) || []).filter((p, i, arr) => arr.findIndex(x => x.id === p.id || x.slug === p.slug) === i);
+
+      // Auto-publish scheduled posts whose scheduled time has arrived
+      const now = new Date().toISOString();
+      let autoPublished = false;
+      allPosts.forEach((p) => {
+        if (p.status === "scheduled" && p.scheduledAt && p.scheduledAt <= now) {
+          p.status = "published";
+          p.publishedAt = p.scheduledAt;
+          p.updatedAt = now;
+          autoPublished = true;
+        }
+      });
+      if (autoPublished) {
+        await env.BLOG_KV.put(KV_KEY, JSON.stringify(allPosts));
+      }
+
       const showAll = url.searchParams.get("all") === "true";
       const adminToken = request.headers.get("X-Admin-Token") || "";
       if (showAll && adminToken === env.ADMIN_TOKEN) {

@@ -194,6 +194,7 @@ import Layout from "../layouts/Layout.astro";
             <button type="button" data-fmt="ol" title="Numbered list">OL</button>
             <span class="toolbar-divider"></span>
             <button type="button" data-fmt="link" id="link-btn" title="Insert link">Link</button>
+            <button type="button" data-fmt="table" id="table-btn" title="Insert table">Table</button>
             <span class="toolbar-divider"></span>
             <button type="button" data-fmt="font-sans" title="Sans-serif">Sans</button>
             <button type="button" data-fmt="font-serif" title="Serif">Serif</button>
@@ -241,6 +242,26 @@ import Layout from "../layouts/Layout.astro";
               </div>
             </div>
           </dialog>
+          <!-- Table dialog -->
+          <dialog id="table-dialog" class="rounded-lg p-0 shadow-level-5 backdrop:bg-black/30 border-0 max-w-sm w-full">
+            <div class="p-md">
+              <h3 class="text-display-xs mb-md">Insert Table</h3>
+              <div class="flex gap-md items-end">
+                <div class="flex-1">
+                  <label class="label text-body-xs" for="table-rows">Rows</label>
+                  <input id="table-rows" type="number" class="input" value="3" min="1" max="20" />
+                </div>
+                <div class="flex-1">
+                  <label class="label text-body-xs" for="table-cols">Columns</label>
+                  <input id="table-cols" type="number" class="input" value="3" min="1" max="20" />
+                </div>
+              </div>
+              <div class="flex justify-end gap-sm mt-md">
+                <button id="table-cancel" type="button" class="btn-secondary">Cancel</button>
+                <button id="table-insert" type="button" class="btn-primary">Insert</button>
+              </div>
+            </div>
+          </dialog>
         </div>
         <div class="px-lg pb-lg space-y-md mt-md">
           <div>
@@ -254,6 +275,15 @@ import Layout from "../layouts/Layout.astro";
                 <input type="radio" name="status" value="published" class="blog-status-radio accent-current" checked />
                 <span class="text-body-sm">Published</span>
               </label>
+              <label class="flex items-center gap-xs cursor-pointer">
+                <input type="radio" name="status" value="scheduled" class="blog-status-radio accent-current" />
+                <span class="text-body-sm">Scheduled</span>
+              </label>
+            </div>
+            <div id="scheduled-at-group" class="mt-sm" style="display:none;">
+              <label class="label" for="blog-scheduled-at">Schedule publish date & time</label>
+              <input class="input" type="datetime-local" id="blog-scheduled-at" name="scheduledAt" />
+              <p class="text-caption text-mute mt-xs">The post will be published automatically after this time.</p>
             </div>
           </div>
           <div class="flex justify-between items-center">
@@ -364,6 +394,18 @@ import Layout from "../layouts/Layout.astro";
     content: attr(data-placeholder);
     color: var(--color-mute);
     pointer-events: none;
+  }
+  .editor-content table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+    margin: 0.5rem 0;
+  }
+  .editor-content td {
+    border: 1px solid var(--color-hairline-strong, #ccc);
+    padding: 8px;
+    min-width: 60px;
+    vertical-align: top;
   }
   .editor-content font[size="1"] { font-size: 0.75rem; }
   .editor-content font[size="2"] { font-size: 0.875rem; }

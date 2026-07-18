@@ -48,6 +48,7 @@ export async function onRequest(context) {
     const clientSlug = body.slug || "";
     const slug = clientSlug || title.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-").slice(0, 80) || `post-${Date.now().toString(36)}`;
 
+    const status = body.status || "published";
     const post = {
       id,
       title,
@@ -55,11 +56,12 @@ export async function onRequest(context) {
       content,
       excerpt: body.excerpt || "",
       tags: Array.isArray(body.tags) ? body.tags : [],
-      status: body.status || "published",
+      status,
+      scheduledAt: body.scheduledAt || undefined,
       authorName: body.authorName || "",
       createdAt: idx >= 0 ? allPosts[idx].createdAt : ts,
       updatedAt: ts,
-      publishedAt: idx >= 0 ? allPosts[idx].publishedAt : ts,
+      publishedAt: idx >= 0 ? allPosts[idx].publishedAt : (status === "published" ? ts : undefined),
     };
 
     if (idx >= 0) {
@@ -70,7 +72,7 @@ export async function onRequest(context) {
 
     await env.BLOG_KV.put(KV_KEY, JSON.stringify(allPosts));
 
-    if (idx === -1) {
+    if (idx === -1 && post.status === "published") {
       context.waitUntil((async () => {
         try {
           const origin = new URL(request.url).origin;
