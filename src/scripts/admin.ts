@@ -2,6 +2,10 @@ import emailjs from "@emailjs/browser";
 import { loadData, updateData, addAudit, uid, nowISO } from "../lib/store";
 import type { BlogPost } from "../lib/types";
 
+import { ClassicEditor, Essentials, Bold, Italic, Underline, Strikethrough, Superscript, Subscript, Heading, FontFamily, FontSize, FontColor, FontBackgroundColor, Alignment, Link, Image, ImageUpload, Base64UploadAdapter, Table, TableToolbar, HorizontalLine, Undo, FindAndReplace, List, BlockQuote, RemoveFormat, Autoformat, PasteFromOffice, SourceEditing, Paragraph, Highlight, SpecialCharacters, CodeBlock, Indent, IndentBlock, SelectAll, WordCount, Clipboard, Enter, ShiftEnter, Typing, TextTransformation, ImageInsert, ImageInsertViaUrl, LinkImage } from 'ckeditor5';
+import 'ckeditor5/ckeditor5.css';
+import 'ckeditor5/ckeditor5-content.css';
+
 // EmailJS config — set these in your EmailJS dashboard
 const EMAILJS_PUBLIC_KEY = "rvTqHL_4iAM_yuGAG";
 const EMAILJS_SERVICE_ID = "service_csuyz5u";
@@ -367,13 +371,64 @@ function autoPublishScheduled(): boolean {
   return changed;
 }
 
+let blogEditor: ClassicEditor | null = null;
+
+async function initEditor(content: string) {
+  const el = document.getElementById("blog-content-editor");
+  if (!el) return;
+  if (blogEditor) {
+    await blogEditor.destroy();
+    blogEditor = null;
+  }
+  try {
+    blogEditor = await ClassicEditor.create(el, {
+      plugins: [Essentials, Bold, Italic, Underline, Strikethrough, Superscript, Subscript, Heading, FontFamily, FontSize, FontColor, FontBackgroundColor, Alignment, Link, Image, ImageUpload, Base64UploadAdapter, Table, TableToolbar, HorizontalLine, Undo, FindAndReplace, List, BlockQuote, RemoveFormat, Autoformat, PasteFromOffice, SourceEditing, Paragraph, Highlight, SpecialCharacters, CodeBlock, Indent, IndentBlock, SelectAll, WordCount, Clipboard, Enter, ShiftEnter, Typing, TextTransformation, ImageInsert, ImageInsertViaUrl, LinkImage],
+      toolbar: ['undo', 'redo', '|', 'findAndReplace', 'sourceEditing', 'removeFormat', '|', 'heading', '|', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', '|', 'alignment', '|', 'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'blockQuote', '|', 'link', 'imageInsert', 'insertTable', 'horizontalLine', '|', 'highlight', 'specialCharacters', 'codeBlock', 'selectAll'],
+      heading: { options: [
+        { model: 'paragraph', title: 'Normal', class: 'ck-heading_paragraph' },
+        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+        { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+        { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+        { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' },
+      ]},
+      fontSize: { options: [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 42, 48, 72] },
+      fontFamily: { options: [
+        'default', 'Arial', 'Verdana', 'Helvetica', 'Tahoma', 'Trebuchet MS',
+        'Times New Roman', 'Georgia', 'Garamond', 'Courier New', 'Brush Script MT'
+      ]},
+      alignment: { options: ['left', 'center', 'right', 'justify'] },
+      table: { contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties'] },
+      image: {
+        toolbar: ['imageTextAlternative', 'imageStyle:block', 'imageStyle:side', 'linkImage'],
+        insert: { type: 'auto' }
+      },
+      link: { addTargetToExternalLinks: true },
+      wordCount: { container: undefined, displayWords: false, displayCharacters: false },
+      indentBlock: { offset: 40, unit: 'px' },
+      placeholder: 'Write your thoughts here...',
+      initialData: content || '',
+    });
+  } catch (e) {
+    console.error('CKEditor init failed:', e);
+  }
+}
+
+async function destroyEditor() {
+  if (blogEditor) {
+    try {
+      await blogEditor.destroy();
+    } catch (_) {}
+    blogEditor = null;
+  }
+}
+
 // --- Modal ---
 function openModal(post?: BlogPost) {
   if (!modal || !form) return;
   if (modalTitle) modalTitle.textContent = post ? "Edit post" : "Write a new post";
   form.reset();
-  const contentEl = document.getElementById("blog-content") as HTMLElement;
-  contentEl.innerHTML = "";
   const scheduledAtInput = document.getElementById("blog-scheduled-at") as HTMLInputElement;
   const scheduledAtGroup = document.getElementById("scheduled-at-group");
   if (post) {
@@ -382,7 +437,9 @@ function openModal(post?: BlogPost) {
     (document.getElementById("blog-excerpt") as HTMLInputElement).value = post.excerpt;
     (document.getElementById("blog-author") as HTMLInputElement).value = post.authorName ?? "";
     (document.getElementById("blog-tags") as HTMLInputElement).value = post.tags.join(", ");
-    contentEl.innerHTML = post.content;
+    (document.getElementById("blog-meta-title") as HTMLInputElement).value = post.metaTitle ?? "";
+    (document.getElementById("blog-meta-desc") as HTMLTextAreaElement).value = post.metaDescription ?? "";
+    (document.getElementById("blog-meta-keywords") as HTMLInputElement).value = post.metaKeywords ?? "";
     document.querySelectorAll<HTMLInputElement>(".blog-status-radio").forEach((r) => {
       r.checked = r.value === post.status;
     });
@@ -392,14 +449,17 @@ function openModal(post?: BlogPost) {
     if (scheduledAtGroup) {
       scheduledAtGroup.style.display = post.status === "scheduled" ? "block" : "none";
     }
+    modal.showModal();
+    initEditor(post.content);
   } else {
     (document.getElementById("blog-id") as HTMLInputElement).value = "";
     document.querySelectorAll<HTMLInputElement>(".blog-status-radio").forEach((r) => {
       r.checked = r.value === "published";
     });
     if (scheduledAtGroup) scheduledAtGroup.style.display = "none";
+    modal.showModal();
+    initEditor("");
   }
-  modal.showModal();
 }
 
 document.querySelectorAll("[data-close-modal]").forEach((b) =>
@@ -418,9 +478,20 @@ document.querySelectorAll<HTMLInputElement>(".blog-status-radio").forEach((r) =>
 });
 
 // --- Form submit ---
-form?.addEventListener("submit", (e) => {
+form?.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!form) return;
+
+  let content = "";
+  if (blogEditor) {
+    content = blogEditor.getData().trim();
+  }
+
+  if (!content) {
+    alert("Please write some content.");
+    return;
+  }
+
   const fd = new FormData(form);
   const id = String(fd.get("id") ?? "");
   const ts = nowISO();
@@ -435,12 +506,6 @@ form?.addEventListener("submit", (e) => {
   const title = String(fd.get("title") ?? "").trim();
   if (!title) {
     alert("Please enter a title.");
-    return;
-  }
-  const contentEl = document.getElementById("blog-content") as HTMLElement;
-  const content = contentEl.innerHTML.trim();
-  if (!content || content === "<br>") {
-    alert("Please write some content.");
     return;
   }
   const existing = id ? loadData().blog.find((p) => p.id === id) : undefined;
@@ -462,6 +527,9 @@ form?.addEventListener("submit", (e) => {
     tags,
     status,
     scheduledAt,
+    metaTitle: String(fd.get("metaTitle") ?? "").trim() || undefined,
+    metaDescription: String(fd.get("metaDescription") ?? "").trim() || undefined,
+    metaKeywords: String(fd.get("metaKeywords") ?? "").trim() || undefined,
     authorName: String(fd.get("authorName") ?? "").trim() || undefined,
     createdAt: existing?.createdAt ?? ts,
     updatedAt: ts,
@@ -488,6 +556,7 @@ form?.addEventListener("submit", (e) => {
       ? `Updated post: ${payload.title}`
       : `Added post: ${payload.title}`,
   });
+  await destroyEditor();
   modal?.close();
   syncPostToApi(payload);
 });
@@ -586,183 +655,12 @@ function renderAll() {
   });
 }
 
-modal?.addEventListener("close", () => {
+modal?.addEventListener("close", async () => {
+  await destroyEditor();
   renderAll();
 });
 
-// --- Link dialog ---
-const linkDialog = document.getElementById("link-dialog") as HTMLDialogElement;
-const linkUrlInput = document.getElementById("link-url") as HTMLInputElement;
-const linkTextInput = document.getElementById("link-text") as HTMLInputElement;
-const linkInsertBtn = document.getElementById("link-insert")!;
-const linkCancelBtn = document.getElementById("link-cancel")!;
 
-function openLinkDialog() {
-  if (!linkDialog || !contentArea) return;
-  const sel = window.getSelection();
-  let selectedText = "";
-  if (sel && sel.rangeCount && !sel.isCollapsed) {
-    selectedText = sel.toString();
-  }
-  linkUrlInput.value = "";
-  linkTextInput.value = selectedText;
-  linkDialog.showModal();
-  linkUrlInput.focus();
-}
-
-linkCancelBtn?.addEventListener("click", () => linkDialog?.close());
-
-linkInsertBtn?.addEventListener("click", () => {
-  const url = linkUrlInput.value.trim();
-  if (!url) {
-    linkUrlInput.focus();
-    return;
-  }
-  contentArea?.focus();
-  const displayText = linkTextInput.value.trim();
-  if (displayText && window.getSelection()?.isCollapsed !== false) {
-    document.execCommand("insertHTML", false, `<a href="${url.replace(/"/g, "&quot;")}">${esc(displayText)}</a>`);
-  } else {
-    document.execCommand("createLink", false, url);
-  }
-  linkDialog?.close();
-});
-
-linkUrlInput?.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") linkInsertBtn?.click();
-});
-
-// --- Table dialog ---
-const tableDialog = document.getElementById("table-dialog") as HTMLDialogElement;
-const tableRowsInput = document.getElementById("table-rows") as HTMLInputElement;
-const tableColsInput = document.getElementById("table-cols") as HTMLInputElement;
-const tableInsertBtn = document.getElementById("table-insert")!;
-const tableCancelBtn = document.getElementById("table-cancel")!;
-let savedTableRange: Range | null = null;
-
-function openTableDialog() {
-  if (!tableDialog) return;
-  const sel = window.getSelection();
-  if (sel && sel.rangeCount && contentArea?.contains(sel.getRangeAt(0).commonAncestorContainer)) {
-    savedTableRange = sel.getRangeAt(0).cloneRange();
-  } else {
-    savedTableRange = null;
-  }
-  tableRowsInput.value = "3";
-  tableColsInput.value = "3";
-  tableDialog.showModal();
-  tableRowsInput.focus();
-}
-
-tableCancelBtn?.addEventListener("click", () => tableDialog?.close());
-
-tableInsertBtn?.addEventListener("click", () => {
-  const rows = Math.max(1, parseInt(tableRowsInput.value) || 3);
-  const cols = Math.max(1, parseInt(tableColsInput.value) || 3);
-  contentArea?.focus();
-
-  const sel = window.getSelection();
-  if (!sel) { tableDialog?.close(); return; }
-
-  let range: Range;
-  if (savedTableRange) {
-    range = savedTableRange;
-    sel.removeAllRanges();
-    sel.addRange(range);
-  } else if (sel.rangeCount) {
-    range = sel.getRangeAt(0);
-  } else {
-    tableDialog?.close();
-    return;
-  }
-
-  const table = document.createElement("table");
-  table.style.cssText = "width:100%;border-collapse:collapse;table-layout:auto;margin:0.5rem 0;";
-  for (let r = 0; r < rows; r++) {
-    const tr = document.createElement("tr");
-    for (let c = 0; c < cols; c++) {
-      const td = document.createElement("td");
-      td.style.cssText = "border:1px solid #ccc;padding:8px;min-width:60px;vertical-align:top;";
-      td.innerHTML = "&nbsp;";
-      tr.appendChild(td);
-    }
-    table.appendChild(tr);
-  }
-
-  range.deleteContents();
-  range.insertNode(table);
-
-  const br = document.createElement("br");
-  range.setStartAfter(table);
-  range.collapse(true);
-  range.insertNode(br);
-  range.setStartAfter(br);
-  range.collapse(true);
-  sel.removeAllRanges();
-  sel.addRange(range);
-
-  contentArea?.focus();
-  tableDialog?.close();
-});
-
-tableRowsInput?.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") tableInsertBtn?.click();
-});
-tableColsInput?.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") tableInsertBtn?.click();
-});
-
-// --- Formatting toolbar (WYSIWYG) ---
-const toolbar = document.getElementById("editor-toolbar");
-const contentArea = document.getElementById("blog-content") as HTMLElement;
-
-toolbar?.addEventListener("click", (e) => {
-  const btn = (e.target as HTMLElement).closest("[data-fmt]") as HTMLButtonElement;
-  if (!btn || !contentArea) return;
-  e.preventDefault();
-  const fmt = btn.dataset.fmt!;
-  contentArea.focus();
-
-  switch (fmt) {
-    case "bold": document.execCommand("bold"); break;
-    case "italic": document.execCommand("italic"); break;
-    case "underline": document.execCommand("underline"); break;
-    case "blockquote": document.execCommand("formatBlock", false, "<blockquote>"); break;
-    case "ul": document.execCommand("insertUnorderedList"); break;
-    case "ol": document.execCommand("insertOrderedList"); break;
-    case "link":
-      openLinkDialog();
-      break;
-    case "table":
-      openTableDialog();
-      break;
-    case "font-sans": document.execCommand("fontName", false, "sans-serif"); break;
-    case "font-serif": document.execCommand("fontName", false, "serif"); break;
-    case "font-mono": document.execCommand("fontName", false, "monospace"); break;
-    case "font-arial": document.execCommand("fontName", false, "Arial"); break;
-    case "size-up":
-    case "size-down": {
-      const sel = window.getSelection();
-      if (!sel || !sel.rangeCount || sel.isCollapsed) break;
-      let cur = 3;
-      let el = sel.getRangeAt(0).startContainer;
-      while (el && el !== contentArea) {
-        if (el.nodeType === 1 && (el as HTMLElement).hasAttribute?.("size")) {
-          cur = parseInt((el as HTMLElement).getAttribute("size")!) || 3;
-          break;
-        }
-        el = el.parentNode as Node;
-      }
-      const next = fmt === "size-up" ? Math.min(7, cur + 1) : Math.max(1, cur - 1);
-      document.execCommand("fontSize", false, String(next));
-      break;
-    }
-  }
-
-  if (fmt.startsWith("color-")) {
-    document.execCommand("foreColor", false, fmt.replace("color-", ""));
-  }
-});
 
 // --- Fetch posts from server ---
 const fetchPostsBtn = document.getElementById("fetch-posts-btn");

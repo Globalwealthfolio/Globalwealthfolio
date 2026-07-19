@@ -184,84 +184,7 @@ import Layout from "../layouts/Layout.astro";
           </div>
         </div>
         <div class="editor-wrapper">
-          <div class="editor-toolbar" id="editor-toolbar">
-            <button type="button" data-fmt="bold" title="Bold"><strong>B</strong></button>
-            <button type="button" data-fmt="italic" title="Italic"><em>I</em></button>
-            <button type="button" data-fmt="underline" title="Underline"><u>U</u></button>
-            <span class="toolbar-divider"></span>
-            <button type="button" data-fmt="blockquote" title="Blockquote">&ldquo;</button>
-            <button type="button" data-fmt="ul" title="Bullet list">UL</button>
-            <button type="button" data-fmt="ol" title="Numbered list">OL</button>
-            <span class="toolbar-divider"></span>
-            <button type="button" data-fmt="link" id="link-btn" title="Insert link">Link</button>
-            <button type="button" data-fmt="table" id="table-btn" title="Insert table">Table</button>
-            <span class="toolbar-divider"></span>
-            <button type="button" data-fmt="font-sans" title="Sans-serif">Sans</button>
-            <button type="button" data-fmt="font-serif" title="Serif">Serif</button>
-            <button type="button" data-fmt="font-mono" title="Monospace">Mono</button>
-            <button type="button" data-fmt="font-arial" title="Arial">Arial</button>
-            <span class="toolbar-divider"></span>
-            <button type="button" data-fmt="size-down" title="Decrease font size">A-</button>
-            <button type="button" data-fmt="size-up" title="Increase font size">A+</button>
-            <span class="toolbar-divider"></span>
-            <span class="toolbar-color-group" title="Text color">
-              <button type="button" data-fmt="color-#0f1b2d" class="color-btn" style="background:#0f1b2d" title="Default"></button>
-              <button type="button" data-fmt="color-#ff0000" class="color-btn" style="background:#ff0000" title="Red"></button>
-              <button type="button" data-fmt="color-#0b5fff" class="color-btn" style="background:#0b5fff" title="Blue"></button>
-              <button type="button" data-fmt="color-#008000" class="color-btn" style="background:#008000" title="Green"></button>
-              <button type="button" data-fmt="color-#ff6600" class="color-btn" style="background:#ff6600" title="Orange"></button>
-              <button type="button" data-fmt="color-#800080" class="color-btn" style="background:#800080" title="Purple"></button>
-            </span>
-          </div>
-          <div
-            class="input editor-content"
-            id="blog-content"
-            contenteditable="true"
-            role="textbox"
-            aria-multiline="true"
-            data-placeholder="Write your thoughts here..."
-            style="min-height: 450px; padding: 12px; line-height: 1.55;"
-          ></div>
-          <!-- Link dialog -->
-          <dialog id="link-dialog" class="rounded-lg p-0 shadow-level-5 backdrop:bg-black/30 border-0 max-w-sm w-full">
-            <div class="p-md">
-              <h3 class="text-display-xs mb-md">Insert Link</h3>
-              <div class="space-y-sm">
-                <div>
-                  <label class="label text-body-xs" for="link-url">URL</label>
-                  <input id="link-url" type="url" class="input" placeholder="https://" autocomplete="off" />
-                </div>
-                <div>
-                  <label class="label text-body-xs" for="link-text">Text to display <span class="text-mute font-normal">(optional)</span></label>
-                  <input id="link-text" type="text" class="input" placeholder="Selected text or custom label" autocomplete="off" />
-                </div>
-              </div>
-              <div class="flex justify-end gap-sm mt-md">
-                <button id="link-cancel" type="button" class="btn-secondary">Cancel</button>
-                <button id="link-insert" type="button" class="btn-primary">Insert</button>
-              </div>
-            </div>
-          </dialog>
-          <!-- Table dialog -->
-          <dialog id="table-dialog" class="rounded-lg p-0 shadow-level-5 backdrop:bg-black/30 border-0 max-w-sm w-full">
-            <div class="p-md">
-              <h3 class="text-display-xs mb-md">Insert Table</h3>
-              <div class="flex gap-md items-end">
-                <div class="flex-1">
-                  <label class="label text-body-xs" for="table-rows">Rows</label>
-                  <input id="table-rows" type="number" class="input" value="3" min="1" max="20" />
-                </div>
-                <div class="flex-1">
-                  <label class="label text-body-xs" for="table-cols">Columns</label>
-                  <input id="table-cols" type="number" class="input" value="3" min="1" max="20" />
-                </div>
-              </div>
-              <div class="flex justify-end gap-sm mt-md">
-                <button id="table-cancel" type="button" class="btn-secondary">Cancel</button>
-                <button id="table-insert" type="button" class="btn-primary">Insert</button>
-              </div>
-            </div>
-          </dialog>
+          <div id="blog-content-editor"></div>
         </div>
         <div class="px-lg pb-lg space-y-md mt-md">
           <div>
@@ -286,6 +209,25 @@ import Layout from "../layouts/Layout.astro";
               <p class="text-caption text-mute mt-xs">The post will be published automatically after this time.</p>
             </div>
           </div>
+
+          <details class="seo-details">
+            <summary class="label cursor-pointer select-none">SEO Settings</summary>
+            <div class="space-y-md mt-sm">
+              <div>
+                <label class="label" for="blog-meta-title">Meta Title</label>
+                <input class="input" type="text" id="blog-meta-title" name="metaTitle" placeholder="SEO title (defaults to post title)" />
+              </div>
+              <div>
+                <label class="label" for="blog-meta-desc">Meta Description</label>
+                <textarea class="input" id="blog-meta-desc" name="metaDescription" rows="3" placeholder="Brief description for search results"></textarea>
+              </div>
+              <div>
+                <label class="label" for="blog-meta-keywords">Meta Keywords <span class="text-mute font-normal">(comma separated)</span></label>
+                <input class="input" type="text" id="blog-meta-keywords" name="metaKeywords" placeholder="keyword1, keyword2, keyword3" />
+              </div>
+            </div>
+          </details>
+
           <div class="flex justify-between items-center">
             <p class="text-caption text-mute">Posts are stored locally in your browser.</p>
             <div class="flex gap-sm">
@@ -301,7 +243,7 @@ import Layout from "../layouts/Layout.astro";
 
 <style>
   #blog-modal {
-    width: min(95vw, 960px);
+    width: min(95vw, 1100px);
   }
   #blog-form {
     max-height: 90vh;
@@ -315,108 +257,38 @@ import Layout from "../layouts/Layout.astro";
     display: flex;
     flex-direction: column;
     flex: 1;
-    min-height: 300px;
+    min-height: 400px;
   }
-  .editor-toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
+  .editor-wrapper .ck.ck-editor {
     display: flex;
-    flex-wrap: wrap;
-    gap: 2px;
-    padding: 6px 8px;
-    background: var(--color-canvas-soft);
-    border: 1px solid var(--color-hairline);
-    border-bottom: none;
-    border-radius: 6px 6px 0 0;
-  }
-  .editor-toolbar button {
-    background: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    padding: 3px 8px;
-    font-size: 0.8125rem;
-    cursor: pointer;
-    color: var(--color-body);
-    font-family: var(--font-sans);
-    line-height: 1.4;
-    min-width: 28px;
-    text-align: center;
-    transition: background 100ms ease;
-  }
-  .editor-toolbar button:hover {
-    background: var(--color-hairline);
-  }
-  .editor-toolbar button:active {
-    background: var(--color-hairline-strong);
-  }
-  .toolbar-divider {
-    display: inline-block;
-    width: 1px;
-    background: var(--color-hairline);
-    margin: 4px 5px;
-  }
-  .toolbar-color-group {
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
-    padding: 2px 4px;
-    border: 1px solid var(--color-hairline);
-    border-radius: 4px;
-    background: var(--color-canvas);
-  }
-  .color-btn {
-    width: 16px;
-    height: 16px;
-    padding: 0;
-    border: 1px solid var(--color-hairline-strong);
-    border-radius: 2px;
-    cursor: pointer;
-    display: block;
-    flex-shrink: 0;
-  }
-  .color-btn:hover {
-    border-color: var(--color-ink);
-    transform: scale(1.15);
-  }
-  .editor-content {
-    border-top-left-radius: 0 !important;
-    border-top-right-radius: 0 !important;
-    outline: none;
-    min-height: 450px;
-    height: auto;
-    overflow-wrap: break-word;
-    word-break: break-word;
-    overflow-y: auto;
+    flex-direction: column;
     flex: 1;
   }
-  .editor-content:empty:before {
-    content: attr(data-placeholder);
-    color: var(--color-mute);
-    pointer-events: none;
+  .editor-wrapper .ck.ck-editor .ck-editor__main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
   }
-  .editor-content table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: auto;
-    margin: 0.5rem 0;
+  .editor-wrapper .ck.ck-editor .ck-editor__main .ck-editor__editable {
+    flex: 1;
+    min-height: 420px;
+    max-height: 60vh;
+    padding: 40px 48px !important;
+    font-size: 1rem;
+    line-height: 1.7;
   }
-  .editor-content td {
-    border: 1px solid var(--color-hairline-strong, #ccc);
-    padding: 8px;
-    min-width: 60px;
-    vertical-align: top;
+  .seo-details {
+    border: 1px solid var(--color-hairline);
+    border-radius: 6px;
+    padding: 12px;
   }
-  .editor-content font[size="1"] { font-size: 0.75rem; }
-  .editor-content font[size="2"] { font-size: 0.875rem; }
-  .editor-content font[size="3"] { font-size: 1rem; }
-  .editor-content font[size="4"] { font-size: 1.25rem; }
-  .editor-content font[size="5"] { font-size: 1.5rem; }
-  .editor-content font[size="6"] { font-size: 2rem; }
-  .editor-content font[size="7"] { font-size: 2.5rem; }
-  .editor-content font[face="sans-serif"] { font-family: sans-serif; }
-  .editor-content font[face="serif"] { font-family: serif; }
-  .editor-content font[face="monospace"] { font-family: monospace; }
+  .seo-details[open] {
+    padding-bottom: 16px;
+  }
+  .seo-details summary {
+    font-size: 0.875rem;
+    color: var(--color-body);
+  }
 </style>
 
 <script>

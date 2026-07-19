@@ -143,6 +143,9 @@ export interface BlogPost {
   updatedAt: string;
   publishedAt?: string;
   scheduledAt?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
 }
 
 export interface UserPreferences {
