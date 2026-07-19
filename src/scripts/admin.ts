@@ -66,7 +66,19 @@ const resetPasswordError = document.getElementById("reset-password-error")!;
 const logoutBtn = document.getElementById("admin-logout-btn")!;
 const addBtn = document.getElementById("add-blog")!;
 const list = document.getElementById("admin-blog-list")!;
-const modal = document.getElementById("blog-modal") as HTMLDialogElement;
+const modal = document.getElementById("blog-modal") as HTMLDivElement;
+
+function showModal() {
+  modal.style.display = "flex";
+  document.body.style.overflow = "hidden";
+}
+
+async function closeModal() {
+  await destroyEditor();
+  modal.style.display = "none";
+  document.body.style.overflow = "";
+  renderAll();
+}
 const form = document.getElementById("blog-form") as HTMLFormElement;
 const modalTitle = document.getElementById("blog-modal-title");
 const apiTokenInput = document.getElementById("api-token") as HTMLInputElement;
@@ -382,8 +394,9 @@ async function initEditor(content: string) {
   }
   try {
     blogEditor = await ClassicEditor.create(el, {
+      licenseKey: 'GPL',
       plugins: [Essentials, Bold, Italic, Underline, Strikethrough, Superscript, Subscript, Heading, FontFamily, FontSize, FontColor, FontBackgroundColor, Alignment, Link, Image, ImageUpload, Base64UploadAdapter, Table, TableToolbar, HorizontalLine, Undo, FindAndReplace, List, BlockQuote, RemoveFormat, Autoformat, PasteFromOffice, SourceEditing, Paragraph, Highlight, SpecialCharacters, CodeBlock, Indent, IndentBlock, SelectAll, WordCount, Clipboard, Enter, ShiftEnter, Typing, TextTransformation, ImageInsert, ImageInsertViaUrl, LinkImage],
-      toolbar: ['undo', 'redo', '|', 'findAndReplace', 'sourceEditing', 'removeFormat', '|', 'heading', '|', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', '|', 'alignment', '|', 'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'blockQuote', '|', 'link', 'imageInsert', 'insertTable', 'horizontalLine', '|', 'highlight', 'specialCharacters', 'codeBlock', 'selectAll'],
+      toolbar: { items: ['undo', 'redo', '|', 'findAndReplace', 'sourceEditing', 'removeFormat', '|', 'heading', '|', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', '|', 'alignment', '|', 'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'blockQuote', '|', 'link', 'imageInsert', 'insertTable', 'horizontalLine', '|', 'highlight', 'specialCharacters', 'codeBlock', 'selectAll'], shouldNotGroupWhenFull: true },
       heading: { options: [
         { model: 'paragraph', title: 'Normal', class: 'ck-heading_paragraph' },
         { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
@@ -434,7 +447,7 @@ function openModal(post?: BlogPost) {
   if (post) {
     (document.getElementById("blog-id") as HTMLInputElement).value = post.id;
     (document.getElementById("blog-title") as HTMLInputElement).value = post.title;
-    (document.getElementById("blog-excerpt") as HTMLInputElement).value = post.excerpt;
+    (document.getElementById("blog-excerpt") as HTMLTextAreaElement).value = post.excerpt;
     (document.getElementById("blog-author") as HTMLInputElement).value = post.authorName ?? "";
     (document.getElementById("blog-tags") as HTMLInputElement).value = post.tags.join(", ");
     (document.getElementById("blog-meta-title") as HTMLInputElement).value = post.metaTitle ?? "";
@@ -449,7 +462,7 @@ function openModal(post?: BlogPost) {
     if (scheduledAtGroup) {
       scheduledAtGroup.style.display = post.status === "scheduled" ? "block" : "none";
     }
-    modal.showModal();
+    showModal();
     initEditor(post.content);
   } else {
     (document.getElementById("blog-id") as HTMLInputElement).value = "";
@@ -457,14 +470,18 @@ function openModal(post?: BlogPost) {
       r.checked = r.value === "published";
     });
     if (scheduledAtGroup) scheduledAtGroup.style.display = "none";
-    modal.showModal();
+    showModal();
     initEditor("");
   }
 }
 
 document.querySelectorAll("[data-close-modal]").forEach((b) =>
-  b.addEventListener("click", () => modal?.close()),
+  b.addEventListener("click", () => closeModal()),
 );
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modal.style.display === "flex") closeModal();
+});
 
 addBtn.addEventListener("click", () => openModal());
 
@@ -557,7 +574,9 @@ form?.addEventListener("submit", async (e) => {
       : `Added post: ${payload.title}`,
   });
   await destroyEditor();
-  modal?.close();
+  modal.style.display = "none";
+  document.body.style.overflow = "";
+  renderAll();
   syncPostToApi(payload);
 });
 
@@ -655,10 +674,7 @@ function renderAll() {
   });
 }
 
-modal?.addEventListener("close", async () => {
-  await destroyEditor();
-  renderAll();
-});
+
 
 
 

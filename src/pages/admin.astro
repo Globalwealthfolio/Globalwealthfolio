@@ -134,11 +134,10 @@ import Layout from "../layouts/Layout.astro";
   </section>
 
   <!-- Editor modal -->
-  <dialog
-    id="blog-modal"
-    class="rounded-lg p-0 w-full shadow-level-5 backdrop:bg-black/30"
-  >
-    <form id="blog-form" method="dialog">
+  <div id="blog-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-container">
+    <form id="blog-form">
       <div class="modal-scroll">
         <div class="flex items-center justify-between mb-md px-lg pt-lg">
           <h2 class="text-display-sm" id="blog-modal-title">Write a new post</h2>
@@ -163,14 +162,14 @@ import Layout from "../layouts/Layout.astro";
             />
           </div>
           <div>
-            <label class="label" for="blog-excerpt">Excerpt</label>
-            <input
+            <label class="label" for="blog-excerpt">Description <span class="text-mute font-normal">(short summary for list view)</span></label>
+            <textarea
               class="input"
-              type="text"
               id="blog-excerpt"
               name="excerpt"
-              placeholder="A short summary shown on the list view"
-            />
+              rows="3"
+              placeholder="Write a brief description of your blog post..."
+            ></textarea>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
             <div>
@@ -183,8 +182,14 @@ import Layout from "../layouts/Layout.astro";
             </div>
           </div>
         </div>
-        <div class="editor-wrapper">
-          <div id="blog-content-editor"></div>
+        <div>
+          <label class="label px-lg">Content</label>
+          <div class="editor-wrapper">
+            <div id="blog-content-editor">
+              <p class="editor-placeholder">Loading editor...</p>
+            </div>
+          </div>
+          <p class="text-caption text-mute px-lg mt-xs">You can paste content from Microsoft Word directly into the editor.</p>
         </div>
         <div class="px-lg pb-lg space-y-md mt-md">
           <div>
@@ -238,26 +243,56 @@ import Layout from "../layouts/Layout.astro";
         </div>
       </div>
     </form>
-  </dialog>
+    </div>
+  </div>
 </Layout>
 
 <style>
-  #blog-modal {
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+  }
+  .modal-container {
+    position: relative;
     width: min(95vw, 1100px);
+    max-height: 90vh;
+    background: var(--color-canvas);
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
   }
   #blog-form {
     max-height: 90vh;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
   #blog-form .modal-scroll {
     display: flex;
     flex-direction: column;
+    flex: 1;
   }
   .editor-wrapper {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 400px;
+    border: 1px solid var(--color-hairline);
+    border-radius: 6px;
+  }
+  .editor-placeholder {
+    padding: 40px 48px;
+    color: var(--color-mute);
+    font-size: 1rem;
   }
   .editor-wrapper .ck.ck-editor {
     display: flex;
