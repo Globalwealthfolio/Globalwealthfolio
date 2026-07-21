@@ -145,18 +145,7 @@ const {
           var dark = theme === "dark" || (theme === "system" && sysDark);
           if (dark) document.documentElement.classList.add("dark");
           document.documentElement.dataset.theme = dark ? "dark" : "light";
-          var lang = "en";
-          if (raw) {
-            try {
-              var d2 = JSON.parse(raw);
-              if (d2 && d2.preferences) {
-                lang = d2.preferences.language || "en";
-              }
-            } catch (_) {}
-          } else {
-            lang = (navigator.language || "en").split("-")[0];
-          }
-          document.documentElement.lang = lang;
+          document.documentElement.lang = "en";
         } catch (_) {}
       })();
     </script>

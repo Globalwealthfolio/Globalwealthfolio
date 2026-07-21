@@ -1,12 +1,10 @@
 import { loadData, updateData, clearData, addAudit, subscribe, needsPassphrase, isUnlocked, setupEncryption, lock } from "../lib/store";
-import type { LangCode } from "../lib/i18n";
 import { getBrowserCurrency, type CurrencyCode } from "../lib/currency";
 
 function populateUI() {
   const data = loadData();
   const prefs = data.preferences;
   (document.getElementById("set-currency") as HTMLSelectElement).value = prefs.currency;
-  (document.getElementById("set-language") as HTMLSelectElement).value = prefs.language;
   (document.getElementById("set-income") as HTMLInputElement).value = String(prefs.monthlyIncome);
   (document.getElementById("set-base-date") as HTMLInputElement).value = prefs.portfolioBaseDate;
   (document.getElementById("set-notifications") as HTMLInputElement).checked = prefs.notifications;
@@ -15,8 +13,8 @@ function populateUI() {
   document.querySelectorAll<HTMLButtonElement>("[data-theme]").forEach((btn) => {
     btn.setAttribute("aria-selected", String(btn.dataset.theme === prefs.theme));
   });
-  document.documentElement.lang = prefs.language;
-  document.documentElement.dir = prefs.language === "ar" ? "rtl" : "ltr";
+  document.documentElement.lang = "en";
+  document.documentElement.dir = "ltr";
 
   const encStatus = document.getElementById("encryption-status");
   const setBtn = document.getElementById("set-passphrase-btn");
@@ -42,12 +40,6 @@ document.getElementById("set-currency")?.addEventListener("change", (e) => {
   const code = (e.target as HTMLSelectElement).value as CurrencyCode;
   window.gwp?.setCurrency(code);
   addAudit({ action: "update", entity: "settings", description: `Set currency to ${code}` });
-});
-
-document.getElementById("set-language")?.addEventListener("change", (e) => {
-  const code = (e.target as HTMLSelectElement).value as LangCode;
-  window.gwp?.setLanguage(code);
-  addAudit({ action: "update", entity: "settings", description: `Set language to ${code}` });
 });
 
 document.querySelectorAll<HTMLButtonElement>("[data-theme]").forEach((btn) => {
@@ -113,10 +105,9 @@ document.getElementById("reset-data")?.addEventListener("click", () => {
   if (!confirm("Really sure? This cannot be undone.")) return;
   clearData();
   const currency = getBrowserCurrency();
-  const lang = (navigator.language?.split("-")[0] ?? "en") as LangCode;
   updateData((data) => {
     data.preferences.currency = currency;
-    data.preferences.language = lang === "ar" || ["en","hi","es","fr","de","ja","zh","pt","ru"].includes(lang) ? lang : "en";
+    data.preferences.language = "en";
   });
   populateUI();
   alert("All data cleared.");

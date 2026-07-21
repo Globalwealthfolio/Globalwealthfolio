@@ -1,13 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { currencies } from "../lib/currency";
-import { languages } from "../lib/i18n";
-
 const currencyList = Object.entries(currencies).map(([code, meta]) => ({
-  code,
-  ...meta,
-}));
-const languageList = Object.entries(languages).map(([code, meta]) => ({
   code,
   ...meta,
 }));
@@ -19,7 +13,7 @@ const languageList = Object.entries(languages).map(([code, meta]) => ({
       <p class="text-caption-mono text-gold mb-xs">Settings</p>
       <h1 class="text-display-lg">Preferences</h1>
       <p class="text-body-md text-body mt-sm leading-relaxed">
-        Pick a currency, language, and theme. Set your monthly income to
+        Pick a currency and theme. Set your monthly income to
         power the savings-rate calculation. Everything is stored locally.
       </p>
     </div>
@@ -36,19 +30,6 @@ const languageList = Object.entries(languages).map(([code, meta]) => ({
           ))}
         </select>
         <p class="text-caption text-mute mt-sm">All amounts are formatted with the locale of the selected currency.</p>
-      </div>
-
-      <!-- Language -->
-      <div class="card">
-        <h2 class="text-display-sm mb-sm">Language</h2>
-        <p class="text-body-sm text-body mb-md">Switch the interface language.</p>
-        <label class="label" for="set-language">Interface language</label>
-        <select class="select" id="set-language">
-          {languageList.map((l) => (
-            <option value={l.code}>{l.flag} {l.native} ({l.name})</option>
-          ))}
-        </select>
-        <p class="text-caption text-mute mt-sm">Right-to-left languages (Arabic) flip the layout automatically.</p>
       </div>
 
       <!-- Theme -->

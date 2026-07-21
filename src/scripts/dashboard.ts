@@ -70,17 +70,8 @@ function setGreeting(prefs: { language: string; currency: string }) {
   const hour = new Date().getHours();
   const greetings: Record<string, { morning: string; afternoon: string; evening: string }> = {
     en: { morning: "Good morning.", afternoon: "Good afternoon.", evening: "Good evening." },
-    hi: { morning: "सुप्रभात।", afternoon: "शुभ दोपहर।", evening: "शुभ संध्या।" },
-    es: { morning: "Buenos días.", afternoon: "Buenas tardes.", evening: "Buenas tardes." },
-    fr: { morning: "Bonjour.", afternoon: "Bon après-midi.", evening: "Bonsoir." },
-    de: { morning: "Guten Morgen.", afternoon: "Guten Tag.", evening: "Guten Abend." },
-    ja: { morning: "おはようございます。", afternoon: "こんにちは。", evening: "こんばんは。" },
-    zh: { morning: "早上好。", afternoon: "下午好。", evening: "晚上好。" },
-    pt: { morning: "Bom dia.", afternoon: "Boa tarde.", evening: "Boa noite." },
-    ru: { morning: "Доброе утро.", afternoon: "Добрый день.", evening: "Добрый вечер." },
-    ar: { morning: "صباح الخير.", afternoon: "مساء الخير.", evening: "مساء الخير." },
   };
-  const g = greetings[prefs.language] ?? greetings.en;
+  const g = greetings.en;
   const text =
     hour < 12 ? g.morning : hour < 18 ? g.afternoon : g.evening;
   el.textContent = text;

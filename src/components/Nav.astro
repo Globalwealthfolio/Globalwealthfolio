@@ -8,19 +8,6 @@ const currencyList = Object.entries(currencies).map(([code, meta]) => ({
   name: meta.name,
 }));
 
-const langs = [
-  { code: "en", label: "English" },
-  { code: "hi", label: "हिन्दी" },
-  { code: "es", label: "Español" },
-  { code: "fr", label: "Français" },
-  { code: "de", label: "Deutsch" },
-  { code: "ja", label: "日本語" },
-  { code: "zh", label: "中文" },
-  { code: "pt", label: "Português" },
-  { code: "ru", label: "Русский" },
-  { code: "ar", label: "العربية" },
-];
-
 const primaryLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/investments", label: "Investments" },
@@ -164,24 +151,6 @@ const isActive = (href: string) => {
           class="hidden absolute right-0 top-full mt-2 min-w-52 bg-canvas rounded-md shadow-level-4 p-2 z-50"
           role="menu"
         >
-          <!-- Language -->
-          <div class="text-caption-mono text-mute px-1 mb-1" aria-hidden="true">Language</div>
-          <div class="grid grid-cols-2 gap-0.5 mb-2">
-            {
-              langs.map((lang) => (
-                <button
-                  type="button"
-                  class="text-left px-2 py-1 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors truncate"
-                  data-set-lang={lang.code}
-                  role="menuitem"
-                >
-                  {lang.label}
-                </button>
-              ))
-            }
-          </div>
-          <div class="hairline my-1" role="separator"></div>
-
           <!-- Currency -->
           <div class="text-caption-mono text-mute px-1 mb-1 mt-2" aria-hidden="true">Currency</div>
           <div class="max-h-48 overflow-y-auto scroll-thin -mx-1 px-1">
@@ -310,24 +279,6 @@ const isActive = (href: string) => {
 
       <!-- Mobile utilities -->
       <div class="flex flex-col gap-2">
-        <!-- Language -->
-        <div class="text-caption-mono text-mute px-1">Language</div>
-        <div class="grid grid-cols-2 gap-1">
-          {
-            langs.map((lang) => (
-              <button
-                type="button"
-                class="text-left px-2.5 py-1.5 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors truncate"
-                data-set-lang={lang.code}
-              >
-                {lang.label}
-              </button>
-            ))
-          }
-        </div>
-
-        <div class="hairline my-0.5" role="separator"></div>
-
         <!-- Currency -->
         <div class="text-caption-mono text-mute px-1">Currency</div>
         <div class="grid grid-cols-2 gap-1 max-h-48 overflow-y-auto scroll-thin">
@@ -411,16 +362,6 @@ const isActive = (href: string) => {
     settingsDropdown?.classList.toggle("hidden");
     const isExpanded = !settingsDropdown?.classList.contains("hidden");
     settingsToggle.setAttribute("aria-expanded", String(isExpanded));
-  });
-
-  // --- Language setter ---
-  document.querySelectorAll<HTMLButtonElement>("[data-set-lang]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const code = btn.dataset.setLang!;
-      window.gwp?.setLanguage(code as never);
-      settingsDropdown?.classList.add("hidden");
-      window.dispatchEvent(new CustomEvent("gwp:lang", { detail: code }));
-    });
   });
 
   // --- Currency setter ---
