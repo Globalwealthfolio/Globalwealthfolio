@@ -95,6 +95,61 @@ import Layout from "../layouts/Layout.astro";
           <button id="admin-logout-btn" class="btn-secondary" type="button">Lock</button>
         </div>
 
+        <!-- Topic Hub Management & Server Sync -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl mb-2xl">
+          <div>
+            <div class="mb-md">
+              <p class="text-caption-mono text-gold mb-xs">Topic Hubs</p>
+              <h2 class="text-display-md">Manage topic hubs.</h2>
+            </div>
+            <div class="card p-lg space-y-md">
+              <div id="topic-hub-list">
+                <p class="text-body-sm text-mute">No topic hubs yet.</p>
+              </div>
+              <div class="flex gap-sm items-end">
+                <div class="flex-1">
+                  <label class="label" for="new-hub-name">Hub Name</label>
+                  <input class="input" type="text" id="new-hub-name" placeholder="e.g. Tax Saving" />
+                </div>
+                <div class="flex-1">
+                  <label class="label" for="new-hub-slug">Slug</label>
+                  <input class="input" type="text" id="new-hub-slug" placeholder="tax-saving" />
+                </div>
+                <button id="add-hub-btn" class="btn-primary whitespace-nowrap" type="button">Add Hub</button>
+              </div>
+              <div>
+                <label class="label" for="new-hub-desc">Description <span class="text-mute font-normal">(optional)</span></label>
+                <input class="input" type="text" id="new-hub-desc" placeholder="Brief description of this topic hub" />
+              </div>
+              <div class="flex items-center gap-sm flex-wrap">
+                <button id="sync-hubs-btn" class="btn-primary" type="button">Sync Hubs</button>
+                <span id="hub-sync-status" class="text-caption text-mute"></span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="mb-md">
+              <p class="text-caption-mono text-gold mb-xs">Server Sync</p>
+              <h2 class="text-display-md">Sync posts to server.</h2>
+            </div>
+            <div class="card p-lg space-y-md">
+              <div>
+                <label class="label" for="api-token">Admin Token</label>
+                <input id="api-token" type="password" class="input" placeholder="Your secret admin token" />
+                <p class="text-caption text-mute mt-xs">Token used to authenticate with the server API.</p>
+              </div>
+              <div class="flex items-center gap-sm flex-wrap">
+                <button id="resync-btn" class="btn-primary" type="button">Resync Posts</button>
+                <button id="fetch-posts-btn" class="btn-secondary" type="button">Fetch Posts</button>
+                <span id="api-sync-status" class="text-caption text-mute"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-hairline my-4xl" />
+
         <div class="flex items-center justify-between mb-lg">
           <p class="text-body-md text-body">Manage your blog posts</p>
           <button id="add-blog" class="btn-primary" type="button">+ New post</button>
@@ -103,26 +158,6 @@ import Layout from "../layouts/Layout.astro";
         <div id="admin-blog-list" class="grid grid-cols-1 gap-md mb-2xl">
           <div class="text-center py-5xl card-soft">
             <p class="text-body-md text-body">Loading…</p>
-          </div>
-        </div>
-
-        <hr class="border-hairline my-4xl" />
-
-        <!-- Server Sync -->
-        <div class="mb-md">
-          <p class="text-caption-mono text-gold mb-xs">Server Sync</p>
-          <h2 class="text-display-md">Sync posts to server.</h2>
-        </div>
-        <div class="card p-lg space-y-md max-w-lg">
-          <div>
-            <label class="label" for="api-token">Admin Token</label>
-            <input id="api-token" type="password" class="input" placeholder="Your secret admin token" />
-            <p class="text-caption text-mute mt-xs">Token used to authenticate with the server API.</p>
-          </div>
-          <div class="flex items-center gap-sm flex-wrap">
-            <button id="resync-btn" class="btn-primary" type="button">Resync Posts</button>
-            <button id="fetch-posts-btn" class="btn-secondary" type="button">Fetch Posts</button>
-            <span id="api-sync-status" class="text-caption text-mute"></span>
           </div>
         </div>
 
@@ -180,6 +215,16 @@ import Layout from "../layouts/Layout.astro";
               <label class="label" for="blog-tags">Tags <span class="text-mute font-normal">(comma separated)</span></label>
               <input class="input" type="text" id="blog-tags" name="tags" placeholder="investing, sip, review" />
             </div>
+          </div>
+          <div>
+            <label class="label" for="blog-topic-hub">Topic Hub</label>
+            <div class="flex gap-sm">
+              <select class="input flex-1" id="blog-topic-hub" name="topicHub">
+                <option value="">— None —</option>
+              </select>
+              <button type="button" class="btn-secondary whitespace-nowrap" id="manage-hubs-btn" title="Manage Topic Hubs">Manage</button>
+            </div>
+            <p class="text-caption text-mute mt-xs">Group this post under a Topic Hub (e.g. Tax Saving, Market Insights).</p>
           </div>
         </div>
         <div>

@@ -25,6 +25,7 @@ function migrate(parsed: Partial<AppData> | null): AppData {
     emis: Array.isArray(parsed.emis) ? parsed.emis : [],
     expenses: Array.isArray(parsed.expenses) ? parsed.expenses : [],
     blog: Array.isArray(parsed.blog) ? parsed.blog : [],
+    topicHubs: Array.isArray(parsed.topicHubs) ? parsed.topicHubs : [],
     auditLog: Array.isArray(parsed.auditLog) ? parsed.auditLog : [],
     preferences: { ...base.preferences, ...(parsed.preferences ?? {}) },
   };

@@ -99,6 +99,8 @@ function showPanel() {
   forgotScreen.style.display = "none";
   adminPanel.style.display = "block";
   renderAll();
+  populateHubSelect();
+  renderTopicHubList();
   if (getApiToken()) {
     fetchPostsFromServer(true);
   }
@@ -132,7 +134,7 @@ async function syncPost(post: import("../lib/types").BlogPost, statusEl: HTMLEle
     const res = await fetch("/api/add-post", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ id: post.id, title: post.title, slug: post.slug, content: post.content, excerpt: post.excerpt, tags: post.tags, status: post.status, authorName: post.authorName, scheduledAt: post.scheduledAt }),
+      body: JSON.stringify({ id: post.id, title: post.title, slug: post.slug, content: post.content, excerpt: post.excerpt, tags: post.tags, topicHub: post.topicHub, status: post.status, authorName: post.authorName, scheduledAt: post.scheduledAt }),
     });
     if (res.ok) {
       statusEl.textContent = "✓ Synced";
@@ -437,11 +439,209 @@ async function destroyEditor() {
   }
 }
 
+// --- Topic Hub helpers ---
+function populateHubSelect(selectedSlug?: string) {
+  const select = document.getElementById("blog-topic-hub") as HTMLSelectElement;
+  if (!select) return;
+  const hubs = loadData().topicHubs;
+  select.innerHTML = `<option value="">— None —</option>`;
+  hubs.forEach((h) => {
+    const opt = document.createElement("option");
+    opt.value = h.slug;
+    opt.textContent = h.name;
+    if (h.slug === selectedSlug) opt.selected = true;
+    select.appendChild(opt);
+  });
+}
+
+function renderTopicHubList() {
+  const container = document.getElementById("topic-hub-list");
+  if (!container) return;
+  const hubs = loadData().topicHubs;
+  if (hubs.length === 0) {
+    container.innerHTML = `<p class="text-body-sm text-mute">No topic hubs yet.</p>`;
+    return;
+  }
+  container.innerHTML = hubs
+    .map(
+      (h) => `
+    <div class="flex items-center justify-between py-1 border-b border-hairline last:border-0">
+      <div class="flex-1">
+        <span class="text-body-sm-strong text-ink">${esc(h.name)}</span>
+        <span class="text-caption text-mute ml-sm">/${h.slug}</span>
+      </div>
+      <div class="flex gap-1">
+        <button class="btn-ghost text-caption" type="button" data-edit-hub="${h.id}">Edit</button>
+        <button class="btn-ghost text-caption text-loss" type="button" data-delete-hub="${h.id}">Delete</button>
+      </div>
+    </div>`
+    )
+    .join("");
+
+  container.querySelectorAll<HTMLButtonElement>("[data-delete-hub]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.deleteHub!;
+      if (!confirm("Delete this topic hub? Posts assigned to it will be unlinked.")) return;
+      updateData((data) => {
+        data.topicHubs = data.topicHubs.filter((h) => h.id !== id);
+        data.blog.forEach((p) => {
+          const hub = data.topicHubs.find((h) => h.slug === p.topicHub);
+          if (!hub && p.topicHub) p.topicHub = undefined;
+        });
+      });
+      populateHubSelect();
+      renderTopicHubList();
+    });
+  });
+
+  container.querySelectorAll<HTMLButtonElement>("[data-edit-hub]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.editHub!;
+      const hub = loadData().topicHubs.find((h) => h.id === id);
+      if (!hub) return;
+      const nameInput = document.getElementById("new-hub-name") as HTMLInputElement;
+      const slugInput = document.getElementById("new-hub-slug") as HTMLInputElement;
+      const descInput = document.getElementById("new-hub-desc") as HTMLInputElement;
+      const addBtn = document.getElementById("add-hub-btn") as HTMLButtonElement;
+      if (nameInput && slugInput) {
+        nameInput.value = hub.name;
+        slugInput.value = hub.slug;
+        if (descInput) descInput.value = hub.description ?? "";
+        nameInput.dataset.editId = hub.id;
+        addBtn.textContent = "Update Hub";
+      }
+    });
+  });
+}
+
+function slugifyHubName(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 60) || `hub-${Date.now().toString(36)}`;
+}
+
+// --- Topic Hub event listeners ---
+document.getElementById("add-hub-btn")?.addEventListener("click", () => {
+  const nameInput = document.getElementById("new-hub-name") as HTMLInputElement;
+  const slugInput = document.getElementById("new-hub-slug") as HTMLInputElement;
+  const descInput = document.getElementById("new-hub-desc") as HTMLInputElement;
+  const addBtn = document.getElementById("add-hub-btn") as HTMLButtonElement;
+  if (!nameInput || !slugInput) return;
+  const name = nameInput.value.trim();
+  const slug = slugInput.value.trim();
+  if (!name || !slug) {
+    alert("Please enter a name and slug for the topic hub.");
+    return;
+  }
+  const editId = nameInput.dataset.editId;
+  if (editId) {
+    // Updating existing hub
+    updateData((data) => {
+      const hub = data.topicHubs.find((h) => h.id === editId);
+      if (hub) {
+        const oldSlug = hub.slug;
+        hub.name = name;
+        hub.slug = slug;
+        hub.description = descInput?.value.trim() || undefined;
+        // Update posts that were assigned to the old slug
+        data.blog.forEach((p) => {
+          if (p.topicHub === oldSlug) p.topicHub = slug;
+        });
+      }
+    });
+    delete nameInput.dataset.editId;
+    addBtn.textContent = "Add Hub";
+  } else {
+    // Creating new hub
+    const existing = loadData().topicHubs.find((h) => h.slug === slug);
+    if (existing) {
+      alert(`A topic hub with slug "${slug}" already exists.`);
+      return;
+    }
+    updateData((data) => {
+      data.topicHubs.push({
+        id: uid(),
+        name,
+        slug,
+        description: descInput?.value.trim() || undefined,
+        createdAt: nowISO(),
+      });
+    });
+  }
+  nameInput.value = "";
+  slugInput.value = "";
+  if (descInput) descInput.value = "";
+  populateHubSelect();
+  renderTopicHubList();
+});
+
+document.getElementById("new-hub-name")?.addEventListener("input", (e) => {
+  const nameInput = e.target as HTMLInputElement;
+  const slugInput = document.getElementById("new-hub-slug") as HTMLInputElement;
+  if (slugInput && !slugInput.dataset.userEdited) {
+    slugInput.value = slugifyHubName(nameInput.value);
+  }
+});
+
+document.getElementById("new-hub-slug")?.addEventListener("input", (e) => {
+  const slugInput = e.target as HTMLInputElement;
+  slugInput.dataset.userEdited = "1";
+});
+
+// --- Sync topic hubs to server ---
+const syncHubsBtn = document.getElementById("sync-hubs-btn");
+const hubSyncStatus = document.getElementById("hub-sync-status");
+
+syncHubsBtn?.addEventListener("click", async () => {
+  const token = getApiToken();
+  if (!token) {
+    if (hubSyncStatus) {
+      hubSyncStatus.textContent = "⚠ Set Admin Token first";
+      hubSyncStatus.className = "text-caption text-loss";
+    }
+    return;
+  }
+  if (hubSyncStatus) {
+    hubSyncStatus.textContent = "Syncing hubs…";
+    hubSyncStatus.className = "text-caption text-mute";
+  }
+  try {
+    const hubs = loadData().topicHubs;
+    const res = await fetch("/api/topic-hubs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Admin-Token": token },
+      body: JSON.stringify({ topicHubs: hubs }),
+    });
+    if (res.ok) {
+      if (hubSyncStatus) {
+        hubSyncStatus.textContent = "✓ Hubs synced";
+        hubSyncStatus.className = "text-caption text-gain";
+      }
+    } else {
+      const data = await res.json().catch(() => ({}));
+      if (hubSyncStatus) {
+        hubSyncStatus.textContent = `✗ ${data.error || res.status}`;
+        hubSyncStatus.className = "text-caption text-loss";
+      }
+    }
+  } catch {
+    if (hubSyncStatus) {
+      hubSyncStatus.textContent = "✗ Network error";
+      hubSyncStatus.className = "text-caption text-loss";
+    }
+  }
+});
+
 // --- Modal ---
 function openModal(post?: BlogPost) {
   if (!modal || !form) return;
   if (modalTitle) modalTitle.textContent = post ? "Edit post" : "Write a new post";
   form.reset();
+  populateHubSelect(post?.topicHub);
   const scheduledAtInput = document.getElementById("blog-scheduled-at") as HTMLInputElement;
   const scheduledAtGroup = document.getElementById("scheduled-at-group");
   if (post) {
@@ -484,6 +684,11 @@ document.addEventListener("keydown", (e) => {
 });
 
 addBtn.addEventListener("click", () => openModal());
+
+document.getElementById("manage-hubs-btn")?.addEventListener("click", () => {
+  const hubSection = document.getElementById("topic-hub-list")?.closest(".card");
+  if (hubSection) hubSection.scrollIntoView({ behavior: "smooth", block: "start" });
+});
 
 document.querySelectorAll<HTMLInputElement>(".blog-status-radio").forEach((r) => {
   r.addEventListener("change", () => {
@@ -535,6 +740,8 @@ form?.addEventListener("submit", async (e) => {
   if (status === "scheduled" && scheduledAt && scheduledAt <= ts) {
     status = "published";
   }
+  const topicHub = String(fd.get("topicHub") ?? "").trim() || undefined;
+
   const payload: BlogPost = {
     id: id || uid(),
     title,
@@ -542,6 +749,7 @@ form?.addEventListener("submit", async (e) => {
     excerpt: String(fd.get("excerpt") ?? "").trim(),
     content,
     tags,
+    topicHub,
     status,
     scheduledAt,
     metaTitle: String(fd.get("metaTitle") ?? "").trim() || undefined,
@@ -611,41 +819,42 @@ function renderAll() {
     return;
   }
 
-  list.innerHTML = posts
-    .map(
-      (p) => {
-      const statusLabel = p.status === "published" ? "Published" : p.status === "scheduled" ? "Scheduled" : "Draft";
-      const statusClass = p.status === "published" ? "badge-gain" : p.status === "scheduled" ? "badge" : "";
-      const dateLabel = p.status === "scheduled" && p.scheduledAt
-        ? `Scheduled: ${formatDate(p.scheduledAt)}`
-        : formatDate(p.publishedAt ?? p.updatedAt);
-      return `
-    <div class="card">
-      <div class="flex items-center justify-between mb-sm">
-        <span class="badge ${statusClass}">${statusLabel}</span>
-        <span class="text-caption text-mute">${dateLabel}</span>
-      </div>
-      <h3 class="text-display-sm text-ink mb-xs">${esc(p.title)}</h3>
-      ${
-        p.excerpt
-          ? `<p class="text-body-md text-body line-clamp-2 mb-sm">${esc(p.excerpt)}</p>`
-          : ""
-      }
-      ${
-        p.tags.length > 0
-          ? `<div class="flex flex-wrap gap-xs mb-sm">${p.tags.map((t) => `<span class="badge">${esc(t)}</span>`).join("")}</div>`
-          : ""
-      }
-      <div class="flex items-center justify-between pt-sm border-t border-hairline">
-        <span class="text-caption text-mute">${p.content.split(/\s+/).filter(Boolean).length} words</span>
-        <div class="flex gap-1">
-          <button class="btn-ghost" type="button" data-edit="${p.id}">Edit</button>
-          <button class="btn-ghost text-loss" type="button" data-delete="${p.id}">Delete</button>
-        </div>
-      </div>
-    </div>`;
-    })
-    .join("");
+  const hubs = loadData().topicHubs;
+  const hubMap = new Map<string, string>();
+  hubs.forEach((h) => hubMap.set(h.slug, h.name));
+
+  const grouped = new Map<string, BlogPost[]>();
+  const uncategorized: BlogPost[] = [];
+  posts.forEach((p) => {
+    if (p.topicHub && hubMap.has(p.topicHub)) {
+      const group = grouped.get(p.topicHub);
+      if (group) group.push(p);
+      else grouped.set(p.topicHub, [p]);
+    } else {
+      uncategorized.push(p);
+    }
+  });
+
+  const sortedSlugs = Array.from(grouped.keys()).sort((a, b) =>
+    (hubMap.get(a) ?? a).localeCompare(hubMap.get(b) ?? b)
+  );
+
+  let html = "";
+  for (const slug of sortedSlugs) {
+    const name = hubMap.get(slug) ?? slug;
+    const groupPosts = grouped.get(slug)!;
+    html += `<div class="mb-2xl"><h3 class="text-display-sm text-ink mb-md flex items-center gap-sm"><span class="badge badge-brand">${esc(name)}</span> <span class="text-caption text-mute font-normal">${groupPosts.length} post${groupPosts.length !== 1 ? "s" : ""}</span></h3>`;
+    html += renderPostCards(groupPosts);
+    html += `</div>`;
+  }
+
+  if (uncategorized.length > 0) {
+    html += `<div class="mb-2xl"><h3 class="text-display-sm text-ink mb-md flex items-center gap-sm text-mute">Uncategorized <span class="text-caption text-mute font-normal">${uncategorized.length} post${uncategorized.length !== 1 ? "s" : ""}</span></h3>`;
+    html += renderPostCards(uncategorized);
+    html += `</div>`;
+  }
+
+  list.innerHTML = html;
 
   list.querySelectorAll<HTMLButtonElement>("[data-edit]").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -674,9 +883,33 @@ function renderAll() {
   });
 }
 
-
-
-
+function renderPostCards(posts) {
+  return posts
+    .map((p) => {
+      const statusLabel = p.status === "published" ? "Published" : p.status === "scheduled" ? "Scheduled" : "Draft";
+      const statusClass = p.status === "published" ? "badge-gain" : p.status === "scheduled" ? "badge" : "";
+      const dateLabel = p.status === "scheduled" && p.scheduledAt
+        ? "Scheduled: " + formatDate(p.scheduledAt)
+        : formatDate(p.publishedAt ?? p.updatedAt);
+      return '<div class="card">' +
+      '<div class="flex items-center justify-between mb-sm">' +
+        '<span class="badge ' + statusClass + '">' + statusLabel + '</span>' +
+        '<span class="text-caption text-mute">' + dateLabel + '</span>' +
+      '</div>' +
+      '<h3 class="text-display-sm text-ink mb-xs">' + esc(p.title) + '</h3>' +
+      (p.excerpt ? '<p class="text-body-md text-body line-clamp-2 mb-sm">' + esc(p.excerpt) + '</p>' : '') +
+      (p.tags.length > 0 ? '<div class="flex flex-wrap gap-xs mb-sm">' + p.tags.map(function(t) { return '<span class="badge">' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
+      '<div class="flex items-center justify-between pt-sm border-t border-hairline">' +
+        '<span class="text-caption text-mute">' + p.content.split(/\s+/).filter(Boolean).length + ' words</span>' +
+        '<div class="flex gap-1">' +
+          '<button class="btn-ghost" type="button" data-edit="' + p.id + '">Edit</button>' +
+          '<button class="btn-ghost text-loss" type="button" data-delete="' + p.id + '">Delete</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+    })
+    .join('');
+}
 
 // --- Fetch posts from server ---
 const fetchPostsBtn = document.getElementById("fetch-posts-btn");

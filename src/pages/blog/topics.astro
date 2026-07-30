@@ -1,0 +1,207 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout
+  title="Topic Hubs — Global Wealth Portfolio | Curated Investment & Finance Guides"
+  description="Explore curated collections of articles grouped by topic — Tax Saving, Market Insights, Investment Strategies, and more."
+>
+  <section class="container-page page-section pt-3xl pb-2xl">
+    <p class="text-caption-mono text-gold mb-xs">Topic Hubs</p>
+    <h1 class="text-display-lg mb-md">Explore articles by topic.</h1>
+    <p class="text-body-lg text-body max-w-2xl mb-4xl leading-relaxed">
+      Curated collections of guides and insights grouped by theme — find exactly what you&rsquo;re looking for.
+    </p>
+
+    <!-- Hub cards grid -->
+    <div id="hub-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-md mb-4xl">
+      <div class="col-span-full text-center py-5xl card-soft">
+        <p class="text-body-md text-body">Loading topic hubs…</p>
+      </div>
+    </div>
+
+    <!-- Active hub posts -->
+    <div id="hub-posts-section" class="mb-4xl" style="display:none;">
+      <hr class="border-hairline mb-4xl" />
+      <div class="flex items-center justify-between mb-md">
+        <div>
+          <p class="text-caption-mono text-gold mb-xs" id="active-hub-label">Topic Hub</p>
+          <h2 class="text-display-md" id="active-hub-title"></h2>
+        </div>
+        <button id="clear-hub-filter" class="btn-secondary" type="button" style="display:none;">&larr; All topics</button>
+      </div>
+      <div id="hub-posts-grid" class="grid grid-cols-1 md:grid-cols-2 gap-md mb-md">
+        <div class="md:col-span-2 text-center py-3xl card-soft">
+          <p class="text-body-sm text-body">Loading posts…</p>
+        </div>
+      </div>
+      <div id="load-more-container" class="text-center mt-md" style="display:none;">
+        <button id="load-more-btn" class="btn-secondary" type="button">Load More</button>
+      </div>
+    </div>
+
+    <hr class="border-hairline my-4xl" />
+
+    <div class="text-center">
+      <a href="/blog" class="text-body-sm text-link hover:underline">&larr; Back to all blog posts</a>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const POSTS_PER_PAGE = 6;
+  let allPosts = [];
+  let displayCount = POSTS_PER_PAGE;
+  let activeHub = null;
+
+  function esc(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function formatDate(iso) {
+    try {
+      return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    } catch { return iso; }
+  }
+
+  function slugToLabel(slug) {
+    return slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  function isNew(iso) {
+    try {
+      return (Date.now() - new Date(iso).getTime()) < 7 * 24 * 60 * 60 * 1000;
+    } catch { return false; }
+  }
+
+  async function loadHubs() {
+    const grid = document.getElementById("hub-grid");
+    if (!grid) return;
+    try {
+      const res = await fetch("/api/blog?topicHubs=true");
+      const data = await res.json();
+      let hubs = data.topicHubs || [];
+      // Also fetch proper names from topic-hubs endpoint
+      try {
+        const hubsRes = await fetch("/api/topic-hubs");
+        const hubsData = await hubsRes.json();
+        if (hubsData.topicHubs) {
+          const nameMap = {};
+          hubsData.topicHubs.forEach(h => { nameMap[h.slug] = h.name; });
+          hubs.forEach(h => {
+            if (nameMap[h.slug]) h.name = nameMap[h.slug];
+          });
+        }
+      } catch (_) {}
+
+      if (hubs.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-5xl card-soft"><p class="text-body-sm text-body">No topic hubs yet. Check back soon!</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = hubs.map(h => `
+        <article class="card hover:shadow-level-3 transition-shadow cursor-pointer" data-hub="${esc(h.slug)}">
+          <div class="flex flex-col gap-sm h-full">
+            <h3 class="text-display-sm text-ink">${esc(h.name || slugToLabel(h.slug))}</h3>
+            <p class="text-body-md text-body flex-1">${h.count} article${h.count !== 1 ? "s" : ""}</p>
+            <div class="pt-sm border-t border-hairline">
+              <span class="text-body-sm text-link">Browse ${esc(h.name || slugToLabel(h.slug))} →</span>
+            </div>
+          </div>
+        </article>
+      `).join("");
+
+      grid.querySelectorAll("[data-hub]").forEach(el => {
+        el.addEventListener("click", () => {
+          selectHub(el.dataset.hub);
+        });
+      });
+    } catch {
+      grid.innerHTML = `<div class="col-span-full text-center py-5xl card-soft"><p class="text-body-sm text-body">Failed to load topic hubs. Try again later.</p></div>`;
+    }
+  }
+
+  async function selectHub(hubSlug) {
+    activeHub = hubSlug;
+    displayCount = POSTS_PER_PAGE;
+    document.getElementById("hub-posts-section").style.display = "block";
+    document.getElementById("clear-hub-filter").style.display = "inline-flex";
+    document.getElementById("load-more-container").style.display = "none";
+
+    const hubsRes = await fetch("/api/topic-hubs");
+    const hubsData = await hubsRes.json();
+    const hubMeta = (hubsData.topicHubs || []).find(h => h.slug === hubSlug);
+    const hubName = hubMeta ? hubMeta.name : slugToLabel(hubSlug);
+    const hubDesc = hubMeta ? hubMeta.description : "";
+
+    document.getElementById("active-hub-label").textContent = hubDesc || "Topic Hub";
+    document.getElementById("active-hub-title").textContent = hubName;
+
+    try {
+      const res = await fetch(`/api/blog?topicHub=${encodeURIComponent(hubSlug)}`);
+      const data = await res.json();
+      allPosts = (data.posts || []).filter((p) => p.status === "published");
+      renderPosts();
+    } catch {
+      document.getElementById("hub-posts-grid").innerHTML =
+        `<div class="md:col-span-2 text-center py-3xl card-soft"><p class="text-body-sm text-body">Failed to load posts.</p></div>`;
+    }
+
+    document.querySelectorAll("[data-hub]").forEach(el => {
+      el.classList.toggle("ring-2", el.dataset.hub === hubSlug);
+      el.classList.toggle("ring-gold", el.dataset.hub === hubSlug);
+    });
+  }
+
+  function renderPosts() {
+    const grid = document.getElementById("hub-posts-grid");
+    if (!grid) return;
+
+    if (allPosts.length === 0) {
+      grid.innerHTML = `<div class="md:col-span-2 text-center py-3xl card-soft"><p class="text-body-sm text-body">No posts in this topic yet.</p></div>`;
+      document.getElementById("load-more-container").style.display = "none";
+      return;
+    }
+
+    const postsToShow = allPosts.slice(0, displayCount);
+    grid.innerHTML = postsToShow.map(p => `
+      <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-caption text-mute">${formatDate(p.publishedAt ?? p.updatedAt)}</span>
+        </div>
+        <h3 class="text-display-sm text-ink">${esc(p.title)}${isNew(p.publishedAt ?? p.updatedAt) ? '<sup class="text-caption-mono text-gain font-medium" style="font-size:0.6em;top:-0.5em;margin-left:4px;">New</sup>' : ""}</h3>
+        ${
+          p.excerpt
+            ? `<p class="text-body-md text-body line-clamp-2">${esc(p.excerpt)}</p>`
+            : `<p class="text-body-md text-body line-clamp-2">${esc(p.content.slice(0, 140))}${p.content.length > 140 ? "…" : ""}</p>`
+        }
+        <div class="flex items-center justify-between mt-auto pt-sm border-t border-hairline">
+          <span class="text-caption text-mute">${p.authorName ? `By ${esc(p.authorName)}` : ""}</span>
+          <a href="/blog/view?slug=${encodeURIComponent(p.slug)}" class="text-body-sm text-link hover:underline">Read more →</a>
+        </div>
+      </article>
+    `).join("");
+
+    if (displayCount < allPosts.length) {
+      document.getElementById("load-more-container").style.display = "block";
+    } else {
+      document.getElementById("load-more-container").style.display = "none";
+    }
+  }
+
+  document.getElementById("clear-hub-filter")?.addEventListener("click", () => {
+    activeHub = null;
+    document.getElementById("hub-posts-section").style.display = "none";
+    document.getElementById("clear-hub-filter").style.display = "none";
+    document.querySelectorAll("[data-hub]").forEach(el => {
+      el.classList.remove("ring-2", "ring-gold");
+    });
+  });
+
+  document.getElementById("load-more-btn")?.addEventListener("click", () => {
+    displayCount += POSTS_PER_PAGE;
+    renderPosts();
+  });
+
+  loadHubs();
+</script>

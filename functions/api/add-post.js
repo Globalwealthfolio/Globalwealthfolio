@@ -56,6 +56,7 @@ export async function onRequest(context) {
       content,
       excerpt: body.excerpt || "",
       tags: Array.isArray(body.tags) ? body.tags : [],
+      topicHub: body.topicHub || undefined,
       status,
       scheduledAt: body.scheduledAt || undefined,
       authorName: body.authorName || "",

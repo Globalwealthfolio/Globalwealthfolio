@@ -168,6 +168,15 @@ import Layout from "../layouts/Layout.astro";
     const list = document.getElementById("admin-blog-list");
     if (!list) return;
     try {
+      let hubNames = {};
+      try {
+        const hubsRes = await fetch("/api/topic-hubs");
+        const hubsData = await hubsRes.json();
+        if (hubsData.topicHubs) {
+          hubsData.topicHubs.forEach(h => { hubNames[h.slug] = h.name; });
+        }
+      } catch (_) {}
+
       const res = await fetch("/api/blog");
       const data = await res.json();
       const posts = (data.posts || []).filter((p, i, arr) => arr.findIndex(x => x.id === p.id || x.slug === p.slug) === i)
@@ -191,6 +200,11 @@ import Layout from "../layouts/Layout.astro";
             <span class="text-caption text-mute">${formatDate(p.publishedAt ?? p.updatedAt)}</span>
           </div>
           <h3 class="text-display-sm text-ink">${esc(p.title)}${isNew(p.publishedAt ?? p.updatedAt) ? '<sup class="text-caption-mono text-gain font-medium" style="font-size:0.6em;top:-0.5em;margin-left:4px;">New</sup>' : ""}</h3>
+          ${
+            p.topicHub && hubNames[p.topicHub]
+              ? `<div class="flex flex-wrap gap-xs mt-xs"><a href="/blog/topics?hub=${encodeURIComponent(p.topicHub)}" class="badge badge-brand hover:opacity-80 no-underline">${esc(hubNames[p.topicHub])}</a></div>`
+              : ""
+          }
           ${
             p.excerpt
               ? `<p class="text-body-md text-body line-clamp-2">${esc(p.excerpt)}</p>`

@@ -48,6 +48,35 @@ export async function onRequest(context) {
         await env.BLOG_KV.put(KV_KEY, JSON.stringify(allPosts));
       }
 
+      // Topic hubs summary: return all unique hubs with post counts
+      if (url.searchParams.get("topicHubs") === "true") {
+        const published = allPosts.filter((p) => p.status === "published");
+        const hubMap = {};
+        published.forEach((p) => {
+          if (p.topicHub) {
+            if (!hubMap[p.topicHub]) {
+              hubMap[p.topicHub] = { slug: p.topicHub, name: p.topicHub, count: 0 };
+            }
+            hubMap[p.topicHub].count++;
+          }
+        });
+        // Try to merge in proper names from topic hub definitions in KV
+        try {
+          const hubsRaw = await env.BLOG_KV.get("blog:topic-hubs");
+          if (hubsRaw) {
+            const hubs = JSON.parse(hubsRaw) || [];
+            hubs.forEach((h) => {
+              if (hubMap[h.slug]) {
+                hubMap[h.slug].name = h.name;
+              }
+            });
+          }
+        } catch (_) {}
+        return new Response(JSON.stringify({ topicHubs: Object.values(hubMap).sort((a, b) => b.count - a.count) }), {
+          headers: { ...headers, "Content-Type": "application/json" },
+        });
+      }
+
       const showAll = url.searchParams.get("all") === "true";
       const adminToken = request.headers.get("X-Admin-Token") || "";
       if (showAll && adminToken === env.ADMIN_TOKEN) {
@@ -58,11 +87,25 @@ export async function onRequest(context) {
           if (!post) return error(404, "Post not found");
           return new Response(JSON.stringify(post), { headers: { ...headers, "Content-Type": "application/json" } });
         }
+        // Optional topic hub filter for admin view
+        const topicHub = url.searchParams.get("topicHub");
+        if (topicHub) {
+          return new Response(JSON.stringify({ posts: allPosts.filter((p) => p.topicHub === topicHub) }), {
+            headers: { ...headers, "Content-Type": "application/json" },
+          });
+        }
         return new Response(JSON.stringify({ posts: allPosts }), { headers: { ...headers, "Content-Type": "application/json" } });
       }
-      const published = allPosts.filter((p) => p.status === "published").sort((a, b) => {
+      let published = allPosts.filter((p) => p.status === "published").sort((a, b) => {
         return (a.publishedAt ?? a.updatedAt) < (b.publishedAt ?? b.updatedAt) ? 1 : -1;
       });
+
+      // Filter by topic hub for public view
+      const topicHub = url.searchParams.get("topicHub");
+      if (topicHub) {
+        published = published.filter((p) => p.topicHub === topicHub);
+      }
+
       const slug = url.searchParams.get("slug");
       if (slug) {
         const post = published.find((p) => p.slug === slug);

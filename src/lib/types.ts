@@ -130,6 +130,14 @@ export interface AuditEntry {
   timestamp: string;
 }
 
+export interface TopicHub {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  createdAt: string;
+}
+
 export interface BlogPost {
   id: string;
   title: string;
@@ -137,6 +145,7 @@ export interface BlogPost {
   excerpt: string;
   content: string;
   tags: string[];
+  topicHub?: string; // slug of the TopicHub this post belongs to
   status: "draft" | "published" | "scheduled";
   authorName?: string;
   createdAt: string;
@@ -166,6 +175,7 @@ export interface AppData {
   emis: EMI[];
   expenses: Expense[];
   blog: BlogPost[];
+  topicHubs: TopicHub[];
   auditLog: AuditEntry[];
   preferences: UserPreferences;
   version: string;
@@ -189,6 +199,7 @@ export const DEFAULT_DATA: AppData = {
   emis: [],
   expenses: [],
   blog: [],
+  topicHubs: [],
   auditLog: [],
   preferences: DEFAULT_PREFERENCES,
   version: "1.0.0",
