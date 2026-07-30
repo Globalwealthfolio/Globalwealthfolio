@@ -1,4 +1,5 @@
 import { DEFAULT_DATA, isIncomeCategory, type AppData, type Expense } from "./types";
+import { SEED_POSTS } from "./seed-posts";
 import { encryptData, decryptData, isEncrypted } from "./crypto";
 
 const STORAGE_KEY = "gwp:data:v1";
@@ -33,6 +34,9 @@ function migrate(parsed: Partial<AppData> | null): AppData {
     ...(e as Expense),
     type: e.type ?? (e.category && isIncomeCategory(e.category as never) ? "income" : "expense"),
   }));
+  if (merged.blog.length === 0) {
+    merged.blog = SEED_POSTS.map((p) => ({ ...p }));
+  }
   merged.version = SCHEMA_VERSION;
   return merged;
 }

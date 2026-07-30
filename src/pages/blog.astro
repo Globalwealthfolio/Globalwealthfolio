@@ -14,52 +14,8 @@ import Layout from "../layouts/Layout.astro";
       and building lasting financial freedom — written for global investors.
     </p>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
-      <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
-        <span class="badge badge-gain w-fit">Featured</span>
-        <h3 class="text-display-sm text-ink">How to Use This Portfolio Manager</h3>
-        <p class="text-body-md text-body leading-relaxed">A complete walkthrough — from importing your first investment to tracking expenses, setting goals, and monitoring benchmarks.</p>
-        <div class="flex items-center justify-between mt-auto pt-sm border-t border-hairline">
-          <span class="text-caption text-mute">Jun 9, 2026 · 6 min read</span>
-          <a href="/blog/how-to-use-this-portfolio-manager" class="text-body-sm text-link hover:underline">Read more →</a>
-        </div>
-      </article>
-      <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
-        <span class="badge badge-gain w-fit">Featured</span>
-        <h3 class="text-display-sm text-ink">Tracking Expenses Along With Investments</h3>
-        <p class="text-body-md text-body leading-relaxed">Why tracking both sides of your financial life gives you a complete picture and keeps your financial future safe.</p>
-        <div class="flex items-center justify-between mt-auto pt-sm border-t border-hairline">
-          <span class="text-caption text-mute">Jun 9, 2026 · 5 min read</span>
-          <a href="/blog/track-expenses-with-investments" class="text-body-sm text-link hover:underline">Read more →</a>
-        </div>
-      </article>
-      <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
-        <span class="badge badge-gain w-fit">Featured</span>
-        <h3 class="text-display-sm text-ink">Step-by-Step Goals for Financial Freedom</h3>
-        <p class="text-body-md text-body leading-relaxed">How breaking your financial goals into actionable steps with tracking and projections leads to lasting financial freedom.</p>
-        <div class="flex items-center justify-between mt-auto pt-sm border-t border-hairline">
-          <span class="text-caption text-mute">Jun 9, 2026 · 6 min read</span>
-          <a href="/blog/step-by-step-goals-financial-freedom" class="text-body-sm text-link hover:underline">Read more →</a>
-        </div>
-      </article>
-      <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
-        <span class="badge badge-gain w-fit">Featured</span>
-        <h3 class="text-display-sm text-ink">Financial Freedom Is Not a Luxury</h3>
-        <p class="text-body-md text-body leading-relaxed">Financial freedom is the foundation for a life lived on your own terms — and it is more accessible than you think.</p>
-        <div class="flex items-center justify-between mt-auto pt-sm border-t border-hairline">
-          <span class="text-caption text-mute">Jun 9, 2026 · 5 min read</span>
-          <a href="/blog/financial-freedom-necessity" class="text-body-sm text-link hover:underline">Read more →</a>
-        </div>
-      </article>
-    </div>
-
-    <hr class="border-hairline my-4xl" />
-
-    <!-- Admin blog posts -->
-    <div class="mb-md">
-      <p class="text-caption-mono text-gold mb-xs">Latest from the author</p>
-      <h2 class="text-display-md">Thoughts on investing &amp; finance.</h2>
-    </div>
+    <!-- Topic hub filter -->
+    <div id="topic-filter-bar" class="flex flex-wrap gap-sm mb-lg" style="display:none;"></div>
 
     <div id="admin-blog-list" class="grid grid-cols-1 md:grid-cols-2 gap-md mb-2xl">
       <div class="md:col-span-2 text-center py-5xl card-soft">
@@ -164,22 +120,103 @@ import Layout from "../layouts/Layout.astro";
     } catch { return false; }
   }
 
+  let allPosts = [];
+  let activeTopicHub = null;
+  let hubNames = {};
+
+  function renderPosts() {
+    const list = document.getElementById("admin-blog-list");
+    if (!list) return;
+
+    const filtered = activeTopicHub
+      ? allPosts.filter(p => p.topicHub === activeTopicHub)
+      : allPosts;
+
+    if (filtered.length === 0) {
+      list.innerHTML = `<div class="md:col-span-2 text-center py-5xl card-soft"><p class="text-body-sm text-body">${activeTopicHub ? 'No posts in this topic yet.' : 'No posts yet. Check back soon!'}</p></div>`;
+      return;
+    }
+
+    list.innerHTML = filtered
+      .map(
+        (p) => `
+      <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-caption text-mute">${formatDate(p.publishedAt ?? p.updatedAt)}</span>
+        </div>
+        <h3 class="text-display-sm text-ink">${esc(p.title)}${isNew(p.publishedAt ?? p.updatedAt) ? '<sup class="text-caption-mono text-gain font-medium" style="font-size:0.6em;top:-0.5em;margin-left:4px;">New</sup>' : ""}</h3>
+        ${
+          p.topicHub && hubNames[p.topicHub]
+            ? `<div class="flex flex-wrap gap-xs mt-xs"><a href="/blog/topics?hub=${encodeURIComponent(p.topicHub)}" class="badge badge-brand hover:opacity-80 no-underline">${esc(hubNames[p.topicHub])}</a></div>`
+            : ""
+        }
+        ${
+          p.excerpt
+            ? `<p class="text-body-md text-body line-clamp-2">${esc(p.excerpt)}</p>`
+            : `<p class="text-body-md text-body line-clamp-2">${esc(p.content.slice(0, 140))}${p.content.length > 140 ? "…" : ""}</p>`
+        }
+        ${
+          p.tags.length > 0
+            ? `<div class="flex flex-wrap gap-xs mt-xs">${p.tags.map((t) => `<span class="badge">${esc(t)}</span>`).join("")}</div>`
+            : ""
+        }
+        <div class="flex items-center justify-between mt-md pt-sm border-t border-hairline">
+          <span class="text-caption text-mute">${p.authorName ? `By ${esc(p.authorName)}` : ""}</span>
+          <a href="/blog/view?slug=${encodeURIComponent(p.slug)}" class="text-body-sm text-link hover:underline">Read more →</a>
+        </div>
+      </article>`,
+      )
+      .join("");
+  }
+
+  function renderFilterBar(hubs) {
+    const bar = document.getElementById("topic-filter-bar");
+    if (!bar || hubs.length === 0) return;
+
+    bar.innerHTML = "";
+
+    const allBtn = document.createElement("button");
+    allBtn.className = activeTopicHub ? "badge" : "badge badge-brand";
+    allBtn.textContent = "All";
+    allBtn.addEventListener("click", () => {
+      activeTopicHub = null;
+      renderFilterBar(hubs);
+      renderPosts();
+    });
+    bar.appendChild(allBtn);
+
+    hubs.forEach(h => {
+      const btn = document.createElement("button");
+      const isActive = activeTopicHub === h.slug;
+      btn.className = isActive ? "badge badge-brand" : "badge";
+      btn.textContent = h.name;
+      btn.addEventListener("click", () => {
+        activeTopicHub = h.slug;
+        renderFilterBar(hubs);
+        renderPosts();
+      });
+      bar.appendChild(btn);
+    });
+
+    bar.style.display = "flex";
+  }
+
   async function loadPosts() {
     const list = document.getElementById("admin-blog-list");
     if (!list) return;
     try {
-      let hubNames = {};
       try {
         const hubsRes = await fetch("/api/topic-hubs");
         const hubsData = await hubsRes.json();
         if (hubsData.topicHubs) {
           hubsData.topicHubs.forEach(h => { hubNames[h.slug] = h.name; });
+          renderFilterBar(hubsData.topicHubs);
         }
       } catch (_) {}
 
       const res = await fetch("/api/blog");
       const data = await res.json();
-      const posts = (data.posts || []).filter((p, i, arr) => arr.findIndex(x => x.id === p.id || x.slug === p.slug) === i)
+      allPosts = (data.posts || []).filter((p, i, arr) => arr.findIndex(x => x.id === p.id || x.slug === p.slug) === i)
         .filter((p) => {
           if (p.status === "scheduled" && p.scheduledAt) {
             return new Date(p.scheduledAt) <= new Date();
@@ -187,41 +224,7 @@ import Layout from "../layouts/Layout.astro";
           return p.status === "published";
         });
 
-      if (posts.length === 0) {
-        list.innerHTML = `<div class="md:col-span-2 text-center py-5xl card-soft"><p class="text-body-sm text-body">No posts yet. Check back soon!</p></div>`;
-        return;
-      }
-
-      list.innerHTML = posts
-        .map(
-          (p) => `
-        <article class="card hover:shadow-level-3 transition-shadow flex flex-col gap-sm">
-          <div class="flex items-center justify-between">
-            <span class="text-caption text-mute">${formatDate(p.publishedAt ?? p.updatedAt)}</span>
-          </div>
-          <h3 class="text-display-sm text-ink">${esc(p.title)}${isNew(p.publishedAt ?? p.updatedAt) ? '<sup class="text-caption-mono text-gain font-medium" style="font-size:0.6em;top:-0.5em;margin-left:4px;">New</sup>' : ""}</h3>
-          ${
-            p.topicHub && hubNames[p.topicHub]
-              ? `<div class="flex flex-wrap gap-xs mt-xs"><a href="/blog/topics?hub=${encodeURIComponent(p.topicHub)}" class="badge badge-brand hover:opacity-80 no-underline">${esc(hubNames[p.topicHub])}</a></div>`
-              : ""
-          }
-          ${
-            p.excerpt
-              ? `<p class="text-body-md text-body line-clamp-2">${esc(p.excerpt)}</p>`
-              : `<p class="text-body-md text-body line-clamp-2">${esc(p.content.slice(0, 140))}${p.content.length > 140 ? "…" : ""}</p>`
-          }
-          ${
-            p.tags.length > 0
-              ? `<div class="flex flex-wrap gap-xs mt-xs">${p.tags.map((t) => `<span class="badge">${esc(t)}</span>`).join("")}</div>`
-              : ""
-          }
-          <div class="flex items-center justify-between mt-md pt-sm border-t border-hairline">
-            <span class="text-caption text-mute">${p.authorName ? `By ${esc(p.authorName)}` : ""}</span>
-            <a href="/blog/view?slug=${encodeURIComponent(p.slug)}" class="text-body-sm text-link hover:underline">Read more →</a>
-          </div>
-        </article>`,
-        )
-        .join("");
+      renderPosts();
     } catch {
       list.innerHTML = `<div class="md:col-span-2 text-center py-5xl card-soft"><p class="text-body-sm text-body">Failed to load posts. Try again later.</p></div>`;
     }

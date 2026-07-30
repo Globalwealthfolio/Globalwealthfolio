@@ -8,93 +8,115 @@ import Layout from "../../layouts/Layout.astro";
 >
   <article class="container-page page-section pt-3xl pb-2xl max-w-3xl">
     <a href="/blog" class="inline-flex items-center gap-xs text-body-sm text-link hover:underline mb-md">&larr; Back to blog</a>
-    <p class="text-caption-mono text-gold mb-xs">Blog</p>
-    <h1 class="text-display-lg mb-md">How to Use This Portfolio Manager</h1>
-    <p class="text-caption text-mute mb-lg">June 9, 2026 · 6 min read</p>
-
-    <div class="prose-custom text-body-md text-body leading-relaxed space-y-md">
-      <p>
-        Global Wealth Portfolio is designed to be intuitive, but a guided walkthrough helps
-        you get the most out of it from day one. Whether you are migrating from a spreadsheet
-        or starting fresh, this guide covers every feature you need to take control of your
-        financial life.
-      </p>
-
-      <h2 class="text-display-md text-ink mt-3xl mb-md">Step 1: Add your investments</h2>
-      <p>
-        The fastest way to get started is to import a spreadsheet. Head to the
-        <a href="/import" class="text-link hover:underline">Import page</a> and drop an Excel
-        or CSV file from your broker, bank, or your own tracking sheet. Global Wealth Portfolio
-        automatically detects columns for asset name, type, amount, date, and more. Multi-sheet
-        workbooks are fully supported — a single file with separate tabs for investments,
-        expenses, and loans gets routed to the right place automatically.
-      </p>
-      <p>
-        If you prefer to add entries one at a time, the
-        <a href="/investments" class="text-link hover:underline">Investments page</a> lets you
-        manually log each holding. Choose the asset type (equity, debt, gold, crypto, real estate,
-        or custom), enter the amount in your preferred currency, and tag it with a date and notes.
-        Every entry updates your portfolio in real time.
-      </p>
-
-      <h2 class="text-display-md text-ink mt-3xl mb-md">Step 2: Track your expenses</h2>
-      <p>
-        Go to the <a href="/expenses" class="text-link hover:underline">Expenses page</a> to
-        log your monthly spending. You can enter expenses manually or upload a bank statement
-        image — the on-device OCR reads the text, extracts transactions, and suggests categories.
-        Nothing is ever uploaded to a server.
-      </p>
-      <p>
-        Categories help you understand where your money goes. Tag expenses as food, transport,
-        utilities, entertainment, or create custom categories. The dashboard then shows you
-        spending breakdowns by category and month, so you can identify patterns and adjust your
-        budget.
-      </p>
-
-      <h2 class="text-display-md text-ink mt-3xl mb-md">Step 3: Set financial goals</h2>
-      <p>
-        The <a href="/goals" class="text-link hover:underline">Goals page</a> is where you plan
-        for the future. Create a goal for retirement, a home purchase, an education fund, or
-        any target. Set the target amount, target date, and expected annual return. The platform
-        projects your corpus forward under conservative, expected, and optimistic scenarios —
-        all adjusted for inflation.
-      </p>
-      <p>
-        Each goal shows a progress bar, the amount saved so far, and the monthly contribution
-        needed to stay on track. You can link specific investments or a monthly SIP to a goal,
-        making it easy to see how each contribution brings you closer.
-      </p>
-
-      <h2 class="text-display-md text-ink mt-3xl mb-md">Step 4: Monitor benchmarks</h2>
-      <p>
-        The <a href="/benchmarks" class="text-link hover:underline">Benchmarks page</a> compares
-        your portfolio return against major indices — NIFTY 50, S&amp;P 500, Gold, Silver, and
-        several sectoral indices. This helps you evaluate whether your active investment choices
-        are outperforming or underperforming the market, and make data-driven rebalancing decisions.
-      </p>
-
-      <h2 class="text-display-md text-ink mt-3xl mb-md">Step 5: Review the dashboard</h2>
-      <p>
-        The <a href="/dashboard" class="text-link hover:underline">Dashboard</a> is your
-        command centre. It shows your net worth, asset allocation, recent transactions,
-        goal progress, and expense trends — all in one scrollable view. Every number updates
-        as you add data, giving you a real-time picture of your financial health.
-      </p>
-
-      <h2 class="text-display-md text-ink mt-3xl mb-md">Pro tips</h2>
-      <ul class="list-disc pl-lg space-y-xs">
-        <li><strong>Export regularly.</strong> Use the Settings page to export your portfolio as JSON or CSV. This is your backup.</li>
-        <li><strong>Use the EMI tracker.</strong> Log your loans on the EMI page to see how they affect your net worth and monthly cash flow.</li>
-        <li><strong>Check the audit trail.</strong> Every change is recorded. The Audit page gives you a complete history of additions, edits, and deletions.</li>
-        <li><strong>Customise your currency.</strong> Use the controls in the top navigation to switch between 30+ currencies.</li>
-      </ul>
-
-      <p class="mt-3xl">
-        That is all there is to it. Start by
-        <a href="/import" class="text-link hover:underline">importing your data</a> or
-        <a href="/dashboard" class="text-link hover:underline">opening the dashboard</a>.
-        Your financial life, organised and private — all in your browser.
-      </p>
+    <div id="post-content">
+      <p class="text-body-md text-body">Loading…</p>
     </div>
   </article>
 </Layout>
+
+<style>
+  .prose-custom h1,
+  .prose-custom h2,
+  .prose-custom h3 {
+    color: var(--color-ink);
+    font-weight: 600;
+    line-height: 1.3;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+  .prose-custom h1 { font-size: 1.75rem; }
+  .prose-custom h2 { font-size: 1.375rem; }
+  .prose-custom h3 { font-size: 1.125rem; }
+  .prose-custom blockquote {
+    border-left: 3px solid var(--color-gold);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: var(--color-body);
+    font-style: italic;
+  }
+  .prose-custom ul,
+  .prose-custom ol {
+    padding-left: 1.5rem;
+    margin: 0.5rem 0;
+  }
+  .prose-custom li {
+    margin-bottom: 0.25rem;
+  }
+  .prose-custom a {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+  .prose-custom a:hover {
+    color: var(--color-link-deep);
+  }
+  .prose-custom strong { font-weight: 600; }
+  .prose-custom em { font-style: italic; }
+  .prose-custom u { text-decoration: underline; }
+  .prose-custom p {
+    margin-bottom: 0.5rem;
+  }
+  .prose-custom span[style] {
+    display: inline;
+  }
+  .prose-custom table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+    margin: 1rem 0;
+  }
+  .prose-custom td {
+    border: 1px solid var(--color-hairline-strong, #ccc);
+    padding: 8px;
+    min-width: 60px;
+    vertical-align: top;
+  }
+</style>
+
+<script>
+  function esc(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function formatDate(iso) {
+    try { return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }); }
+    catch { return iso; }
+  }
+
+  function sanitize(html) {
+    return html
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+      .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+      .replace(/href\s*=\s*["']javascript:/gi, 'href="#"');
+  }
+
+  function renderContent(content) {
+    return sanitize(content);
+  }
+
+  async function renderPost() {
+    const container = document.getElementById("post-content");
+    if (!container) return;
+    try {
+      const res = await fetch("/api/blog?slug=how-to-use-this-portfolio-manager");
+      if (!res.ok) throw new Error("Not found");
+      const post = await res.json();
+      if (post.status !== "published") throw new Error("Not found");
+      document.title = `${esc(post.title)} — Global Wealth Portfolio Blog`;
+      container.innerHTML = `
+        <p class="text-caption-mono text-gold mb-xs">Blog</p>
+        <h1 class="text-display-lg mb-md">${esc(post.title)}</h1>
+        <p class="text-caption text-mute mb-lg">${formatDate(post.publishedAt ?? post.updatedAt)}${post.authorName ? ` · By ${esc(post.authorName)}` : ""}</p>
+        <div class="prose-custom text-body-md text-body leading-relaxed space-y-md">${renderContent(post.content)}</div>
+      `;
+    } catch {
+      container.innerHTML = `
+        <p class="text-caption-mono text-gold mb-xs">Blog</p>
+        <h1 class="text-display-lg mb-md">Post not found</h1>
+        <p class="text-body-md text-body">The blog post you're looking for could not be found.</p>
+        <a href="/blog" class="inline-flex items-center gap-xs text-body-sm text-link hover:underline mt-lg">&larr; Back to blog</a>
+      `;
+    }
+  }
+
+  renderPost();
+</script>

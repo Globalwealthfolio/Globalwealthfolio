@@ -203,5 +203,11 @@ import Layout from "../../layouts/Layout.astro";
     renderPosts();
   });
 
-  loadHubs();
+  loadHubs().then(() => {
+    const params = new URLSearchParams(window.location.search);
+    const hubParam = params.get("hub");
+    if (hubParam) {
+      selectHub(hubParam);
+    }
+  });
 </script>
