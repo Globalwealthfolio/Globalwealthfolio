@@ -1,6 +1,6 @@
 import emailjs from "@emailjs/browser";
 import { loadData, updateData, addAudit, uid, nowISO } from "../lib/store";
-import type { BlogPost } from "../lib/types";
+import type { BlogPost, TopicHub } from "../lib/types";
 
 import { ClassicEditor, Essentials, Bold, Italic, Underline, Strikethrough, Superscript, Subscript, Heading, FontFamily, FontSize, FontColor, FontBackgroundColor, Alignment, Link, Image, ImageUpload, Base64UploadAdapter, Table, TableToolbar, HorizontalLine, Undo, FindAndReplace, List, BlockQuote, RemoveFormat, Autoformat, PasteFromOffice, SourceEditing, Paragraph, Highlight, SpecialCharacters, CodeBlock, Indent, IndentBlock, SelectAll, WordCount, Clipboard, Enter, ShiftEnter, Typing, TextTransformation, ImageInsert, ImageInsertViaUrl, LinkImage } from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
@@ -101,6 +101,7 @@ function showPanel() {
   renderAll();
   populateHubSelect();
   renderTopicHubList();
+  fetchHubsFromServer();
   if (getApiToken()) {
     fetchPostsFromServer(true);
   }
@@ -440,6 +441,66 @@ async function destroyEditor() {
 }
 
 // --- Topic Hub helpers ---
+async function fetchHubsFromServer() {
+  try {
+    const [hubRes, derivedRes] = await Promise.all([
+      fetch("/api/topic-hubs"),
+      fetch("/api/blog?topicHubs=true"),
+    ]);
+    const hubData = hubRes.ok ? await hubRes.json().catch(() => ({ topicHubs: [] })) : { topicHubs: [] };
+    const derivedData = derivedRes.ok ? await derivedRes.json().catch(() => ({ topicHubs: [] })) : { topicHubs: [] };
+
+    const known = loadData().topicHubs;
+    const knownMap = new Map<string, (typeof known)[number]>();
+    known.forEach((h) => knownMap.set(h.slug, h));
+
+    // Properly defined hubs (with names) from KV
+    (hubData.topicHubs || []).forEach((h: TopicHub) => {
+      const existing = knownMap.get(h.slug);
+      if (existing) {
+        existing.name = h.name;
+        existing.description = h.description ?? existing.description;
+      } else {
+        knownMap.set(h.slug, {
+          id: h.id || uid(),
+          name: h.name,
+          slug: h.slug,
+          description: h.description,
+          createdAt: h.createdAt || nowISO(),
+        });
+      }
+    });
+
+    // Hubs derived from posts (covers hubs missing proper definitions)
+    (derivedData.topicHubs || []).forEach((h: { slug: string; name?: string }) => {
+      if (!knownMap.has(h.slug)) {
+        knownMap.set(h.slug, {
+          id: uid(),
+          name: h.name && h.name !== h.slug ? h.name : slugToTitle(h.slug),
+          slug: h.slug,
+          createdAt: nowISO(),
+        });
+      }
+    });
+
+    updateData((data) => {
+      data.topicHubs = Array.from(knownMap.values());
+    });
+  } catch {
+    // fall back to local hubs if the server is unreachable
+  }
+  populateHubSelect();
+  renderTopicHubList();
+  renderAll();
+}
+
+function slugToTitle(slug: string): string {
+  return slug
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
 function populateHubSelect(selectedSlug?: string) {
   const select = document.getElementById("blog-topic-hub") as HTMLSelectElement;
   if (!select) return;
