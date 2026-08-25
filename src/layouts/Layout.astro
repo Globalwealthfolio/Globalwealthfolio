@@ -73,10 +73,10 @@ const {
     <!-- Preconnect to Google Fonts for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Preload critical font with font-display: swap for faster rendering -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" /></noscript>
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -111,17 +111,6 @@ const {
           "Kids finance education"
         ]
       }
-    </script>
-
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8896568384771294" crossorigin="anonymous"></script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J020W8NDX9"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-J020W8NDX9');
     </script>
 
     <!-- Block FOUC: apply theme + class before paint -->
@@ -239,13 +228,6 @@ const {
       import "../scripts/app-store.ts";
     </script>
 
-    <!-- Chat widget -->
-    <script>
-      import "../scripts/chat-widget.ts";
-    </script>
-
-
-
     <!-- Scroll to top / bottom -->
     <div id="scroll-btns" class="fixed bottom-6 right-6 flex flex-col gap-2 z-50 opacity-0 transition-opacity duration-300">
       <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="w-9 h-9 rounded-full bg-ink text-canvas flex items-center justify-center shadow-level-2 hover:scale-110 transition-transform cursor-pointer border-none" aria-label="Scroll to top">
@@ -267,6 +249,42 @@ const {
           btns.classList.add("opacity-0");
         }, 3000);
       }, { passive: true });
+    </script>
+
+    <!-- Deferred non-critical scripts -->
+    <script is:inline>
+      // Defer Google AdSense
+      const adsScript = document.createElement('script');
+      adsScript.async = true;
+      adsScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8896568384771294';
+      adsScript.crossOrigin = 'anonymous';
+      document.body.appendChild(adsScript);
+
+      // Defer Google Analytics
+      const gaScript = document.createElement('script');
+      gaScript.async = true;
+      gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-J020W8NDX9';
+      document.body.appendChild(gaScript);
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-J020W8NDX9');
+    </script>
+
+    <!-- Chat widget - deferred until user interaction -->
+    <script>
+      let chatLoaded = false;
+      function loadChatWidget() {
+        if (chatLoaded) return;
+        chatLoaded = true;
+        import("../scripts/chat-widget.ts");
+      }
+      // Load on first user interaction
+      ['click', 'scroll', 'keydown'].forEach(evt => {
+        window.addEventListener(evt, loadChatWidget, { once: true, passive: true });
+      });
+      // Fallback: load after 5s if no interaction
+      setTimeout(loadChatWidget, 5000);
     </script>
   </body>
 </html>
