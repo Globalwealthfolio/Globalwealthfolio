@@ -14,7 +14,7 @@ import Layout from "../../layouts/Layout.astro";
   </article>
 </Layout>
 
-<style>
+<style is:global>
   .prose-custom h1,
   .prose-custom h2,
   .prose-custom h3 {
@@ -59,16 +59,24 @@ import Layout from "../../layouts/Layout.astro";
     display: inline;
   }
   .prose-custom table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: auto;
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
     margin: 1rem 0;
+    font-size: 0.9375rem;
   }
+  .prose-custom th,
   .prose-custom td {
-    border: 1px solid var(--color-hairline-strong, #ccc);
-    padding: 8px;
-    min-width: 60px;
+    border: 1px solid var(--color-hairline-strong, #b8a47a);
+    padding: 8px 12px;
     vertical-align: top;
+    text-align: left;
+  }
+  .prose-custom th {
+    background: var(--color-canvas-soft);
+    color: var(--color-ink);
+    font-weight: 600;
   }
 
 </style>
