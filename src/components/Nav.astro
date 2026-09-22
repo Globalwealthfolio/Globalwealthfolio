@@ -9,19 +9,19 @@ const currencyList = Object.entries(currencies).map(([code, meta]) => ({
 }));
 
 const primaryLinks = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/investments", label: "Investments" },
-  { href: "/expenses", label: "Expenses" },
-  { href: "/goals", label: "Goals" },
-  { href: "/calculators", label: "Calculators" },
-  { href: "/blog", label: "Blog" },
+  { href: "/dashboard", label: "Dashboard", id: "dashboard" },
+  { href: "/investments", label: "Investments", id: "investments" },
+  { href: "/expenses", label: "Expenses", id: "expenses" },
+  { href: "/goals", label: "Goals", id: "goals" },
+  { href: "/calculators", label: "Calculators", id: "calculators" },
+  { href: "/blog", label: "Blog", id: "blog" },
 ];
 
 const secondaryLinks = [
-  { href: "/benchmarks", label: "Benchmarks" },
-  { href: "/emi", label: "EMI" },
-  { href: "/import", label: "Import" },
-  { href: "/blog/topics", label: "Topics" },
+  { href: "/benchmarks", label: "Benchmarks", id: "benchmarks" },
+  { href: "/emi", label: "EMI", id: "emi" },
+  { href: "/import", label: "Import", id: "import" },
+  { href: "/blog/topics", label: "Topics", id: "topics" },
 ];
 
 const allLinks = [...primaryLinks, ...secondaryLinks];
@@ -63,6 +63,7 @@ const isActive = (href: string) => {
         primaryLinks.map((link) => (
           <a
             href={link.href}
+            data-tour={link.id}
             class:list={[
               "btn-ghost",
               isActive(link.href) && "bg-canvas-soft-2 text-ink",
@@ -97,6 +98,7 @@ const isActive = (href: string) => {
             secondaryLinks.map((link) => (
               <a
                 href={link.href}
+                data-tour={link.id}
                 class:list={[
                   "block px-3 py-1.5 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors",
                   isActive(link.href) && "bg-canvas-soft-2 text-ink font-medium",
@@ -229,6 +231,7 @@ const isActive = (href: string) => {
         type="button"
         class="btn-icon lg:hidden"
         data-mobile-toggle
+        data-tour-nav-fallback
         aria-label="Open menu"
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -264,6 +267,7 @@ const isActive = (href: string) => {
           allLinks.map((link) => (
             <a
               href={link.href}
+              data-tour={link.id}
               class:list={[
                 "px-3 py-2 rounded-sm text-body-sm text-body hover:bg-canvas-soft-2 hover:text-ink transition-colors",
                 isActive(link.href) && "bg-canvas-soft-2 text-ink font-medium",

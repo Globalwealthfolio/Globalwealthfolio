@@ -1,0 +1,96 @@
+<div id="gwp-tour" class="gwp-tour" hidden>
+  <div class="gwp-tour__spot" data-tour-spot hidden aria-hidden="true"></div>
+
+  <div
+    class="gwp-tour__card card"
+    role="dialog"
+    aria-modal="false"
+    aria-labelledby="gwp-tour-title"
+    aria-describedby="gwp-tour-body"
+    tabindex="-1"
+    data-tour-card
+  >
+    <div class="flex items-center justify-between gap-sm mb-sm">
+      <p class="text-caption-mono text-gold" data-tour-progress aria-live="polite"></p>
+      <button
+        type="button"
+        class="text-body-sm text-mute hover:text-ink transition-colors"
+        data-tour-skip
+      >
+        Skip tour
+      </button>
+    </div>
+
+    <div class="flex items-start gap-sm">
+      <span
+        class="w-9 h-9 rounded-md bg-canvas-soft border border-hairline flex items-center justify-center shrink-0 text-gold"
+        data-tour-icon
+        aria-hidden="true"
+      ></span>
+      <div class="min-w-0">
+        <h2 class="text-display-sm" id="gwp-tour-title" data-tour-title></h2>
+        <p
+          class="text-body-sm text-body leading-relaxed mt-xs"
+          id="gwp-tour-body"
+          data-tour-body
+        >
+        </p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-md mt-lg">
+      <div class="flex items-center gap-xs" data-tour-dots aria-hidden="true"></div>
+      <div class="ml-auto flex items-center gap-sm">
+        <button type="button" class="btn-secondary" data-tour-back hidden>Back</button>
+        <button type="button" class="btn-primary" data-tour-next>Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .gwp-tour__spot {
+    position: fixed;
+    z-index: 90;
+    border-radius: 8px;
+    border: 2px solid var(--color-gold);
+    box-shadow: 0 0 0 9999px rgba(10, 10, 10, 0.55);
+    pointer-events: none;
+    transition: top 0.25s ease, left 0.25s ease, width 0.25s ease, height 0.25s ease;
+  }
+  .gwp-tour__spot[hidden] {
+    display: none;
+  }
+  .gwp-tour__card {
+    position: fixed;
+    z-index: 91;
+    width: min(380px, calc(100vw - 24px));
+    box-shadow: var(--shadow-level-5);
+    transition: top 0.25s ease, left 0.25s ease;
+  }
+  .gwp-tour__card:focus {
+    outline: none;
+  }
+  .gwp-tour [data-tour-dots] span {
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--color-hairline-strong);
+    transition: width 0.2s ease, background 0.2s ease;
+  }
+  .gwp-tour [data-tour-dots] span.is-active {
+    width: 18px;
+    background: var(--color-gold);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gwp-tour__spot,
+    .gwp-tour__card {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import "../scripts/tour.ts";
+</script>

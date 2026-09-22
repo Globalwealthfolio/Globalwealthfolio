@@ -106,6 +106,15 @@ const currencyList = Object.entries(currencies).map(([code, meta]) => ({
         <p class="text-caption text-mute mt-sm">Uncheck "Enable AI model" to use the rule-based engine instead. Check "Disable chat widget" to hide the floating chat bubble entirely.</p>
       </div>
 
+      <!-- Help & onboarding -->
+      <div class="card">
+        <h2 class="text-display-sm mb-sm">Help &amp; onboarding</h2>
+        <p class="text-body-sm text-body mb-md">
+          Walk through Dashboard, Investments, Expenses, Goals, and the rest of the tools again.
+        </p>
+        <button id="replay-tour" type="button" class="btn-secondary">Replay feature tour</button>
+      </div>
+
       <!-- Encryption -->
       <div class="card" id="encryption-card">
         <h2 class="text-display-sm mb-sm">Encryption</h2>
@@ -183,4 +192,10 @@ const currencyList = Object.entries(currencies).map(([code, meta]) => ({
 
 <script>
   import "../scripts/settings.ts";
+</script>
+
+<script>
+  document.getElementById("replay-tour")?.addEventListener("click", () => {
+    document.dispatchEvent(new CustomEvent("gwp:start-tour"));
+  });
 </script>
